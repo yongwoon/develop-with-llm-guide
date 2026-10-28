@@ -34,6 +34,7 @@ options:
     format: "<path>"
     when: 조사 결과를 저장소에 Markdown 으로 남길 때 쓴다. 조사·계획 문서를 두는 디렉터리 안의 상대 경로여야 한다.
     tools: [claude-code, codex]
+    note: Codex 에서 이미 있는 file 을 바꾸려면 --overwrite 도 준다.
   - name: --overwrite
     format: flag
     when: --output 으로 지정한 기존 보고서를 새 결과로 바꿀 때 함께 준다.
@@ -56,17 +57,17 @@ guide 사이트를 어떤 framework 로 만들지 정하기 전에, 후보 두 �
 <Tabs syncKey="tool">
 <TabItem label="Claude Code">
 ```text
-/ywc-tech-research 한국어 검색이 되는 정적 문서 사이트 --compare "Astro Starlight,VitePress" --output docs/research/static-site-framework.md
+/ywc-tech-research 한국어 검색이 되는 정적 문서 사이트 --compare "Astro Starlight,VitePress" --output docs/ywc-plans/static-site-framework-research.md
 ```
 </TabItem>
 <TabItem label="Codex">
 ```text
-$ywc-tech-research 한국어 검색이 되는 정적 문서 사이트 --compare "Astro Starlight,VitePress" --output docs/research/static-site-framework.md
+$ywc-tech-research 한국어 검색이 되는 정적 문서 사이트 --compare "Astro Starlight,VitePress" --output docs/ywc-plans/static-site-framework-research.md
 ```
 </TabItem>
 </Tabs>
 
-**결과물**: 후보별 비교표, 추천안, 이 project 에서 주의할 점, 참고 출처가 담긴 보고서가 대화에 나오고 `docs/research/static-site-framework.md` 에 저장된다. 계획 수립까지는 하지 않는다.
+**결과물**: 후보별 비교표, 추천안, 이 project 에서 주의할 점, 참고 출처가 담긴 보고서가 대화에 나오고 `docs/ywc-plans/static-site-framework-research.md` 에 저장된다. 계획 수립까지는 하지 않는다.
 
 ## Options
 

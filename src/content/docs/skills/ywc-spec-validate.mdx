@@ -30,7 +30,7 @@ options:
   - name: --advisor-budget
     format: "<n>"
     default: "2"
-    when: 판단이 애매한 지적을 상위 model 에게 다시 묻는 횟수 상한을 바꾼다. 0 이면 다시 묻지 않는다.
+    when: 판단이 애매한 지적을 추가로 검토하는 횟수 상한을 바꾼다. 0 이면 추가 검토 없이 끝낸다.
     tools: [claude-code, codex]
   - name: --tasks
     format: "<dir>"

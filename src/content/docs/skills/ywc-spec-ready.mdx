@@ -28,7 +28,7 @@ options:
   - name: --max-iterations
     format: "<n>"
     default: "5"
-    when: 검토와 수정을 되풀이할 최대 횟수를 정한다. skill 이 스스로 늘리지 않는다.
+    when: 검토와 수정을 되풀이할 최대 횟수를 정한다.
     tools: [claude-code]
   - name: --max-iterations
     format: "<n>"
@@ -38,7 +38,7 @@ options:
   - name: --max-advisor-calls
     format: "<n>"
     default: "4"
-    when: 반복 전체에서 상위 model 에게 다시 묻는 횟수의 합계 상한을 정한다. 비용을 묶어 둘 때 쓴다.
+    when: 반복 전체에서 추가로 검토하는 횟수의 합계 상한을 정한다. 비용을 묶어 둘 때 쓴다.
     tools: [claude-code, codex]
   - name: --log
     format: "<path>"
@@ -108,7 +108,7 @@ $ywc-spec-ready --spec docs/ywc-plans/20261028-option-table.md
 </TabItem>
 </Tabs>
 
-**결과물**: spec 파일이 그 자리에서 고쳐지고, 반복 기록이 `<slug>.spec-ready-log.md` 에 쌓인다. 끝나면 `ywc-task-generator` 로 넘어가라는 안내가 나온다.
+**결과물**: spec 파일이 그 자리에서 고쳐지고, 반복 기록이 `docs/ywc-plans/20261028-option-table.spec-ready-log.md` 에 쌓인다. 끝나면 `ywc-task-generator` 로 넘어가라는 안내가 나온다.
 
 ### 목표 문장에서 바로 시작
 

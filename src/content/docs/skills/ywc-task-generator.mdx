@@ -43,7 +43,7 @@ options:
     format: flag
     when: 질문 없이 돌려야 할 때 쓴다. 필요한 값이 빠져 있으면 아무것도 쓰지 않고 되묻는다.
     tools: [codex]
-    note: --mode 를 함께 줘야 한다.
+    note: --mode 를 함께 줘야 한다. 언어 설정값이 없으면 --lang 도 필요하다.
   - name: --preview-only
     format: flag
     when: task 를 만들지 않고 분해 미리보기만 file 로 남겨 먼저 확인한다.
@@ -51,7 +51,7 @@ options:
     note: --approve-preview 와 함께 쓸 수 없다.
   - name: --preview-path
     format: "<path>"
-    when: 저장해 둔 미리보기로 task 를 만들 때 그 file 경로(docs/ywc-plans/ 아래)를 준다.
+    when: 저장해 둔 미리보기로 task 를 만들 때 반드시 그 file 경로(docs/ywc-plans/ 아래)를 준다.
     tools: [codex]
   - name: --preview-digest
     format: "<sha256>"
