@@ -16,6 +16,7 @@
 - `docs/specification/06-requirements.md#r-guard-공개-가드-cn001-ng001` — 검사 대상·범위·금지 대상·두 층 금지 목록·fail-closed·log 규칙·단어 목록 형식
 - `docs/specification/05-user-flows.md#uf-5-배포` — 실패 시 log
 - `docs/tech-stack.md` — `scripts/guard.mjs`, `guard.config.json`, `.githooks/pre-push`
+- `docs/research/2026-10-28-public-guard-tooling.md` — gitleaks·secretlint 대비 자체 script 를 택한 근거와 재검토 조건
 
 ### Summary
 검사 대상은 `dist/` 텍스트 file 전부(`dist/pagefind/` 제외), git 추적 file 전부(민감 단어), `src/`·`public/`·`.github/`(일반 패턴)이다. email 패턴은 HTML 에만 적용한다. 민감 단어는 로컬 `guard-words.local.txt` 또는 CI 의 `GUARD_SENSITIVE_WORDS` env 에서 읽고, `GITHUB_ACTIONS=true` 인데 단어가 0개면 실패한다(fail-closed). 실패 log 에는 file 경로와 규칙 번호만 출력한다.
