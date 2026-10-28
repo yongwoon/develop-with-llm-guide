@@ -1,0 +1,3 @@
+DWLG Sans is a subset of Pretendard Variable 1.309, renamed as the Reserved
+Font Name clause below requires. Original: https://github.com/orioncactus/pretendard
+

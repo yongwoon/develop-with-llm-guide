@@ -8,16 +8,16 @@ http://scripts.sil.org/OFL
 */
 
 /*
- * Site subset (scripts/subset-font.mjs): every character the site uses, in one
- * file. Listed first in --sl-font; the dynamic subsets below only load for
- * characters it lacks.
+ * DWLG Sans (scripts/subset-font.mjs): Pretendard cut down to every character
+ * the site uses, in one file, and renamed as the OFL requires. Listed first in
+ * --sl-font; the dynamic subsets below only load for characters it lacks.
  */
 @font-face {
-	font-family: 'Pretendard Site';
+	font-family: 'DWLG Sans';
 	font-style: normal;
 	font-display: swap;
 	font-weight: 45 920;
-	src: url(/fonts/pretendard/pretendard-site.woff2) format('woff2-variations');
+	src: url(/fonts/dwlg-sans/dwlg-sans.woff2) format('woff2-variations');
 }
 
 /* [0] */

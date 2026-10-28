@@ -18,7 +18,7 @@ export default defineConfig({
 				Sidebar: './src/components/overrides/Sidebar.astro',
 				PageSidebar: './src/components/overrides/PageSidebar.astro',
 			},
-			// pretendard-site.woff2 holds every character the site uses
+			// dwlg-sans.woff2 (a renamed Pretendard subset) holds every character the site uses
 			// (scripts/subset-font.mjs), so preloading it covers the body text.
 			head: [
 				// Restores the layout preferences saved by the Sidebar and PageSidebar
@@ -32,7 +32,7 @@ export default defineConfig({
 					tag: 'link',
 					attrs: {
 						rel: 'preload',
-						href: '/develop-with-llm-guide/fonts/pretendard/pretendard-site.woff2',
+						href: '/develop-with-llm-guide/fonts/dwlg-sans/dwlg-sans.woff2',
 						as: 'font',
 						type: 'font/woff2',
 						crossorigin: '',
