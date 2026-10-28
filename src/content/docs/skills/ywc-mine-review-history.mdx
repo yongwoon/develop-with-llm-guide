@@ -41,6 +41,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -72,8 +73,12 @@ $ywc-mine-review-history --since 2026-05-01 --limit 200 --dry-run
 
 ## 쓰지 말아야 할 때
 
-- PR 하나의 지적을 선호로 남길 때 → `ywc-review-learnings`
-- 열린 PR 의 미해결 코멘트를 처리할 때 → `ywc-handle-pr-reviews`
-- 지금 일어난 장애를 정리할 때 → `ywc-incident-postmortem`
+- PR 하나의 지적을 선호로 남길 때 → <SkillLink name="ywc-review-learnings" />
+- 열린 PR 의 미해결 코멘트를 처리할 때 → <SkillLink name="ywc-handle-pr-reviews" />
+- 지금 일어난 장애를 정리할 때 → <SkillLink name="ywc-incident-postmortem" />
+
+## 관련 흐름
+
+- [25 세션 운영과 skill 관리](/develop-with-llm-guide/flows/session-skill-management/)
 
 <VerifiedStamp />

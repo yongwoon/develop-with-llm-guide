@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: plan
 tools: [claude-code, codex]
 summary: library·구현 방식을 비교 조사해 근거 있는 추천을 냅니다.
+next: [ywc-project-scaffold]
 outputs: ["--output 으로 지정한 조사 보고서"]
 argsNote: 조사 주제는 option 없이 문장으로 적습니다. 주제는 반드시 필요합니다.
 options:
@@ -44,6 +45,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -75,10 +77,14 @@ $ywc-tech-research 한국어 검색이 되는 정적 문서 사이트 --compare 
 
 ## 쓰지 말아야 할 때
 
-- 조사를 마치고 구현 계획을 세울 때 → `ywc-plan`
-- 사양서를 쓸 때 → `ywc-spec-writer`
-- 도입의 사업적 가치를 판단할 때 → `ywc-product-review`
-- 이미 내린 결정을 기록할 때 → `ywc-adr`
+- 조사를 마치고 구현 계획을 세울 때 → <SkillLink name="ywc-plan" />
+- 사양서를 쓸 때 → <SkillLink name="ywc-spec-writer" />
+- 도입의 사업적 가치를 판단할 때 → <SkillLink name="ywc-product-review" />
+- 이미 내린 결정을 기록할 때 → <SkillLink name="ywc-adr" />
 - 비교 없이 문서 한 곳만 찾아볼 때 → skill 없이 질문
+
+## 관련 흐름
+
+- [10 새 project 시작하기](/develop-with-llm-guide/flows/new-project/)
 
 <VerifiedStamp />

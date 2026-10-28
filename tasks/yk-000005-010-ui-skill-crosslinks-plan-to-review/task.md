@@ -39,3 +39,11 @@ Covers: F-NAV (본문 skill 이름 link → `#options`), SC005 (1 클릭 option 
 - [ ] lint / typecheck: N/A — spec·tech-stack 이 정의한 script 가 없다
 
 ## Implementation Notes (optional)
+
+- 방법: 흐름 page 의 FlowStep 목록(`skill`·`alt` prop)을 읽어 기계적으로 채웠다. 변환 script 는 저장소에 두지 않았다 (일회성).
+  - `next`: 필수 단계가 있는 흐름에서 이 skill 바로 다음 단계의 skill (alt 대안 포함), 흐름 번호 순, 최대 3개. 단계가 모두 `,` 인 흐름(18, 25)은 순서가 없으므로 제외. 다음 단계가 없는 skill(ywc-adr, ywc-agentic, ywc-auth-implement, ywc-manual-wizard, ywc-team-assemble, ywc-review-learnings, ywc-mine-review-history, ywc-product-review, ywc-agent-legibility-audit)은 `next` 를 두지 않았다.
+  - 본문: code block 밖의 `` `ywc-<name>` `` inline code 를 `<SkillLink name="…" />` 로 교체 (자기 자신 제외, 호출 명령 `/ywc-…`·`$ywc-…` 은 그대로).
+  - 관련 흐름: 이 skill 이 FlowStep 으로 등장하는 흐름 (흐름 번호 순), `<VerifiedStamp />` 앞. 단순 grep 은 `docs/ywc-plans/` 같은 경로에도 걸려 쓰지 않았다.
+- 관련 흐름 검사: 대상 36 page 모두 link 1개 이상 (최소 1, 최대 2). 누락 0건.
+- 내용 수정 필요 사항: 없음.
+- 확인: `pnpm run build` 성공 (SkillLink·`next`·links-validator), `pnpm run guard` 통과, preview 375px 에서 4 page 표본 scrollWidth = clientWidth, SkillCard 에 "다음 skill" 표시.

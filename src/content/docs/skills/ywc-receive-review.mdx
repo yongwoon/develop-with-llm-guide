@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: review
 tools: [claude-code, codex]
 summary: 받은 리뷰 지적이 맞는지 확인한 뒤 대응합니다.
+next: [ywc-resolve-conflict]
 outputs: [지적별 검증 결과와 대응안]
 options:
   - name: "<feedback>"
@@ -21,6 +22,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -52,8 +54,12 @@ $ywc-receive-review CodeRabbit: src/components/SkillIndex.astro 의 filter 함�
 
 ## 쓰지 말아야 할 때
 
-- 직접 리뷰를 할 때 → `ywc-impl-review`
-- 열린 PR 의 코멘트를 가져와 답하고 PR 을 정리할 때 → `ywc-handle-pr-reviews`
-- 지적을 리뷰 선호로 남길 때 → `ywc-review-learnings`
+- 직접 리뷰를 할 때 → <SkillLink name="ywc-impl-review" />
+- 열린 PR 의 코멘트를 가져와 답하고 PR 을 정리할 때 → <SkillLink name="ywc-handle-pr-reviews" />
+- 지적을 리뷰 선호로 남길 때 → <SkillLink name="ywc-review-learnings" />
+
+## 관련 흐름
+
+- [16 PR review 대응과 merge](/develop-with-llm-guide/flows/pr-review-merge/)
 
 <VerifiedStamp />

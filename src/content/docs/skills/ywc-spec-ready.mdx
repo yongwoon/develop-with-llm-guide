@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: plan
 tools: [claude-code, codex]
 summary: 초안 spec 을 검토 통과 상태까지 자동으로 다듬습니다.
+next: [ywc-task-generator]
 outputs: ["docs/ywc-plans/<slug>.md", "<slug>.spec-ready-log.md"]
 options:
   - name: "<goal>"
@@ -85,6 +86,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -93,7 +95,7 @@ import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 ### ywc-plan 이 만든 spec 을 통과 상태로
 
-`ywc-plan` 이 쓴 spec 에 지적이 남아 있습니다. task 로 나누기 전에 정리합니다.
+<SkillLink name="ywc-plan" /> 이 쓴 spec 에 지적이 남아 있습니다. task 로 나누기 전에 정리합니다.
 
 <Tabs syncKey="tool">
 <TabItem label="Claude Code">
@@ -108,7 +110,7 @@ $ywc-spec-ready --spec docs/ywc-plans/20261028-option-table.md
 </TabItem>
 </Tabs>
 
-**결과물**: spec file 을 그 자리에서 고칩니다. 반복 기록은 `docs/ywc-plans/20261028-option-table.spec-ready-log.md` 에 쌓입니다. 끝나면 `ywc-task-generator` 로 넘어가라는 안내가 나옵니다.
+**결과물**: spec file 을 그 자리에서 고칩니다. 반복 기록은 `docs/ywc-plans/20261028-option-table.spec-ready-log.md` 에 쌓입니다. 끝나면 <SkillLink name="ywc-task-generator" /> 로 넘어가라는 안내가 나옵니다.
 
 ### 목표 문장에서 바로 시작
 
@@ -133,9 +135,13 @@ $ywc-spec-ready skill 색인에 분류 filter 를 추가한다 --max-iterations 
 
 ## 쓰지 말아야 할 때
 
-- 고치지 않고 한 번 검토만 받을 때 → `ywc-spec-validate`
-- 다듬기 없이 계획만 세울 때 → `ywc-plan`
-- spec 이 이미 통과했을 때 → `ywc-task-generator`
-- 목표에서 구현까지 한 번에 맡길 때 → `ywc-agentic`
+- 고치지 않고 한 번 검토만 받을 때 → <SkillLink name="ywc-spec-validate" />
+- 다듬기 없이 계획만 세울 때 → <SkillLink name="ywc-plan" />
+- spec 이 이미 통과했을 때 → <SkillLink name="ywc-task-generator" />
+- 목표에서 구현까지 한 번에 맡길 때 → <SkillLink name="ywc-agentic" />
+
+## 관련 흐름
+
+- [13 중·대형 기능](/develop-with-llm-guide/flows/large-feature/)
 
 <VerifiedStamp />

@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: review
 tools: [claude-code, codex]
 summary: 인증·외부 입력·민감 data 를 다루는 code 의 보안을 점검합니다.
+next: [ywc-finish-branch]
 outputs: [심각도별 보안 점검 보고]
 options:
   - name: --code
@@ -23,6 +24,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -52,9 +54,13 @@ $ywc-security-audit --code src/middleware/auth/
 
 ## 쓰지 말아야 할 때
 
-- 일반적인 code 리뷰를 할 때 → `ywc-impl-review`
-- 제품 차원의 위험을 볼 때 → `ywc-product-review`
-- 인증·외부 입력·민감 data 와 관계없는 code 일 때 → `ywc-impl-review`
-- Terraform 같은 인프라 설정을 볼 때 → `ywc-infra-review`
+- 일반적인 code 리뷰를 할 때 → <SkillLink name="ywc-impl-review" />
+- 제품 차원의 위험을 볼 때 → <SkillLink name="ywc-product-review" />
+- 인증·외부 입력·민감 data 와 관계없는 code 일 때 → <SkillLink name="ywc-impl-review" />
+- Terraform 같은 인프라 설정을 볼 때 → <SkillLink name="ywc-infra-review" />
+
+## 관련 흐름
+
+- [13 중·대형 기능](/develop-with-llm-guide/flows/large-feature/)
 
 <VerifiedStamp />

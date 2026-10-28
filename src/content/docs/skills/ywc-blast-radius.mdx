@@ -7,6 +7,7 @@ sourceVersion: { codex: 0.16.164-candidate.4 }
 category: review
 tools: [codex]
 summary: 변경의 영향 범위를 근거 순위로 보고합니다.
+next: [ywc-improve-architecture]
 outputs: [영향 범위 보고]
 options:
   - name: --diff
@@ -27,6 +28,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -54,9 +56,13 @@ $ywc-blast-radius --paths src/content.config.ts --scope "skill page frontmatter 
 
 ## 쓰지 말아야 할 때
 
-- 구현 결과를 리뷰할 때 → `ywc-impl-review`
-- 구조 설계 조언이 필요할 때 → `ywc-architecture-invariants` 또는 `ywc-plan`
-- bug 원인을 찾을 때 → `ywc-debug-rootcause`
-- 저장소 전체를 점검할 때 → `ywc-agent-legibility-audit`
+- 구현 결과를 리뷰할 때 → <SkillLink name="ywc-impl-review" />
+- 구조 설계 조언이 필요할 때 → <SkillLink name="ywc-architecture-invariants" /> 또는 <SkillLink name="ywc-plan" />
+- bug 원인을 찾을 때 → <SkillLink name="ywc-debug-rootcause" />
+- 저장소 전체를 점검할 때 → <SkillLink name="ywc-agent-legibility-audit" />
+
+## 관련 흐름
+
+- [22 코드 구조 개선](/develop-with-llm-guide/flows/code-structure/)
 
 <VerifiedStamp />

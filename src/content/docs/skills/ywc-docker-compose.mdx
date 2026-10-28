@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: implement
 tools: [claude-code, codex]
 summary: 로컬 Docker Compose 환경을 만들거나 image·package 를 최신화합니다.
+next: [ywc-worktrees]
 outputs: [compose.yaml, Dockerfile.local, Dockerfile]
 options:
   - name: --mode
@@ -28,6 +29,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -74,8 +76,12 @@ $ywc-docker-compose --scope images
 
 ## 쓰지 말아야 할 때
 
-- 실행 중인 worktree 의 port 충돌을 풀 때 → `ywc-docker-isolate`
-- Dependabot 의 docker PR 을 병합할 때 → `ywc-merge-dependabot`
-- Terraform·Kubernetes 같은 cloud 인프라를 다룰 때 → `ywc-iac-author`
+- 실행 중인 worktree 의 port 충돌을 풀 때 → <SkillLink name="ywc-docker-isolate" />
+- Dependabot 의 docker PR 을 병합할 때 → <SkillLink name="ywc-merge-dependabot" />
+- Terraform·Kubernetes 같은 cloud 인프라를 다룰 때 → <SkillLink name="ywc-iac-author" />
+
+## 관련 흐름
+
+- [24 로컬 환경과 병렬 작업](/develop-with-llm-guide/flows/local-parallel/)
 
 <VerifiedStamp />

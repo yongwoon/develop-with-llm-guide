@@ -24,6 +24,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -83,8 +84,12 @@ Codex 에는 이 skill 이 없습니다. 해당 ADR file 의 상태를 직접 �
 
 ## 쓰지 말아야 할 때
 
-- 아직 결정을 내리지 못했을 때 → 먼저 `ywc-tech-research` 로 비교
-- 구현 계획이나 spec 을 쓸 때 → `ywc-plan`
-- project 의 목적이나 기각한 접근을 기록할 때 → `ywc-mission`
+- 아직 결정을 내리지 못했을 때 → 먼저 <SkillLink name="ywc-tech-research" /> 로 비교
+- 구현 계획이나 spec 을 쓸 때 → <SkillLink name="ywc-plan" />
+- project 의 목적이나 기각한 접근을 기록할 때 → <SkillLink name="ywc-mission" />
+
+## 관련 흐름
+
+- [15 장기·불확실한 initiative](/develop-with-llm-guide/flows/uncertain-initiative/)
 
 <VerifiedStamp />

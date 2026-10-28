@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: plan
 tools: [claude-code, codex]
 summary: 변경 요청의 규모를 판단해 실행 계획이나 spec 문서를 만듭니다.
+next: [ywc-tdd-ritual, ywc-spec-ready]
 outputs: ["docs/ywc-plans/YYYYMMDD-small_<slug>.md", "docs/ywc-plans/YYYYMMDD-<slug>.md"]
 argsNote: 계획할 내용은 option 없이 문장으로 적습니다.
 options:
@@ -38,6 +39,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -80,7 +82,7 @@ $ywc-plan skill page frontmatter 에서 option 표와 색인을 자동 생성하
 </TabItem>
 </Tabs>
 
-**결과물**: 중·대형으로 판단하면 spec 문서를 씁니다. 문서는 `docs/ywc-plans/YYYYMMDD-<slug>.md` 에 생깁니다. 이어서 `ywc-spec-ready` 로 다듬고 `ywc-task-generator` 로 넘기라는 안내가 나옵니다.
+**결과물**: 중·대형으로 판단하면 spec 문서를 씁니다. 문서는 `docs/ywc-plans/YYYYMMDD-<slug>.md` 에 생깁니다. 이어서 <SkillLink name="ywc-spec-ready" /> 로 다듬고 <SkillLink name="ywc-task-generator" /> 로 넘기라는 안내가 나옵니다.
 
 ## Options
 
@@ -88,11 +90,16 @@ $ywc-plan skill page frontmatter 에서 option 표와 색인을 자동 생성하
 
 ## 쓰지 말아야 할 때
 
-- 무엇을 만들지 아직 흐릴 때 → `ywc-brainstorm`
-- 이미 있는 spec 을 점검할 때 → `ywc-spec-validate`
-- 완성된 spec 을 task 로 나눌 때 → `ywc-task-generator`
-- project 전체 사양서를 쓸 때 → `ywc-spec-writer`
-- 초안 spec 을 통과 상태까지 다듬을 때 → `ywc-spec-ready`
-- 여러 세션에 걸친 불확실한 큰 작업일 때 → `ywc-wayfinder`
+- 무엇을 만들지 아직 흐릴 때 → <SkillLink name="ywc-brainstorm" />
+- 이미 있는 spec 을 점검할 때 → <SkillLink name="ywc-spec-validate" />
+- 완성된 spec 을 task 로 나눌 때 → <SkillLink name="ywc-task-generator" />
+- project 전체 사양서를 쓸 때 → <SkillLink name="ywc-spec-writer" />
+- 초안 spec 을 통과 상태까지 다듬을 때 → <SkillLink name="ywc-spec-ready" />
+- 여러 세션에 걸친 불확실한 큰 작업일 때 → <SkillLink name="ywc-wayfinder" />
+
+## 관련 흐름
+
+- [12 작은 변경](/develop-with-llm-guide/flows/small-change/)
+- [13 중·대형 기능](/develop-with-llm-guide/flows/large-feature/)
 
 <VerifiedStamp />

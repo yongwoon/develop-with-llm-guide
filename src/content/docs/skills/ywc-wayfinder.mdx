@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: plan
 tools: [claude-code, codex]
 summary: 불확실한 큰 작업을 결정 ticket 지도로 나눠 세션마다 하나씩 정합니다.
+next: [ywc-mission]
 outputs: ["docs/ywc-plans/<slug>-wayfinder.md"]
 argsNote: Claude Code 에서 특정 ticket 을 풀려면 요청 문장에 D-001 처럼 ticket 번호를 적습니다.
 options:
@@ -24,6 +25,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -72,9 +74,13 @@ $ywc-wayfinder D-002
 
 ## 쓰지 말아야 할 때
 
-- 경로가 정해졌고 계획만 세울 때 → `ywc-plan`
-- library 하나를 고를 때 → `ywc-tech-research`
-- 기능 하나의 의도만 정리할 때 → `ywc-brainstorm`
-- 만든 task 를 실행할 때 → `ywc-sequential-executor`
+- 경로가 정해졌고 계획만 세울 때 → <SkillLink name="ywc-plan" />
+- library 하나를 고를 때 → <SkillLink name="ywc-tech-research" />
+- 기능 하나의 의도만 정리할 때 → <SkillLink name="ywc-brainstorm" />
+- 만든 task 를 실행할 때 → <SkillLink name="ywc-sequential-executor" />
+
+## 관련 흐름
+
+- [15 장기·불확실한 initiative](/develop-with-llm-guide/flows/uncertain-initiative/)
 
 <VerifiedStamp />

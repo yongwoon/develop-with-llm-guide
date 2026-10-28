@@ -106,6 +106,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -137,8 +138,12 @@ $ywc-agentic skill 색인에 분류 filter 를 추가한다 --mode llm --finish 
 
 ## 쓰지 말아야 할 때
 
-- 단계마다 직접 확인하며 진행할 때 → `ywc-plan` 부터 하나씩
-- 이미 나눠 둔 task 를 실행할 때 → `ywc-sequential-executor` 또는 `ywc-parallel-executor`
+- 단계마다 직접 확인하며 진행할 때 → <SkillLink name="ywc-plan" /> 부터 하나씩
+- 이미 나눠 둔 task 를 실행할 때 → <SkillLink name="ywc-sequential-executor" /> 또는 <SkillLink name="ywc-parallel-executor" />
 - skill 하나만 쓰면 될 때 → 그 skill 을 직접 호출
+
+## 관련 흐름
+
+- [14 목표 하나로 자율 실행](/develop-with-llm-guide/flows/autonomous-goal/)
 
 <VerifiedStamp />

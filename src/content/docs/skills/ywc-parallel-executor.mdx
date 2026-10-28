@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: implement
 tools: [claude-code, codex]
 summary: 독립인 task 를 git worktree 로 나눠 동시에 실행합니다.
+next: [ywc-impl-review, ywc-team-assemble]
 outputs: ["task 별 commit·병합", "tasks/completed/<task>/"]
 argsNote: 실행할 task 는 task 이름이나 <start>..<end> 범위로 적습니다. 전부 실행하려면 --all 을 씁니다.
 options:
@@ -103,6 +104,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -134,9 +136,14 @@ $ywc-parallel-executor 000004-010..000004-030 --aggregate-pr --review
 
 ## 쓰지 말아야 할 때
 
-- task 가 앞 task 결과에 기대어 차례로 진행돼야 할 때 → `ywc-sequential-executor`
-- 순차·병렬을 정하지 않고 맡길 때 → `ywc-task-executor`
-- task 그래프 없이 일을 나눠 맡길 때 → `ywc-team-assemble`
-- 목표 문장 하나로 계획부터 맡길 때 → `ywc-agentic`
+- task 가 앞 task 결과에 기대어 차례로 진행돼야 할 때 → <SkillLink name="ywc-sequential-executor" />
+- 순차·병렬을 정하지 않고 맡길 때 → <SkillLink name="ywc-task-executor" />
+- task 그래프 없이 일을 나눠 맡길 때 → <SkillLink name="ywc-team-assemble" />
+- 목표 문장 하나로 계획부터 맡길 때 → <SkillLink name="ywc-agentic" />
+
+## 관련 흐름
+
+- [13 중·대형 기능](/develop-with-llm-guide/flows/large-feature/)
+- [24 로컬 환경과 병렬 작업](/develop-with-llm-guide/flows/local-parallel/)
 
 <VerifiedStamp />

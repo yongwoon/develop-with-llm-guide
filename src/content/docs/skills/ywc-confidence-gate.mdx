@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: plan
 tools: [claude-code, codex]
 summary: 구현 착수 직전에 준비 상태를 PROCEED·REVIEW·STOP 으로 판정합니다.
+next: [ywc-task-executor, ywc-sequential-executor, ywc-parallel-executor]
 argsNote: Claude Code 에는 option 이 없습니다. 지금 대화의 작업을 대상으로 판정합니다.
 options:
   - name: "<work item>"
@@ -18,6 +19,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -49,9 +51,14 @@ $ywc-confidence-gate Phase 3 skill page task 실행
 
 ## 쓰지 말아야 할 때
 
-- 끝낸 작업이 정말 완료됐는지 확인할 때 → `ywc-verify-done`
-- spec 문서를 검토할 때 → `ywc-spec-validate`
-- 구현된 code 를 검토할 때 → `ywc-impl-review`
-- 무엇을 만들지 아직 흐릴 때 → `ywc-brainstorm`
+- 끝낸 작업이 정말 완료됐는지 확인할 때 → <SkillLink name="ywc-verify-done" />
+- spec 문서를 검토할 때 → <SkillLink name="ywc-spec-validate" />
+- 구현된 code 를 검토할 때 → <SkillLink name="ywc-impl-review" />
+- 무엇을 만들지 아직 흐릴 때 → <SkillLink name="ywc-brainstorm" />
+
+## 관련 흐름
+
+- [10 새 project 시작하기](/develop-with-llm-guide/flows/new-project/)
+- [13 중·대형 기능](/develop-with-llm-guide/flows/large-feature/)
 
 <VerifiedStamp />
