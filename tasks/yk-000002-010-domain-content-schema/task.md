@@ -45,8 +45,10 @@ Covers: 03-data 공통·Flow·Skill·Agent frontmatter, 03-data 교차 검증 (t
 ## Implementation Notes (optional)
 
 - spike 결과: Starlight 0.42 의 `docsSchema({ extend })` 는 `z.discriminatedUnion('kind', [...])` 를 그대로 받는다. union 의 각 원소를 기본 schema 와 deep merge 하므로 `superRefine` fallback 은 쓰지 않았다.
-- YAML 은 따옴표 없는 `2026-10-28` 을 Date 로 읽는다. `verifiedAt` 은 Date 와 문자열을 모두 받아 `YYYY-MM-DD` 문자열로 정규화한다.
+- YAML 은 따옴표 없는 날짜를 Date 로 읽고, `2026-13-45` 같은 없는 날짜를 조용히 다른 날짜로 바꾼다. 그래서 `verifiedAt` 은 따옴표로 감싼 문자열만 받고(`verifiedAt: "2026-10-28"`), 실제 달력 날짜인지 검사한다. 따옴표가 없으면 그 이유를 오류 메시지로 알린다.
 - `sourceVersion` 값은 문자열만 받는다. `1.0` 처럼 YAML 숫자로 읽히는 값은 따옴표로 감싼다.
 - option 항목, `titleBlock`, 도구별 object(`sourceVersion`·`userInvoked`·`excludedOptions`)는 strict 다. 오타 key 가 조용히 버려지지 않고 build 가 실패한다.
 - `userInvoked` 는 도구별 출처 값이 다르므로(OQ-13) `{ 'claude-code'?: boolean, codex?: boolean }` 구조로 둔다.
 - 임시 page 로 확인: 유효한 skill·flow·agent page 는 통과. category·option tools·option key 오타·sourceVersion key·빈 sourceVersion·빈 tools·userInvoked 형식·titleBlock 합계·날짜 형식·흐름 번호 범위·agentGroup 누락·kind 누락/오값은 build 실패. kind=index 는 verifiedAt 없이 통과.
+- review 반영: skill 의 `sourceVersion` key 는 `tools` 와 같아야 하고, `userInvoked`·`excludedOptions` key 와 각 option 의 `tools` 는 skill `tools` 안에 있어야 한다 (어기면 build 실패, 임시 page 로 5가지 확인).
+- skill 의 `next` 는 Starlight 내장 pagination 필드 `next` 와 이름이 같다. 배열이면 Starlight 는 다음 page link 의 label·href 를 그대로 두고 attrs 만 비운다. spec 이 이름을 정했으므로 유지하고, `yk-000002-030` 에서 skill page 의 pagination 표시를 확인한다.

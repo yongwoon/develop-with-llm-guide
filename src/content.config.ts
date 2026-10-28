@@ -32,12 +32,14 @@ const perTool = <T extends z.ZodType>(value: T) =>
 		.strictObject({ 'claude-code': value.optional(), codex: value.optional() })
 		.refine((entry) => Object.keys(entry).length > 0, 'at least one tool key is required');
 
-// YAML reads an unquoted 2026-10-28 as a Date, so both forms normalize to the
-// YYYY-MM-DD string.
-const verifiedAt = z.preprocess(
-	(value) => (value instanceof Date ? value.toISOString().slice(0, 10) : value),
-	z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'verifiedAt must be YYYY-MM-DD'),
-);
+// Quoted only: YAML turns an unquoted 2026-10-28 into a Date and silently
+// rolls an impossible date such as 2026-13-45 into a real one.
+const verifiedAt = z.iso.date({
+	error: (issue) =>
+		issue.input instanceof Date
+			? 'verifiedAt must be quoted, e.g. verifiedAt: "2026-10-28"'
+			: 'verifiedAt must be a real date in YYYY-MM-DD',
+});
 const sourceVersion = perTool(nonEmpty);
 
 const optionSchema = z.strictObject({
@@ -64,23 +66,45 @@ const titleBlockSchema = z
 
 const verified = { verifiedAt, sourceVersion };
 
+// Per-tool keys and option tools must stay within the skill's `tools`, and
+// sourceVersion covers exactly those tools (spec 03-data).
+function checkSkillTools(skill: SkillFields, ctx: z.RefinementCtx): void {
+	const allowed = new Set<string>(skill.tools);
+	const issue = (path: (string | number)[], message: string) => ctx.addIssue({ code: 'custom', path, message });
+	const versionKeys = Object.keys(skill.sourceVersion);
+	if (versionKeys.length !== allowed.size || versionKeys.some((key) => !allowed.has(key))) {
+		issue(['sourceVersion'], `sourceVersion keys must match tools (${skill.tools.join(', ')})`);
+	}
+	for (const field of ['userInvoked', 'excludedOptions'] as const) {
+		const extra = Object.keys(skill[field] ?? {}).filter((key) => !allowed.has(key));
+		if (extra.length > 0) issue([field], `${field} has tools not in tools: ${extra.join(', ')}`);
+	}
+	skill.options.forEach((option, index) => {
+		const extra = option.tools.filter((name) => !allowed.has(name));
+		if (extra.length > 0) issue(['options', index, 'tools'], `option ${option.name} uses tools not in tools: ${extra.join(', ')}`);
+	});
+}
+
+const skillSchema = z.object({
+	kind: z.literal('skill'),
+	...verified,
+	category: z.enum(CATEGORIES),
+	tools,
+	summary: nonEmpty,
+	options: z.array(optionSchema),
+	outputs: z.array(nonEmpty).optional(),
+	next: z.array(nonEmpty).optional(),
+	userInvoked: perTool(z.boolean()).optional(),
+	argsNote: nonEmpty.optional(),
+	excludedOptions: perTool(z.array(nonEmpty)).optional(),
+});
+type SkillFields = z.infer<typeof skillSchema>;
+
 const kindSchema = z.discriminatedUnion('kind', [
 	z.object({ kind: z.literal('guide'), ...verified }),
 	z.object({ kind: z.literal('index'), verifiedAt: verifiedAt.optional(), sourceVersion: sourceVersion.optional() }),
 	z.object({ kind: z.literal('flow'), ...verified, titleBlock: titleBlockSchema }),
-	z.object({
-		kind: z.literal('skill'),
-		...verified,
-		category: z.enum(CATEGORIES),
-		tools,
-		summary: nonEmpty,
-		options: z.array(optionSchema),
-		outputs: z.array(nonEmpty).optional(),
-		next: z.array(nonEmpty).optional(),
-		userInvoked: perTool(z.boolean()).optional(),
-		argsNote: nonEmpty.optional(),
-		excludedOptions: perTool(z.array(nonEmpty)).optional(),
-	}),
+	skillSchema.superRefine(checkSkillTools),
 	z.object({ kind: z.literal('agent'), ...verified, agentGroup: z.enum(AGENT_GROUPS) }),
 ]);
 
