@@ -1,0 +1,171 @@
+---
+title: ywc-sequential-executor
+description: tasks/ 의 task 를 순서대로 실행합니다. "순차 실행", "순서대로 실행" 요청에 task 마다 branch 생성, 구현, 검증, PR 또는 local 병합, 완료 표시까지 진행합니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: implement
+tools: [claude-code, codex]
+summary: tasks/ 의 task 를 순서대로 구현부터 병합까지 진행합니다.
+outputs: ["task 별 commit·병합", "tasks/completed/<task>/"]
+argsNote: 실행할 task 는 task 이름이나 <start>..<end> 범위로 적습니다. 생략하면 다음에 실행할 수 있는 task 하나만 실행합니다.
+options:
+  - name: --local-merge
+    format: flag
+    when: PR 없이 base branch 에 직접 병합하고 push 합니다. 혼자 쓰는 저장소에서 씁니다.
+    tools: [claude-code, codex]
+    note: --draft, --skip-ci-wait, --aggregate-pr 와 함께 쓸 수 없습니다.
+  - name: --draft
+    format: flag
+    when: task 마다 draft PR 만 만들고 병합은 하지 않습니다.
+    tools: [claude-code, codex]
+    note: 다른 전달 방식 option 과 함께 쓸 수 없습니다.
+  - name: --skip-ci-wait
+    format: flag
+    when: PR 을 만들고 CI 를 기다리지 않습니다. 병합은 직접 합니다.
+    tools: [claude-code, codex]
+    note: 다른 전달 방식 option 과 함께 쓸 수 없습니다.
+  - name: --aggregate-pr
+    format: flag
+    when: 범위 전체를 작업 branch 하나에 모으고 PR 하나로 전달합니다.
+    tools: [claude-code, codex]
+    note: 다른 전달 방식 option 과 함께 쓸 수 없습니다.
+  - name: --group-name
+    format: "<name>"
+    default: work/<base-branch>-<시각>
+    when: --aggregate-pr 의 작업 branch 이름을 정합니다.
+    tools: [claude-code, codex]
+    note: --aggregate-pr 와 함께만 씁니다.
+  - name: --base-branch
+    format: "<branch>"
+    default: develop, main, master 순으로 자동 선택
+    when: 병합할 base branch 를 직접 정합니다.
+    tools: [claude-code]
+  - name: --base-branch
+    format: "<branch>"
+    default: 설정값. 없으면 저장소에서 추정
+    when: 병합할 base branch 를 직접 정합니다.
+    tools: [codex]
+  - name: --pr-lang
+    format: "<lang>"
+    default: 설정값
+    when: PR 제목과 설명의 언어를 정합니다.
+    tools: [claude-code, codex]
+  - name: --tasks-dir
+    format: "<path>"
+    default: tasks/
+    when: task 디렉터리가 다른 곳에 있을 때 씁니다.
+    tools: [claude-code, codex]
+  - name: --review
+    format: flag
+    when: task 마다 병합 전에 구현 리뷰를 실행합니다.
+    tools: [claude-code, codex]
+  - name: --final-review
+    format: flag
+    when: 마지막 task 뒤에 범위 전체를 한 번 더 리뷰합니다.
+    tools: [claude-code, codex]
+  - name: --run-tests-locally
+    format: flag
+    when: --local-merge 에서 병합 전에 project test 를 한 번 더 실행합니다. 실패하면 병합하지 않습니다.
+    tools: [claude-code, codex]
+    note: --local-merge 가 없으면 효과가 없습니다.
+  - name: --worktree
+    format: flag
+    when: 범위 전체를 별도 git worktree 에서 실행합니다. 원래 checkout 은 다른 작업에 그대로 씁니다.
+    tools: [claude-code, codex]
+  - name: --skip-baseline
+    format: flag
+    when: --worktree 실행 전에 test 가 원래 통과하는지 보는 확인을 건너뜁니다. test 가 오래 걸릴 때 씁니다.
+    tools: [claude-code]
+    note: --worktree 와 함께만 효과가 있습니다.
+  - name: --dry-run
+    format: flag
+    when: 실행 순서와 mode 만 보여 주고 아무것도 바꾸지 않습니다.
+    tools: [claude-code, codex]
+  - name: --terse
+    format: flag
+    when: 완료 보고를 표와 필수 목록만으로 짧게 받습니다.
+    tools: [claude-code, codex]
+  - name: --non-interactive
+    format: flag
+    when: 시작할 때 외부 URL 사용 여부를 묻지 않습니다. 정해 둔 값이 없으면 사용하지 않음으로 처리합니다.
+    tools: [claude-code]
+  - name: --non-interactive
+    format: flag
+    when: 질문 없이 실행합니다. 결정이 필요한 곳에서는 멈추고 상태를 돌려줍니다.
+    tools: [codex]
+  - name: --resume-disposition
+    format: "resume|stop"
+    when: --non-interactive 에서 이전 실행 기록이 남아 있을 때 이어서 할지(resume) 멈출지(stop) 정합니다.
+    tools: [codex]
+  - name: --model-policy
+    format: "balanced|economy|quality|inherit"
+    default: 설정값. 없으면 balanced
+    when: 보조 검토에 쓸 model 의 비용·품질 균형을 고릅니다.
+    tools: [codex]
+  - name: --subagent-model
+    format: "<id>"
+    when: 보조 검토에 쓸 model 을 직접 지정합니다.
+    tools: [codex]
+  - name: --subagent-reasoning-effort
+    format: "<value>"
+    when: 보조 검토 model 의 추론 강도를 직접 지정합니다.
+    tools: [codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### Phase 하나를 PR 없이 끝까지
+
+혼자 쓰는 저장소입니다. Phase 3 의 task 를 차례로 구현하고 바로 병합합니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-sequential-executor 000003-010..000003-050 --local-merge --review
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-sequential-executor 000003-010..000003-050 --local-merge --review
+```
+</TabItem>
+</Tabs>
+
+**결과물**: task 마다 branch 가 생기고, 구현·검증·리뷰 뒤 base branch 에 병합됩니다. 끝난 task 디렉터리는 `tasks/completed/` 로 옮겨집니다. 마지막에 완료 보고와 진행 중 내린 판단 목록이 나옵니다.
+
+### 다음 task 하나만 PR 로
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-sequential-executor
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-sequential-executor
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 의존 관계가 풀린 다음 task 하나를 실행합니다. PR 을 만들고 CI 와 자동 리뷰를 기다린 뒤 병합합니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 서로 독립인 task 를 동시에 돌릴 때 → `ywc-parallel-executor`
+- 순차·병렬을 정하지 않고 맡길 때 → `ywc-task-executor`
+- task 디렉터리 없이 spec 에서 바로 구현할 때 → `ywc-code-gen`
+- 목표 문장 하나로 계획부터 맡길 때 → `ywc-agentic`
+
+<VerifiedStamp />
