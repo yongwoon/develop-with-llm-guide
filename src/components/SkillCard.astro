@@ -24,6 +24,11 @@ const fileName = entry.id.split('/').pop();
 if (data.title !== fileName) {
 	throw new Error(`SkillCard: title "${data.title}" must equal the file name "${fileName}" (${entry.id})`);
 }
+// Tools where only the user starts the skill. Codex reads this from a policy
+// value the model may still override, so it is shown as advisory (OQ-13).
+const userInvokedLabels = data.tools
+	.filter((tool) => data.userInvoked?.[tool] === true)
+	.map((tool) => (tool === 'codex' ? `${TOOL_LABELS[tool]} (권고)` : TOOL_LABELS[tool]));
 ---
 
 <section class="skill-card not-content" aria-label={`${data.title} 요약`}>
@@ -34,6 +39,14 @@ if (data.title !== fileName) {
 	<dl>
 		<dt>사용 가능 도구</dt>
 		<dd>{data.tools.map((tool) => TOOL_LABELS[tool]).join(' · ')}</dd>
+		{
+			userInvokedLabels.length > 0 && (
+				<>
+					<dt>직접 호출 전용</dt>
+					<dd>{userInvokedLabels.join(' · ')}</dd>
+				</>
+			)
+		}
 		{
 			data.outputs && data.outputs.length > 0 && (
 				<>

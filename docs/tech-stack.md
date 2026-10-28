@@ -30,7 +30,7 @@ develop-with-llm-guide/
 │   │   │   └── Sidebar.astro          # 기본 Sidebar + 데스크톱 접기 button (localStorage)
 │   │   ├── Flow.astro                 # 흐름 컨테이너: 연결선
 │   │   ├── FlowStep.astro             # 단계: 번호 원 + 카드, optional → 점선, 단계 종류 step/loop/alt
-│   │   ├── SkillCard.astro            # skill 요약 카드 (분류 tag·도구·산출물·다음 skill, crop mark)
+│   │   ├── SkillCard.astro            # skill 요약 카드 (분류 tag·도구·직접 호출 전용·산출물·다음 skill, crop mark)
 │   │   ├── SkillLink.astro            # 본문의 skill 이름 → <skill>/#options. collection 에 없는 skill 이면 build 실패
 │   │   ├── OptionTable.astro          # frontmatter options/argsNote → 전체 option 표 ("Options" heading 아래, #options)
 │   │   ├── SkillIndex.astro           # 전 skill frontmatter → Skill 색인 표 + 분류 필터
