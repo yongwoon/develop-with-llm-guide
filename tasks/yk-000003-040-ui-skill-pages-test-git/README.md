@@ -111,9 +111,9 @@
 - yk-000002-050-domain-fresh-check
 
 ### Task Verify
-- `npm run build`
-- `npm run guard`
-- (`npm run fresh-check` 보고서에서 이 task 의 skill 에 대한 skill·tools·option·userInvoked 차이 0건. 다른 skill 미작성으로 인한 exit 1 은 허용)
+- `pnpm run build`
+- `pnpm run guard`
+- (`pnpm run fresh-check` 보고서에서 이 task 의 skill 에 대한 skill·tools·option·userInvoked 차이 0건. 다른 skill 미작성으로 인한 exit 1 은 허용)
 - `test -z "$(git ls-files .fact-memos)"`
 
 ## Out of Scope

@@ -29,13 +29,13 @@ Covers: F-FLOW (흐름 18–25, 63개 skill 흐름 등장, 도구 한정 skill �
 
 <!-- Write portable commands: see references/execution-convention.md#task-verify-portability -->
 ## Task Verify
-- [ ] `npm run build`
-- [ ] `npm run guard`
+- [ ] `pnpm run build`
+- [ ] `pnpm run guard`
 - [ ] (63개 skill 각각이 `src/content/docs/flows/*.mdx` 에 1회 이상 등장 — grep 으로 확인해 Implementation Notes 에 결과 기록)
 
 ## Verification
-- [ ] build 성공 (`npm run build`)
-- [ ] 공개 가드 통과 (`npm run guard`)
-- [ ] lint / typecheck: N/A — spec·tech-stack 이 정의한 npm script 가 없다
+- [ ] build 성공 (`pnpm run build`)
+- [ ] 공개 가드 통과 (`pnpm run guard`)
+- [ ] lint / typecheck: N/A — spec·tech-stack 이 정의한 script 가 없다
 
 ## Implementation Notes (optional)

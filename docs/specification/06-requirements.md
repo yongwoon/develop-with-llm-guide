@@ -8,7 +8,7 @@
 | push 부터 사이트 반영까지 | 10분 이내. Actions run 의 시작부터 Pages 배포 완료까지의 시간으로 잰다 |
 | build 실패, 가드 실패 시 | 배포하지 않고 직전 배포를 유지 |
 | runtime | Node.js 22.23.4 이상 (Astro 7.4.2 의 engines 요구). `.nvmrc` 와 `package.json` engines 로 고정한다 |
-| 의존성 버전 | `@astrojs/starlight` 는 exact version 으로 고정한다. 2026-10-28 기준 최신은 0.42.7. 업그레이드는 별도 작업으로 다룬다. package manager 는 npm 이며 lockfile 기반으로 install 한다 |
+| 의존성 버전 | `@astrojs/starlight` 는 exact version 으로 고정한다. 2026-10-28 기준 최신은 0.42.7. 업그레이드는 별도 작업으로 다룬다. package manager 는 pnpm 이며(`package.json` 의 `packageManager` 로 버전 고정) lockfile 기반으로 install 한다 (2026-10-28 owner 결정으로 npm 에서 전환) |
 | 실패 알림 | GitHub 기본 알림(email)으로 충분하다. 별도 알림 채널을 두지 않는다 |
 | 오염 배포 rollback | 해당 commit 을 revert 하는 commit 을 main 에 push 한다 |
 

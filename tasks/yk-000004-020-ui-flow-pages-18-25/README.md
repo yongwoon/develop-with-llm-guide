@@ -83,8 +83,8 @@
 - yk-000004-010-ui-flow-pages-10-17
 
 ### Task Verify
-- `npm run build`
-- `npm run guard`
+- `pnpm run build`
+- `pnpm run guard`
 - (63개 skill 각각이 `src/content/docs/flows/*.mdx` 에 1회 이상 등장 — grep 으로 확인해 Implementation Notes 에 결과 기록)
 
 ## Out of Scope

@@ -84,8 +84,8 @@ spec 표의 핵심 skill 순서를 FlowStep 으로 옮기고 범례(→ step, �
 - Phase yk-000003 전체
 
 ### Task Verify
-- `npm run build`
-- `npm run guard`
+- `pnpm run build`
+- `pnpm run guard`
 
 ## Out of Scope
 - skill page 수정

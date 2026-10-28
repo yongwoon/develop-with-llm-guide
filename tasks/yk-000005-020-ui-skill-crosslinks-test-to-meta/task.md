@@ -21,21 +21,21 @@
   - [ ] "쓰지 말아야 할 때" sibling → SkillLink
   - [ ] `## 관련 흐름` 절: `grep -l <skill> src/content/docs/flows/*.mdx` 결과로 흐름 link 목록 작성, `<VerifiedStamp />` 앞에 배치
 - [ ] 점검
-  - [ ] `npm run build` (links-validator·SkillLink·`next` 검증 통과)
-  - [ ] `npm run guard`
+  - [ ] `pnpm run build` (links-validator·SkillLink·`next` 검증 통과)
+  - [ ] `pnpm run guard`
 
 ## Acceptance Coverage
 Covers: F-NAV (본문 skill 이름 link → `#options`), SC005 (1 클릭 option 도달), 03-data Skill page 본문 4·5, R-RELEASE (2차 pass), R-CONTENT (깨진 link 0건)
 
 <!-- Write portable commands: see references/execution-convention.md#task-verify-portability -->
 ## Task Verify
-- [ ] `npm run build`
-- [ ] `npm run guard`
+- [ ] `pnpm run build`
+- [ ] `pnpm run guard`
 - [ ] (대상 page 마다 `관련 흐름` 절에 link 1개 이상 — grep 결과를 Implementation Notes 에 기록)
 
 ## Verification
-- [ ] build 성공 (`npm run build`)
-- [ ] 공개 가드 통과 (`npm run guard`)
-- [ ] lint / typecheck: N/A — spec·tech-stack 이 정의한 npm script 가 없다
+- [ ] build 성공 (`pnpm run build`)
+- [ ] 공개 가드 통과 (`pnpm run guard`)
+- [ ] lint / typecheck: N/A — spec·tech-stack 이 정의한 script 가 없다
 
 ## Implementation Notes (optional)

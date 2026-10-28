@@ -30,23 +30,23 @@
   - [ ] `## Options` + `<OptionTable />` → "쓰지 말아야 할 때" (sibling 이름은 inline code, link 없음) → `<VerifiedStamp />`
   - [ ] `next`·SkillLink·관련 흐름 생략 (1차 pass)
 - [ ] 점검
-  - [ ] `npm run fresh-check` 에서 이 task 의 skill 차이 0건이 될 때까지 options/excludedOptions 보정
+  - [ ] `pnpm run fresh-check` 에서 이 task 의 skill 차이 0건이 될 때까지 options/excludedOptions 보정
   - [ ] CN004·원문 비복사 self-review: 각 page 에 Phase/Step·판정 규칙·dispatch 서술이 없는지 확인
-  - [ ] `npm run build && npm run guard`
+  - [ ] `pnpm run build && pnpm run guard`
 
 ## Acceptance Coverage
 Covers: SC001 (11/63), SC002, SC005 (option 표), F-SKILL, R-CONTENT (사용 case·options·CN004·원문 복사 0건), R-FRESH (option 완전성, 이 task 범위)
 
 <!-- Write portable commands: see references/execution-convention.md#task-verify-portability -->
 ## Task Verify
-- [ ] `npm run build`
-- [ ] `npm run guard`
-- [ ] (`npm run fresh-check` 보고서에서 이 task 의 skill 에 대한 skill·tools·option·userInvoked 차이 0건. 다른 skill 미작성으로 인한 exit 1 은 허용)
+- [ ] `pnpm run build`
+- [ ] `pnpm run guard`
+- [ ] (`pnpm run fresh-check` 보고서에서 이 task 의 skill 에 대한 skill·tools·option·userInvoked 차이 0건. 다른 skill 미작성으로 인한 exit 1 은 허용)
 - [ ] `test -z "$(git ls-files .fact-memos)"`
 
 ## Verification
-- [ ] build 성공 (`npm run build`)
-- [ ] 공개 가드 통과 (`npm run guard`)
-- [ ] lint / typecheck: N/A — spec·tech-stack 이 정의한 npm script 가 없다
+- [ ] build 성공 (`pnpm run build`)
+- [ ] 공개 가드 통과 (`pnpm run guard`)
+- [ ] lint / typecheck: N/A — spec·tech-stack 이 정의한 script 가 없다
 
 ## Implementation Notes (optional)

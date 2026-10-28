@@ -103,8 +103,8 @@ skill page 36개 (기획·사양 + 구현·실행 + 리뷰·품질)의 2차 pass
 - Phase yk-000004 전체
 
 ### Task Verify
-- `npm run build`
-- `npm run guard`
+- `pnpm run build`
+- `pnpm run guard`
 - (대상 page 마다 `관련 흐름` 절에 link 1개 이상 — grep 결과를 Implementation Notes 에 기록)
 
 ## Out of Scope

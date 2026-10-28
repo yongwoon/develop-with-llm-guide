@@ -19,8 +19,8 @@
 ## Implementation Steps
 - [ ] 정적 검사
   - [ ] page 수 86, skill 63, 색인 63행 확인
-  - [ ] `npm run fresh-check` exit 0
-  - [ ] `npm run build && npm run guard`
+  - [ ] `pnpm run fresh-check` exit 0
+  - [ ] `pnpm run build && pnpm run guard`
 - [ ] R-SEARCH (preview)
   - [ ] 12개 query 상위 3개 결과 기록, 미적중 page 의 description·소제목 보강 후 재측정
   - [ ] DevTools 로 첫 검색 전송량(pagefind.js, wasm, pf_meta, 첫 pf_index/pf_fragment) 합계와 색인 page 수 기록
@@ -40,17 +40,17 @@ Covers: R-RELEASE (첫 공개 조건), R-SEARCH (전 항목), R-UX (Lighthouse·
 
 <!-- Write portable commands: see references/execution-convention.md#task-verify-portability -->
 ## Task Verify
-- [ ] `npm run build`
-- [ ] `npm run guard`
-- [ ] `npm run fresh-check`
+- [ ] `pnpm run build`
+- [ ] `pnpm run guard`
+- [ ] `pnpm run fresh-check`
 - [ ] `ls src/content/docs/skills/*.mdx | grep -v '/index.mdx' | wc -l (= 63)`
 - [ ] `find src/content/docs -name '*.mdx' | wc -l (= 86)`
 - [ ] (preview 에서 R-SEARCH 12/12, Lighthouse 3 page 목표 통과 — `docs/measurements/first-release.md` 기록)
 
 ## Verification
-- [ ] build 성공 (`npm run build`)
-- [ ] 공개 가드 통과 (`npm run guard`)
-- [ ] lint / typecheck: N/A — spec·tech-stack 이 정의한 npm script 가 없다
-- [ ] fresh-check 통과 (`npm run fresh-check` exit 0)
+- [ ] build 성공 (`pnpm run build`)
+- [ ] 공개 가드 통과 (`pnpm run guard`)
+- [ ] lint / typecheck: N/A — spec·tech-stack 이 정의한 script 가 없다
+- [ ] fresh-check 통과 (`pnpm run fresh-check` exit 0)
 
 ## Implementation Notes (optional)

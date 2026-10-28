@@ -1,7 +1,7 @@
 # yk-000005-010-ui-skill-crosslinks-plan-to-review — Manual Test Plan
 
 ## Preconditions
-- [ ] `npm run build && npm run preview`
+- [ ] `pnpm run build && pnpm run preview`
 
 ## Test Scenarios
 

@@ -22,20 +22,20 @@
   - [ ] frontmatter: `kind: flow`, title, description(상황어), `titleBlock`, `sidebar`, `verifiedAt`, `sourceVersion`
   - [ ] 리드 → Aside "언제 쓰나" → `<Flow>` + `<FlowStep>` (tools 한쪽이면 표시) → 단계별 `<Tabs syncKey="tool">` → 건너뛸 수 있는 조건 → `<VerifiedStamp />`
 - [ ] 점검
-  - [ ] `npm run build` (FlowStep 수·SkillLink 존재 검증 통과)
-  - [ ] `npm run guard`
+  - [ ] `pnpm run build` (FlowStep 수·SkillLink 존재 검증 통과)
+  - [ ] `pnpm run guard`
 
 ## Acceptance Coverage
 Covers: F-FLOW (흐름 10–17), F-NAV (흐름 → skill 2 클릭), SC003, R-SEARCH 작성 규칙, R-CONTENT (flow page 수 일부)
 
 <!-- Write portable commands: see references/execution-convention.md#task-verify-portability -->
 ## Task Verify
-- [ ] `npm run build`
-- [ ] `npm run guard`
+- [ ] `pnpm run build`
+- [ ] `pnpm run guard`
 
 ## Verification
-- [ ] build 성공 (`npm run build`)
-- [ ] 공개 가드 통과 (`npm run guard`)
-- [ ] lint / typecheck: N/A — spec·tech-stack 이 정의한 npm script 가 없다
+- [ ] build 성공 (`pnpm run build`)
+- [ ] 공개 가드 통과 (`pnpm run guard`)
+- [ ] lint / typecheck: N/A — spec·tech-stack 이 정의한 script 가 없다
 
 ## Implementation Notes (optional)

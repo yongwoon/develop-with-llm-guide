@@ -61,7 +61,7 @@ develop-with-llm-guide/
 ├── .gitignore
 ├── .nvmrc                             # Node version 고정
 ├── tsconfig.json
-├── package.json                       # npm. engines, scripts(build, guard, fresh-check), lockfile 은 package-lock.json
+├── package.json                       # pnpm. packageManager, engines, scripts(build, guard, fresh-check), lockfile 은 pnpm-lock.yaml
 ├── AGENTS.md                          # 공통 agent 지침 (CLAUDE.md / GEMINI.md 는 import 만)
 ├── CLAUDE.md
 └── GEMINI.md
@@ -120,7 +120,7 @@ develop-with-llm-guide/
 - **역할**: build 외 점검용 Node script 를 둔다.
   - `guard.mjs`: 공개 가드 (spec R-GUARD). `dist/` 의 텍스트 file 과 원본 tree 를 검사한다(범위는 R-GUARD 표). 일반 패턴은 `guard.config.json`, 민감 단어는 로컬 `guard-words.local.txt` 또는 CI secret 에서 읽는다.
   - `fresh-check.mjs`: 최신성 점검 (spec R-FRESH). owner 로컬에서만 실행하며 저장소에 아무것도 쓰지 않는다.
-- **npm script**: `build`, `guard`, `fresh-check`. CI 는 build 와 guard 를 별도 step 으로 실행한다.
+- **script** (`pnpm run <name>`): `build`, `guard`, `fresh-check`. CI 는 build 와 guard 를 별도 step 으로 실행한다.
 
 ### `.github/workflows/`
 
@@ -140,9 +140,9 @@ develop-with-llm-guide/
   - plugin: `starlight-links-validator` (깨진 내부 link·anchor 를 build 시 검사)
   - `redirects`: 삭제·개명한 skill page 의 이전 경로 (spec 03-data Skill 수명주기)
 - **Base path**: MDX 에서 skill 이름 link 는 `SkillLink` 로, 그 밖의 내부 link 는 `/develop-with-llm-guide/` prefix 를 포함한 절대 경로로 쓴다. 상대 경로는 쓰지 않는다.
-- **의존성**: `@astrojs/starlight`, `astro`, `starlight-links-validator`. 추가 의존성은 이 문서에 먼저 적는다.
+- **의존성**: `@astrojs/starlight`, `astro`, `starlight-links-validator`. 개발 의존성 `yaml`(최신성 점검 `fresh-check.mjs` 의 frontmatter 파싱, 로컬 전용). 추가 의존성은 이 문서에 먼저 적는다.
 - **버전 고정**: Starlight 가 0.x 이므로 `package.json` 의 `@astrojs/starlight` 는 exact version 으로 고정한다. 업그레이드는 별도 작업으로 다룬다.
-- **package manager**: npm. `package-lock.json` 을 commit 하고 CI 는 lockfile 기반으로 install 한다.
+- **package manager**: pnpm (2026-10-28 owner 결정으로 npm 에서 전환). 버전은 `package.json` 의 `packageManager` 로 고정하고(corepack 호환, pnpm 11), `pnpm-lock.yaml` 을 commit 한다. CI 는 `pnpm install --frozen-lockfile --ignore-scripts` 로 install 한다. pnpm 은 선언하지 않은 간접 의존성을 import 할 수 없게 하므로, 코드가 직접 쓰는 package 는 모두 `package.json` 에 적는다.
 - **Node 고정**: `.nvmrc` 와 `package.json` 의 engines 로 고정한다 (spec R-DEPLOY).
 - **Mobile-first**: 375px 기준으로 작성하고, 800px(sidebar 고정)·1152px(TOC 표시)에서 확장한다. 둘 다 Starlight 기본 breakpoint 다.
 - **Spec 반영**: 배포 workflow (R-DEPLOY), 한국어 검색 실측 (R-SEARCH), 공개 가드 (R-GUARD), 최신성 점검 (R-FRESH) 는 `docs/specification/06-requirements.md` 가 기준이다.
