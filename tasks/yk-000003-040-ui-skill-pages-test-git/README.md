@@ -74,6 +74,11 @@
 - `userInvoked` 의 Codex 값은 화면에서 "권고"로 병기한다 (OQ-13).
 - **크기 주의**: page 당 option 표·예시 포함 약 100 LOC 로 task 합계가 llm 기준(~1,000 LOC)을 넘을 수 있다. session 안에서 끝나지 않으면 완료한 page 까지 병합하고 남은 page 를 Implementation Notes 에 기록해 보고한다.
 - **Mobile-first**: layout 은 component 가 소유한다. 이 task 는 375px 에서 page 가로 scroll 0 만 확인한다 (긴 명령은 code block 내부 scroll).
+- **owner 판정 (excludedOptions, 2026-10-28)**: 다른 skill 이 넘겨줄 때만 쓰는 option 은 표에서 빼고 `excludedOptions` 에 도구별로 기록한다.
+  - `ywc-commit`: `--skip-ubiquitous-update` 제외 (Claude Code·Codex)
+  - `ywc-create-pr`: `--skip-ubiquitous-update`, `--skip-post-ci-check` 제외 (Claude Code·Codex). Codex 의 `--base` 는 포함하며 `--base / --base-branch` 한 행으로 쓴다
+  - `ywc-finish-branch`: `--worktree-path` 제외 (Claude Code)
+  - 사실 메모 작성 중 새 후보가 나오면 해당 skill 을 보류하고 owner 판정을 받는다.
 
 ## Parallel Execution Metadata
 
