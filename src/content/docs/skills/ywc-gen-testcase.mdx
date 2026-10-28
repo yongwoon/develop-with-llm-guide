@@ -1,0 +1,142 @@
+---
+title: ywc-gen-testcase
+description: PR, task, git 범위, diff 를 보고 사람이 직접 확인할 수동 테스트시트를 만듭니다. "테스트시트", "QA checklist", "수기 검증" 요청에 개발자 확인 항목과 QA 확인 항목을 정리합니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: test
+tools: [claude-code, codex]
+summary: PR·task·변경 범위에서 개발자와 QA 가 쓸 수동 테스트시트를 만듭니다.
+outputs: [docs/test-case/]
+argsNote: 대상은 PR 번호나 URL, task 이름이나 앞부분, 또는 <start>..<end> 범위로 적습니다.
+options:
+  - name: --from-diff
+    format: flag
+    when: 아직 commit 하지 않은 변경을 대상으로 합니다.
+    tools: [claude-code, codex]
+  - name: --range
+    format: "<start>..<end>"
+    when: git 범위를 명시적으로 줍니다. 점 두 개 형식만 받습니다.
+    tools: [claude-code, codex]
+  - name: --output-dir
+    format: "<path>"
+    default: docs/test-case/
+    when: 테스트시트를 둘 디렉터리를 바꿉니다.
+    tools: [claude-code, codex]
+  - name: --lang
+    format: "ko|ja|en|zh|es"
+    default: 문서 언어 설정값
+    when: 테스트시트 문장의 언어를 정합니다.
+    tools: [claude-code, codex]
+  - name: --filename
+    format: "<name>"
+    when: 자동으로 정하는 file 이름 대신 쓸 이름을 줍니다. .md 는 붙이지 않습니다.
+    tools: [claude-code, codex]
+  - name: --tasks-dir
+    format: "<path>"
+    when: task 를 대상으로 할 때 task 디렉터리 위치를 줍니다.
+    tools: [claude-code]
+  - name: --tasks-dir
+    format: "<path>"
+    default: tasks/
+    when: task 나 task 범위를 대상으로 할 때 task 디렉터리 위치를 줍니다.
+    tools: [codex]
+  - name: --include-regression
+    format: flag
+    when: QA 쪽에 회귀 확인 항목을 추가합니다.
+    tools: [claude-code, codex]
+  - name: --audience
+    format: "dev|qa|both"
+    default: both
+    when: 개발자용이나 QA 용 한쪽만 만들 때 씁니다.
+    tools: [claude-code, codex]
+  - name: --split
+    format: flag
+    when: 개발자용과 QA 용을 file 두 개로 나눕니다.
+    tools: [claude-code, codex]
+    note: --force-single 과 함께 쓸 수 없습니다. --audience 로 한쪽만 고르면 무시합니다.
+  - name: --force-single
+    format: flag
+    when: 분량이 많아도 file 하나로 만듭니다.
+    tools: [claude-code, codex]
+  - name: --no-toc
+    format: flag
+    when: 분량이 많을 때 자동으로 넣는 목차를 넣지 않습니다.
+    tools: [claude-code, codex]
+  - name: --dry-run
+    format: flag
+    when: 만들 file 이름과 항목 수만 보여 주고 쓰지 않습니다.
+    tools: [claude-code, codex]
+  - name: --format
+    format: "markdown|html"
+    default: markdown
+    when: 브라우저에서 체크하며 쓸 HTML 테스트시트가 필요하면 html 을 고릅니다.
+    tools: [claude-code, codex]
+  - name: --non-interactive
+    format: flag
+    when: 추가 질문 없이 만듭니다. git 범위를 쓸 때는 아래 두 정책 option 도 줍니다.
+    tools: [codex]
+  - name: --range-pr-policy
+    format: "keep-range|stop"
+    when: git 범위가 PR 과 겹칠 때 범위를 그대로 쓸지(keep-range) 멈출지(stop) 정합니다.
+    tools: [codex]
+    note: --non-interactive 로 git 범위를 쓸 때 필요합니다.
+  - name: --low-quality-policy
+    format: "proceed|stop"
+    when: 범위 안의 commit 제목 대부분이 내용을 알기 어려울 때 경고와 함께 진행할지(proceed) 멈출지(stop) 정합니다.
+    tools: [codex]
+    note: --non-interactive 로 git 범위를 쓸 때 필요합니다.
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### PR 하나의 확인 항목 만들기
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-gen-testcase 15 --lang ko
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-gen-testcase 15 --lang ko
+```
+</TabItem>
+</Tabs>
+
+**결과물**: PR 15 의 변경을 바탕으로 `docs/test-case/` 에 테스트시트가 생깁니다. 개발자 확인 항목과 QA 확인 항목이 나뉘어 들어갑니다.
+
+### release 범위 전체를 QA 용으로
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-gen-testcase --range v1.2..v1.3 --audience qa --include-regression
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-gen-testcase --range v1.2..v1.3 --audience qa --include-regression
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 두 tag 사이 변경에 대한 QA 용 테스트시트가 회귀 확인 항목과 함께 생깁니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 자동 unit·integration test 를 쓸 때 → `ywc-tdd-ritual`
+- 자동 E2E test 전략이나 Playwright test 가 필요할 때 → `ywc-e2e-test-strategy`
+
+<VerifiedStamp />

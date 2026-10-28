@@ -80,6 +80,7 @@
   - `ywc-finish-branch`: `--worktree-path` 제외 (Claude Code)
   - 사실 메모 작성 중 새 후보가 나오면 해당 skill 을 보류하고 owner 판정을 받는다.
 - **문체·template (owner 결정, 2026-10-28)**: 사이트 문장은 `docs/specification/06-requirements.md` 의 "사이트 문체"(합니다체)를 따른다. 구성·분량·사례 값 수준은 owner 가 확인한 `src/content/docs/skills/ywc-plan.mdx` 를 기준으로 삼는다. "쓰지 말아야 할 때" 항목은 "~할 때 → `ywc-…`" 형식으로 쓴다.
+- **owner 판정 (excludedOptions, 2026-10-28, 실행 중 추가)**: `ywc-finish-branch` 의 `--defer-push`, `--keep-branch` (Claude Code·Codex) 는 executor 가 넘길 때만 쓰는 위임 전용 option 이므로 제외한다. `ywc-create-pr` Codex 의 `--base` 는 원본에서 `--base-branch` alias 를 형식 칸에 두므로, 행 이름은 `--base` 로 쓰고 alias 는 note 에 적는다.
 
 ## Parallel Execution Metadata
 

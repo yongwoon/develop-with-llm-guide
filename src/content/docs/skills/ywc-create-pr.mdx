@@ -1,0 +1,113 @@
+---
+title: ywc-create-pr
+description: 현재 branch 의 작업으로 pull request 를 만듭니다. "PR 만들어줘", "풀리퀘 작성" 요청에 점검과 push 를 거쳐 제목과 설명을 갖춘 PR 을 엽니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: git
+tools: [claude-code, codex]
+summary: 점검과 push 를 거쳐 제목·설명을 갖춘 PR 을 만듭니다.
+outputs: [GitHub pull request]
+options:
+  - name: --base-branch / <base-branch>
+    format: "--base-branch <branch> 또는 branch 이름"
+    default: 설정값. 없으면 develop, main, master 순
+    when: PR 을 보낼 base branch 를 정합니다.
+    tools: [claude-code]
+  - name: --base
+    format: "<branch>"
+    default: 설정값. 없으면 develop, main, master 순
+    when: PR 을 보낼 base branch 를 정합니다.
+    tools: [codex]
+    note: --base-branch 도 같은 뜻으로 받습니다. --non-interactive 에서는 반드시 줍니다.
+  - name: "<instructions>"
+    format: 자유 문장
+    when: PR 을 쓸 때 따를 추가 지시를 적습니다.
+    tools: [codex]
+  - name: --title
+    format: '"<value>"'
+    default: commit 이력으로 생성
+    when: PR 제목을 그대로 정합니다. 설명의 언어에는 영향을 주지 않습니다.
+    tools: [claude-code, codex]
+  - name: --lang / --language
+    format: "ko|ja|en|zh|es"
+    default: PR 언어 설정값
+    when: PR 제목과 설명의 언어를 정합니다.
+    tools: [claude-code, codex]
+  - name: --skip-ci-check
+    format: flag
+    when: push 전 local CI 확인을 건너뜁니다.
+    tools: [claude-code, codex]
+    note: Claude Code 는 PR 뒤 원격 CI 대기도 건너뜁니다. Codex 는 병합 가능 여부를 계속 확인합니다.
+  - name: --plan-doc
+    format: "<path>"
+    default: 자동으로 찾음
+    when: PR 설명의 설계 배경으로 인용할 계획·spec 문서를 정합니다.
+    tools: [claude-code, codex]
+    note: --no-plan-ref 보다 우선합니다.
+  - name: --no-plan-ref
+    format: flag
+    when: 설계 문서 인용을 하지 않습니다.
+    tools: [claude-code, codex]
+  - name: --screenshots
+    format: flag
+    when: 화면 screenshot 을 찍어 PR 에 붙입니다.
+    tools: [claude-code, codex]
+  - name: --no-screenshots
+    format: flag
+    when: screenshot 을 붙이지 않습니다. --screenshots 보다 우선합니다.
+    tools: [claude-code, codex]
+  - name: --non-interactive
+    format: flag
+    when: 질문 없이 만듭니다. 깨끗한 작업 tree, --base, --plan-doc, PR 언어가 정해져 있어야 합니다.
+    tools: [codex]
+  - name: --existing-pr
+    format: "<number>"
+    when: --non-interactive 에서 이미 열린 같은 PR 을 다시 씁니다.
+    tools: [codex]
+  - name: --bot-review-timeout-seconds
+    format: "<positive-integer>"
+    default: "600"
+    when: PR 을 만든 뒤 bot 리뷰를 기다릴 최대 시간(초)을 바꿉니다.
+    tools: [codex]
+excludedOptions: { claude-code: [--skip-post-ci-check, --skip-ubiquitous-update], codex: [--skip-post-ci-check, --skip-ubiquitous-update] }
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### 기능 branch 를 마무리하며 PR
+
+option 표 기능을 만든 branch 의 작업이 끝났습니다. 한국어로 PR 을 만듭니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-create-pr --lang ko --plan-doc docs/ywc-plans/20261028-option-table.md
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-create-pr --lang ko --plan-doc docs/ywc-plans/20261028-option-table.md
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 보안 점검과 local CI 를 통과하면 push 하고 PR 을 엽니다. 설명에는 변경 요약, 계획 문서 인용, test 방법이 들어갑니다. 이어서 원격 CI 와 bot 리뷰 결과를 확인합니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 커밋만 할 때 → `ywc-commit`
+- 이미 끝난 branch 를 병합까지 전달할 때 → `ywc-finish-branch`
+- 열린 PR 의 리뷰 코멘트를 처리할 때 → `ywc-handle-pr-reviews`
+
+<VerifiedStamp />
