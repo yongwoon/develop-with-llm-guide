@@ -167,8 +167,19 @@ Pagefind 의 한국어 품질을 실측한 근거가 없으므로 (`docs/researc
 | flow page 수 | 16 |
 | agent page | 3 page, agent 표 합계 17행 |
 | 내부 logic 비포함 (CN004) | 단계 절차, 판정 규칙, dispatch 방식 서술 0건. review checklist 항목으로 확인 |
+| 사이트 문체 | 아래 "사이트 문체" 규칙 위반 0건. review checklist 항목으로 확인 |
 | 원문 복사 | 0건. 사실 메모를 먼저 쓰고 그 메모로 본문을 쓴다. 최종 확인은 사람의 review (OQ-06 결정) |
 | 깨진 내부 link | 0건. build 시 `starlight-links-validator` 로 검사하며, SkillLink 의 존재하지 않는 skill 이름과 `#options` anchor 도 포함 |
+
+### 사이트 문체 (owner 결정, 2026-10-28)
+
+사이트에 게시하는 모든 문장(page 본문, frontmatter 의 `description`·`summary`·`argsNote`·option 의 `when`·`note`, component 의 안내 문구)에 적용한다. `docs/`·`tasks/` 의 작업 문서에는 적용하지 않는다.
+
+- 합니다체(격식체 존댓말)로 통일한다. 문서 중간에 해요체나 해라체를 섞지 않는다. 목록 항목과 표 칸이 문장이 아니면 명사형("~할 때")으로 끝낸다.
+- 문장은 짧게 쓰고, 한 문장에 하나의 정보만 담는다.
+- 능동태를 우선하고, 번역투("~에 의해", "~를 통해", "~하는 것이 가능하다")를 피한다.
+- "~하시기 바랍니다", "~일 수 있습니다" 같은 불필요한 완곡 표현을 쓰지 않는다.
+- 감탄사, 이모지, 마케팅성 수식어("강력한", "간편한")를 쓰지 않는다.
 
 ## Existing Constraints Touched
 
