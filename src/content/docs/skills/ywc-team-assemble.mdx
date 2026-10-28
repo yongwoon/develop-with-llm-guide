@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: implement
 tools: [claude-code, codex]
 summary: 사용자가 요청할 때 작업을 전문 역할별 agent 팀에 나눠 맡깁니다.
+outputs: [역할별 결과를 모은 보고]
 argsNote: Claude Code 에서는 option 없이 팀에 맡길 일을 문장으로 적습니다. 팀이나 병렬 위임을 원한다는 말이 들어가야 합니다.
 options:
   - name: "<task>"

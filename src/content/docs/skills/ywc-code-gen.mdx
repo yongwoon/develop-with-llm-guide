@@ -29,7 +29,6 @@ options:
     format: flag
     when: 생성과 검증이 끝난 뒤 구현 리뷰(ywc-impl-review)를 이어서 실행합니다.
     tools: [claude-code, codex]
-    note: Claude Code 는 중요도가 critical 인 작업이면 이 option 이 없어도 리뷰를 실행합니다.
   - name: --manifest
     format: "<repository-relative-path>"
     when: architecture 규약 file 이 있으면 경로를 줍니다. 생성할 code 가 규약을 따르게 합니다.

@@ -1,6 +1,6 @@
 ---
 title: ywc-agentic
-description: 목표 문장 하나로 계획, 실행, 평가를 반복해 구현까지 자율로 진행합니다. "자율 실행", "goal to code" 요청에 다른 ywc skill 을 차례로 써서 결과를 냅니다.
+description: 목표 문장 하나로 계획부터 구현까지 자율로 진행합니다. "자율 실행", "goal to code" 요청에 다른 ywc skill 을 차례로 써서 결과를 냅니다.
 kind: skill
 verifiedAt: "2026-10-28"
 sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
@@ -11,8 +11,9 @@ outputs: [docs/ywc-plans/, tasks/, tasks/agentic-log.md]
 options:
   - name: "<goal>"
     format: 자유 문장
-    when: 이루려는 목표를 문장으로 적습니다. --spec 을 쓰지 않으면 필요합니다.
+    when: 이루려는 목표를 문장으로 적습니다.
     tools: [claude-code, codex]
+    note: Claude Code 는 --spec 을 주면 생략할 수 있습니다.
   - name: --goal
     format: '"<text>"'
     when: 목표를 option 으로 줄 때 씁니다. <goal> 과 둘 다 있으면 <goal> 을 씁니다.
@@ -24,7 +25,7 @@ options:
   - name: --max-iterations
     format: "<n>"
     default: "3"
-    when: 계획·실행·평가를 되풀이할 최대 횟수를 정합니다.
+    when: 결과를 평가하고 다시 시도하는 최대 횟수를 정합니다.
     tools: [claude-code, codex]
   - name: --executor
     format: "sequential|parallel|auto"
@@ -42,7 +43,7 @@ options:
     tools: [claude-code, codex]
   - name: --mode
     format: "human|llm"
-    when: task 크기를 정해 ywc-task-generator 에 넘깁니다. 생략하면 그쪽에서 정합니다.
+    when: task 크기를 정해 ywc-task-generator 에 넘깁니다. human 은 사람이 할 단위, llm 은 LLM 이 한 번에 처리할 단위입니다.
     tools: [claude-code, codex]
   - name: --base-branch
     format: "<name>|auto|none"
@@ -79,7 +80,7 @@ options:
     tools: [claude-code, codex]
   - name: --non-interactive
     format: flag
-    when: 질문 없이 실행합니다. 필요한 값이 빠지면 시작 전에 되묻습니다.
+    when: 질문 없이 실행합니다. 필요한 값이 빠지면 실행하지 않고 그 상태를 돌려줍니다.
     tools: [codex]
   - name: --suggestions
     format: "apply|defer"
@@ -100,6 +101,7 @@ options:
     format: "include|omit"
     when: --non-interactive 의 per-task-pr 전달에서 마지막 PR 에 병합된 PR 목록을 넣을지 정합니다.
     tools: [codex]
+    note: --non-interactive 와 함께 씁니다.
 ---
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';

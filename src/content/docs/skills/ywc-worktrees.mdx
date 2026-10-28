@@ -15,7 +15,7 @@ options:
     tools: [claude-code]
   - name: --mode
     format: "create|audit|prune|prune-recorded|resolve"
-    when: 할 일을 고릅니다. prune-recorded 는 실행 기록에 남은 worktree 를 정리합니다.
+    when: 할 일을 고릅니다. prune-recorded 는 executor 가 실행 기록으로 worktree 를 정리할 때 쓰는 mode 입니다.
     tools: [codex]
   - name: --task-name
     format: "<task-name>"
@@ -56,18 +56,7 @@ options:
     format: flag
     when: prune 에서 worktree 만 지우고 branch 는 남깁니다.
     tools: [claude-code, codex]
-  - name: --state-file
-    format: "<path>"
-    when: prune-recorded 에서 기준이 될 실행 기록 file 을 지정합니다.
-    tools: [codex]
-  - name: --repo-common-dir
-    format: "<path>"
-    when: prune-recorded 에서 현재 저장소의 공통 git 디렉터리를 지정합니다.
-    tools: [codex]
-  - name: --expected-operation
-    format: "step-4g|discard"
-    when: prune-recorded 에서 어떤 정리 작업인지 지정합니다.
-    tools: [codex]
+excludedOptions: { codex: [--state-file, --repo-common-dir, --expected-operation] }
 ---
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';

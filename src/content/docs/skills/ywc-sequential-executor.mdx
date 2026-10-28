@@ -88,8 +88,12 @@ options:
     tools: [claude-code, codex]
   - name: --non-interactive
     format: flag
+    when: 시작할 때 외부 URL 사용 여부를 묻지 않습니다. 정해 둔 값이 없으면 사용하지 않음으로 처리합니다.
+    tools: [claude-code]
+  - name: --non-interactive
+    format: flag
     when: 질문 없이 실행합니다. 결정이 필요한 곳에서는 멈추고 상태를 돌려줍니다.
-    tools: [claude-code, codex]
+    tools: [codex]
   - name: --resume-disposition
     format: "resume|stop"
     when: --non-interactive 에서 이전 실행 기록이 남아 있을 때 이어서 할지(resume) 멈출지(stop) 정합니다.
@@ -134,7 +138,7 @@ $ywc-sequential-executor 000003-010..000003-050 --local-merge --review
 </TabItem>
 </Tabs>
 
-**결과물**: task 마다 branch 가 생기고, 구현·검증·리뷰 뒤 base branch 에 병합됩니다. 끝난 task 디렉터리는 `tasks/completed/` 로 옮겨집니다. 마지막에 완료 보고와, 진행 중 내린 판단 목록이 나옵니다.
+**결과물**: task 마다 branch 가 생기고, 구현·검증·리뷰 뒤 base branch 에 병합됩니다. 끝난 task 디렉터리는 `tasks/completed/` 로 옮겨집니다. 마지막에 완료 보고와 진행 중 내린 판단 목록이 나옵니다.
 
 ### 다음 task 하나만 PR 로
 
