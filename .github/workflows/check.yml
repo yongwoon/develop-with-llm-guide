@@ -1,0 +1,35 @@
+# Build and run the public guard on the content integration branch, without
+# deploying (spec R-DEPLOY). PRs from forks get no secret, so the guard fails
+# closed there; this single-owner repository accepts that.
+name: Check
+
+on:
+  push:
+    branches: [content/initial]
+  pull_request:
+    branches: [content/initial]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      # The secret is exposed to this step only, never to install or build.
+      - run: npm run guard
+        env:
+          GUARD_SENSITIVE_WORDS: ${{ secrets.GUARD_SENSITIVE_WORDS }}
