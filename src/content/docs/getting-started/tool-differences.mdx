@@ -1,0 +1,46 @@
+---
+title: 두 도구의 차이
+description: Claude Code 와 Codex 에서 ywc skill 을 쓸 때 다른 점입니다. 호출 표기, 한쪽에만 있는 skill 과 agent, 설정 file 위치를 정리합니다.
+kind: guide
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+---
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+ywc skill 은 Claude Code 와 Codex 에서 대부분 같은 이름과 option 으로 쓸 수 있습니다. 다른 점은 아래 세 가지입니다.
+
+## 호출 표기
+
+| 도구 | 표기 | 예 |
+|---|---|---|
+| Claude Code | `/` + skill 이름 | `/ywc-plan 사이트 footer 에 link 를 추가하고 싶다` |
+| Codex | `$` + skill 이름 | `$ywc-plan 사이트 footer 에 link 를 추가하고 싶다` |
+
+이 사이트의 실행 예시는 두 도구를 tab 으로 나눠 보여 줍니다. 한 page 에서 tab 을 고르면 다른 page 에서도 같은 tab 이 열립니다.
+
+같은 skill 이라도 option 이 도구마다 다를 수 있습니다. 각 skill page 의 option 표에서 도구별 지원 여부를 확인합니다.
+
+## 한쪽에만 있는 skill
+
+| 도구 | skill |
+|---|---|
+| Claude Code 전용 | <SkillLink name="ywc-adr" />, <SkillLink name="ywc-issue-triage" />, <SkillLink name="ywc-manual-wizard" />, <SkillLink name="ywc-resolve-conflict" /> |
+| Codex 전용 | <SkillLink name="ywc-blast-radius" /> |
+
+한쪽 전용 skill 의 page 에는 다른 도구에서 쓸 대체 방법을 적어 두었습니다.
+
+## 한쪽에만 있는 agent
+
+agent 구성도 도구마다 다릅니다. 목록은 [Agent 개요](/develop-with-llm-guide/agents/overview/) 를 봅니다.
+
+## 설정 file 위치
+
+<SkillLink name="ywc-setup" /> 이 저장하는 기본값 file 의 위치입니다.
+
+| 범위 | Claude Code | Codex |
+|---|---|---|
+| project (저장소에 commit) | 저장소 root 의 `.ywc-config.json` | 저장소의 `.codex/ywc.json` |
+| 사용자 (모든 project) | `~/.claude/ywc-config.json` | `~/.codex/ywc.json` (`CODEX_HOME` 이 있으면 그 아래) |
+
+<VerifiedStamp />

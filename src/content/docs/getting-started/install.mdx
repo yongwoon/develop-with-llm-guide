@@ -1,0 +1,60 @@
+---
+title: 설치
+description: 새 머신에서 ywc skill 과 agent 를 설치하는 방법입니다. 사전 요구 도구, 통합 install script, 도구별 설치, 기본값 설정을 다룹니다.
+kind: guide
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+---
+import { Aside } from '@astrojs/starlight/components';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+skill 과 agent 는 develop-with-llm 저장소의 install script 로 설치합니다. 아래 명령은 그 저장소 root 에서 실행합니다.
+
+## 사전 요구 도구
+
+설치 전에 아래 도구를 준비합니다. `gh` 는 설치만으로는 부족하고 인증까지 해 두어야 합니다.
+
+| 도구 | 쓰는 곳 | 비고 |
+|---|---|---|
+| GitHub CLI (`gh`) | PR·CI·병합을 다루는 skill | `gh auth login` 으로 인증 |
+| git (2.5 이상) | branch·worktree·commit 을 다루는 skill | worktree 기능이 필요 |
+| jq | CI·PR 결과 JSON 을 읽는 skill | — |
+| python3 (3.8 이상) | skill 이 쓰는 보조 script | — |
+
+## 한 번에 설치
+
+두 도구의 skill 과 agent 를 모두 설치합니다. 같은 이름의 기존 항목은 덮어씁니다.
+
+```bash
+bash install-skills.sh
+```
+
+일부만 설치하려면 option 을 붙입니다.
+
+| option | 설치 대상 |
+|---|---|
+| `--claude-only` | Claude Code skill 만 |
+| `--codex-only` | Codex skill 과 Codex agent 만 |
+| `--agents-only` | 두 도구의 agent 만 |
+| `--skip-agents` | 두 도구의 skill 만 |
+| `--agent-model-policy fixed\|routed` | Codex agent 의 model 고정 방식. `routed` 는 `--codex-only` 와 함께 쓸 때만 동작합니다 ([Agent 개요](/develop-with-llm-guide/agents/overview/) 참고) |
+
+## 도구별 설치 위치
+
+| 대상 | 설치 위치 | 위치를 바꾸는 환경 변수 |
+|---|---|---|
+| Claude Code skill | `~/.claude/skills/` | `CLAUDE_SKILLS_DIR` |
+| Claude Code agent | `~/.claude/agents/` | `CLAUDE_AGENTS_DIR` |
+| Codex skill | `~/.codex/skills/` | `CODEX_HOME` |
+| Codex agent | `~/.codex/agents/` | `CODEX_HOME` |
+
+<Aside>
+설치한 뒤에는 Claude Code 와 Codex 를 다시 시작해야 새 skill 과 agent 가 보입니다.
+</Aside>
+
+## 기본값 설정
+
+skill 이 매번 묻는 언어, base branch 같은 값은 <SkillLink name="ywc-setup" /> 으로 한 번 저장해 둡니다. 저장 위치는 [두 도구의 차이](/develop-with-llm-guide/getting-started/tool-differences/) page 를 봅니다.
+
+<VerifiedStamp />
