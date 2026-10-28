@@ -1,0 +1,60 @@
+---
+title: ywc-blast-radius
+description: diff 나 경로 변경이 어디까지 영향을 주는지 근거와 함께 보고합니다. "변경 영향", "영향 범위", "blast radius" 요청에 구현이나 리뷰 전에 영향받는 곳을 순위대로 보여 줍니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { codex: 0.16.164-candidate.4 }
+category: review
+tools: [codex]
+summary: 변경의 영향 범위를 근거 순위로 보고합니다.
+outputs: [영향 범위 보고]
+options:
+  - name: --diff
+    format: "<range>"
+    when: main..HEAD 같은 commit 범위의 변경을 대상으로 합니다.
+    tools: [codex]
+  - name: --paths
+    format: "<list>"
+    when: 바꿀 예정인 file 경로를 쉼표로 나열합니다.
+    tools: [codex]
+  - name: --scope
+    format: "<text>"
+    when: 알고 싶은 질문을 좁히는 설명을 덧붙입니다.
+    tools: [codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### content schema 를 바꾸기 전에
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+Claude Code 에는 이 skill 이 없습니다. 바뀌는 symbol 의 호출처를 직접 찾거나 `/ywc-impl-review` 로 변경 전후를 리뷰합니다.
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-blast-radius --paths src/content.config.ts --scope "skill page frontmatter 에 미치는 영향"
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 영향받는 file 과 기능이 근거가 강한 순서로 나옵니다. 근거마다 file 위치가 붙습니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 구현 결과를 리뷰할 때 → `ywc-impl-review`
+- 구조 설계 조언이 필요할 때 → `ywc-architecture-invariants` 또는 `ywc-plan`
+- bug 원인을 찾을 때 → `ywc-debug-rootcause`
+- 저장소 전체를 점검할 때 → `ywc-agent-legibility-audit`
+
+<VerifiedStamp />

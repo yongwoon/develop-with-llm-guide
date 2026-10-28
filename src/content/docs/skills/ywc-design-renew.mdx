@@ -1,0 +1,89 @@
+---
+title: ywc-design-renew
+description: 평범하거나 AI 가 만든 것처럼 보이는 기존 화면의 디자인을 새롭게 바꿉니다. "디자인 리뉴얼", "AI 슬롭 점검" 요청에 쓰고, 출시 전에 AI 티가 나는 요소만 점검할 수도 있습니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: review
+tools: [claude-code, codex]
+summary: AI 가 만든 듯한 기존 화면을 새롭게 바꾸거나 출시 전에 점검합니다.
+outputs: [수정된 화면 code, check 보고]
+options:
+  - name: --mode
+    format: "renew|check"
+    default: renew
+    when: renew 는 화면을 실제로 고칩니다. check 는 고치지 않고 점검만 해서 통과·실패를 냅니다.
+    tools: [claude-code, codex]
+  - name: --target
+    format: "<path|route>"
+    when: 바꾸거나 점검할 화면을 지정합니다. 반드시 줍니다.
+    tools: [claude-code, codex]
+  - name: --url
+    format: "<live-url>"
+    when: 실행 중인 화면 URL 을 주면 전후 화면을 비교합니다. 없으면 code 만 봅니다.
+    tools: [claude-code, codex]
+  - name: --fail-on
+    format: "critical|high|none"
+    default: critical
+    when: check 에서 어느 심각도부터 실패로 볼지 정합니다.
+    tools: [claude-code, codex]
+  - name: --format
+    format: "markdown|html"
+    default: markdown
+    when: check 보고서를 HTML 로 받을 때 씁니다.
+    tools: [claude-code, codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### 홈 화면을 덜 평범하게
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-design-renew --target src/content/docs/index.mdx --url http://localhost:4321/develop-with-llm-guide/
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-design-renew --target src/content/docs/index.mdx --url http://localhost:4321/develop-with-llm-guide/
+```
+</TabItem>
+</Tabs>
+
+**결과물**: AI 티가 나는 요소를 찾아 화면 code 를 고칩니다. 바꾸기 전후 화면을 비교한 결과도 나옵니다.
+
+### 출시 전 점검만
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-design-renew --mode check --target src/components/ --fail-on high
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-design-renew --mode check --target src/components/ --fail-on high
+```
+</TabItem>
+</Tabs>
+
+**결과물**: code 는 고치지 않습니다. High 이상 지적이 있으면 실패로 판정한 보고가 나옵니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 사용성이나 접근성을 리뷰할 때 → `ywc-ui-ux-review`
+- 새 화면을 처음부터 만들 때 → 구현 요청을 직접
+- code 품질을 리뷰할 때 → `ywc-impl-review`
+
+<VerifiedStamp />

@@ -74,6 +74,7 @@
 - **크기 주의**: page 당 option 표·예시 포함 약 100 LOC 로 task 합계가 llm 기준(~1,000 LOC)을 넘을 수 있다. session 안에서 끝나지 않으면 완료한 page 까지 병합하고 남은 page 를 Implementation Notes 에 기록해 보고한다.
 - **Mobile-first**: layout 은 component 가 소유한다. 이 task 는 375px 에서 page 가로 scroll 0 만 확인한다 (긴 명령은 code block 내부 scroll).
 - **문체·template (owner 결정, 2026-10-28)**: 사이트 문장은 `docs/specification/06-requirements.md` 의 "사이트 문체"(합니다체)를 따른다. 구성·분량·사례 값 수준은 owner 가 확인한 `src/content/docs/skills/ywc-plan.mdx` 를 기준으로 삼는다. "쓰지 말아야 할 때" 항목은 "~할 때 → `ywc-…`" 형식으로 쓴다.
+- **owner 판정 (excludedOptions, 2026-10-28, 실행 중 추가)**: `ywc-refactor-clean` 의 `--skip-verify-done` (Claude Code·Codex) 은 호출한 skill 이 완료 검증을 대신 실행할 때만 넘기는 위임 전용 option 이므로 제외한다. `ywc-impl-review` (Claude Code) 의 `--criticality`, `--depth` 는 사용자가 직접 줄 수 있으므로 포함한다.
 
 ## Parallel Execution Metadata
 

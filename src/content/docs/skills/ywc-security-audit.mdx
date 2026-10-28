@@ -1,0 +1,60 @@
+---
+title: ywc-security-audit
+description: 인증·인가 code, 외부 endpoint, 민감 data 처리 code 의 보안을 점검합니다. "보안 점검", "취약점 분석", "OWASP" 요청에 위협과 취약점을 심각도별로 보고합니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: review
+tools: [claude-code, codex]
+summary: 인증·외부 입력·민감 data 를 다루는 code 의 보안을 점검합니다.
+outputs: [심각도별 보안 점검 보고]
+options:
+  - name: --code
+    format: "<path>"
+    when: 점검할 code 경로를 줍니다. 반드시 줍니다.
+    tools: [claude-code, codex]
+  - name: --format
+    format: "markdown|html"
+    default: markdown
+    when: 브라우저로 볼 단독 HTML 보고서가 필요하면 html 을 고릅니다.
+    tools: [claude-code, codex]
+    note: HTML 보고서가 생기는 디렉터리는 도구마다 다릅니다. Claude Code 는 claudedocs/, Codex 는 codexdocs/ 입니다.
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### 인증 middleware 를 배포 전에 점검
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-security-audit --code src/middleware/auth/
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-security-audit --code src/middleware/auth/
+```
+</TabItem>
+</Tabs>
+
+**결과물**: OWASP Top 10 기준의 취약점과 위협이 심각도별로 나옵니다. 지적마다 file 위치와 고치는 방향이 붙습니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 일반적인 code 리뷰를 할 때 → `ywc-impl-review`
+- 제품 차원의 위험을 볼 때 → `ywc-product-review`
+- 인증·외부 입력·민감 data 와 관계없는 code 일 때 → 필요 없음
+- Terraform 같은 인프라 설정을 볼 때 → `ywc-infra-review`
+
+<VerifiedStamp />
