@@ -24,7 +24,7 @@
   - [ ] ●/– 에 `aria-label` 또는 숨김 텍스트, 빈 값 `—`, 빈 목록 "option 없음", `argsNote` 표 아래
 - [ ] SkillIndex 와 색인 page
   - [ ] 이름순 정렬, 열: 이름(SkillLink), 분류, 도구(●+텍스트 대체), 한 줄 용도(summary), option 수
-  - [ ] 분류 필터 (JS 비활성 시 전체 표시), 1100px 미만 용도 열 줄바꿈, 375px 카드 목록
+  - [ ] 분류 필터 (JS 비활성 시 전체 표시), 1152px 미만 용도 열 줄바꿈, 375px 카드 목록
   - [ ] `src/content/docs/skills/index.mdx`: `kind: index`, `sidebar.order: 0`
 - [ ] VerifiedStamp
   - [ ] page 하단 `--muted` 작은 글씨로 확인일과 도구별 bundle version

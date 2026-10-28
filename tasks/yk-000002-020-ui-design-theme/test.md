@@ -17,12 +17,12 @@
 
 ### Scenario 2: 반응형
 **Steps:**
-1. 375px, 820px, 1100px 폭으로 홈 확인
+1. 375px, 799px, 800px, 1152px 폭으로 홈 확인
 
 **Expected Result:**
 - 375px 가로 scroll 0
-- 820px 이하 sidebar drawer, Escape 로 닫히고 여는 버튼으로 focus 복귀
-- 1100px 이상 TOC 표시
+- 800px 미만 sidebar drawer, Escape 로 닫히고 여는 버튼으로 focus 복귀
+- 1152px 이상 TOC 표시
 
 ### Scenario 3: code block
 **Steps:**

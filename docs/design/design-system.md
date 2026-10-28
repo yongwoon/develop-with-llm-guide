@@ -55,10 +55,10 @@
 ## Shape & spacing
 
 - radius 는 card 10px, 작은 요소 6px 이다.
-- 본문 최대 폭은 740px, sidebar 는 270px, TOC 는 220px 이다.
-- breakpoint
-  - 1100px 이상: TOC 를 표시한다. 1100px 미만: TOC 를 숨긴다.
-  - 820px 이하: sidebar 를 drawer 로 바꾼다.
+- 본문 최대 폭은 740px, sidebar 는 270px 이다. TOC 폭은 Starlight 가 sidebar 폭(`--sl-sidebar-width`)을 함께 쓰므로 270px 다.
+- breakpoint 는 Starlight 기본값을 쓴다 (2026-10-28 owner 결정: drawer 전환은 Starlight 의 JS 가 800px 로 판정하므로 820px 로 맞추려면 override 가 필요하다).
+  - 1152px(72rem) 이상: TOC 를 표시한다. 1152px 미만: TOC 를 숨긴다.
+  - 800px(50rem) 미만: sidebar 를 drawer 로 바꾼다.
 - 375px 에서 page 가로 scroll 이 없어야 한다. 긴 mono 토큰과 코드 블록은 해당 요소 내부의 가로 scroll 을 허용한다.
 
 ## Components (Starlight 매핑)
@@ -75,7 +75,7 @@
 | Skill 카드 `SkillCard` | custom component | skill 이름(mono) + 분류 tag 로 구성한다. 정의 목록(사용 가능 도구·산출물·다음 skill)을 넣고, 모서리 crop mark 를 단다 |
 | Option 표 `OptionTable` | custom component | 바로 위 "Options" heading 이 `#options` anchor 가 된다. option 이름은 mono 로 쓴다. Claude Code / Codex 열에는 지원하면 ●, 지원하지 않으면 – 를 표시하고 각각 텍스트 대체(aria-label 또는 숨김 텍스트)를 둔다. 빈 칸은 `—`, `note` 는 "언제 쓰나" 칸 아래 작은 글씨로 쓴다. 모바일에서는 행을 카드로 쌓는다 |
 | Skill 링크 `SkillLink` | custom component | 본문 안의 skill 이름. mono + accent 밑줄. 누르면 `#options` 로 이동한다 |
-| Skill 색인 `SkillIndex` | custom component | 이름순 표와 분류 필터. 분류는 tag, 도구는 ● 로 표시한다(텍스트 대체 포함). 1100px 미만에서는 "한 줄 용도" 열을 줄바꿈해 표시하고, 375px 에서는 카드 목록으로 바꾼다 |
+| Skill 색인 `SkillIndex` | custom component | 이름순 표와 분류 필터. 분류는 tag, 도구는 ● 로 표시한다(텍스트 대체 포함). 1152px 미만에서는 "한 줄 용도" 열을 줄바꿈해 표시하고, 375px 에서는 카드 목록으로 바꾼다 |
 | 확인 기준 `VerifiedStamp` | custom component | page 하단에 확인일과 도구별 bundle version 을 `--muted` 작은 글씨로 표시한다. PageTitle override 에는 넣지 않는다 |
 | 안내 `Aside` | Starlight Aside 재스타일링 | 점선 accent 테두리 |
 | Pager | CSS | 선 테두리, 그림자 없음 |
