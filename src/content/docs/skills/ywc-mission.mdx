@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: plan
 tools: [claude-code, codex]
 summary: project 의 목적·성공 기준·기각한 접근을 mission 문서로 관리합니다.
+next: [ywc-tech-research, ywc-adr]
 outputs: [docs/mission.md]
 options:
   - name: --mode
@@ -27,6 +28,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -75,10 +77,15 @@ $ywc-mission --mode curate --dry-run
 
 ## 쓰지 말아야 할 때
 
-- 무엇을 만들지 아직 정하는 중일 때 → `ywc-brainstorm`
-- 기능 사양서를 쓸 때 → `ywc-spec-writer`
-- architecture 결정 하나를 기록할 때 → `ywc-adr`
-- code 리뷰 선호를 쌓을 때 → `ywc-review-learnings`
-- 도메인 용어를 정리할 때 → `ywc-ubiquitous-language`
+- 무엇을 만들지 아직 정하는 중일 때 → <SkillLink name="ywc-brainstorm" />
+- 기능 사양서를 쓸 때 → <SkillLink name="ywc-spec-writer" />
+- architecture 결정 하나를 기록할 때 → <SkillLink name="ywc-adr" />
+- code 리뷰 선호를 쌓을 때 → <SkillLink name="ywc-review-learnings" />
+- 도메인 용어를 정리할 때 → <SkillLink name="ywc-ubiquitous-language" />
+
+## 관련 흐름
+
+- [10 새 project 시작하기](/develop-with-llm-guide/flows/new-project/)
+- [15 장기·불확실한 initiative](/develop-with-llm-guide/flows/uncertain-initiative/)
 
 <VerifiedStamp />

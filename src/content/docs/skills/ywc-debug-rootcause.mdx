@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: review
 tools: [claude-code, codex]
 summary: bug·실패의 근본 원인을 찾은 뒤에 고칩니다.
+next: [ywc-incident-postmortem]
 outputs: [원인 분석과 수정]
 options:
   - name: "<defect>"
@@ -17,6 +18,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -46,8 +48,12 @@ $ywc-debug-rootcause pnpm run build 가 InvalidContentEntryDataError 로 실패�
 
 ## 쓰지 말아야 할 때
 
-- 새 기능을 구현할 때 → `ywc-code-gen`
-- 장애가 끝난 뒤 사후 보고서를 쓸 때 → `ywc-incident-postmortem`
-- 보안 취약점을 점검할 때 → `ywc-security-audit`
+- 새 기능을 구현할 때 → <SkillLink name="ywc-code-gen" />
+- 장애가 끝난 뒤 사후 보고서를 쓸 때 → <SkillLink name="ywc-incident-postmortem" />
+- 보안 취약점을 점검할 때 → <SkillLink name="ywc-security-audit" />
+
+## 관련 흐름
+
+- [17 디버깅과 장애 회고](/develop-with-llm-guide/flows/debug-postmortem/)
 
 <VerifiedStamp />

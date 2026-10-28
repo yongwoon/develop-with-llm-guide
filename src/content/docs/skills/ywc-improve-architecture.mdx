@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: review
 tools: [claude-code, codex]
 summary: 얕은 module 들을 동작은 유지한 채 깊은 module 로 하나씩 합칩니다.
+next: [ywc-refactor-clean]
 outputs: [개선 후보 목록, 재구성 commit]
 options:
   - name: --scope
@@ -26,6 +27,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -72,8 +74,12 @@ $ywc-improve-architecture --scope src/components --tier safe
 
 ## 쓰지 말아야 할 때
 
-- 쓰지 않는 code 를 지울 때 → `ywc-refactor-clean`
-- 고치지 않고 리뷰만 할 때 → `ywc-impl-review`
-- 새로 설계할 때 → `ywc-plan`
+- 쓰지 않는 code 를 지울 때 → <SkillLink name="ywc-refactor-clean" />
+- 고치지 않고 리뷰만 할 때 → <SkillLink name="ywc-impl-review" />
+- 새로 설계할 때 → <SkillLink name="ywc-plan" />
+
+## 관련 흐름
+
+- [22 코드 구조 개선](/develop-with-llm-guide/flows/code-structure/)
 
 <VerifiedStamp />

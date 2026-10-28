@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: review
 tools: [claude-code, codex]
 summary: module 경계 규칙을 yaml 로 선언하고 code 가 지키는지 점검합니다.
+next: [ywc-agent-legibility-audit]
 outputs: [architecture-invariants.yaml, 점검 보고]
 options:
   - name: --mode
@@ -57,6 +58,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -107,8 +109,13 @@ Codex 에는 --git-range 가 없어 점검할 경로를 --changed-path 로 줍�
 
 ## 쓰지 말아야 할 때
 
-- 경계 규약 없이 구조 판단이 필요할 때 → `ywc-impl-review`
-- 얕은 module 을 실제로 재구성할 때 → `ywc-improve-architecture`
-- 하나의 설계 결정을 기록할 때 → `ywc-adr`
+- 경계 규약 없이 구조 판단이 필요할 때 → <SkillLink name="ywc-impl-review" />
+- 얕은 module 을 실제로 재구성할 때 → <SkillLink name="ywc-improve-architecture" />
+- 하나의 설계 결정을 기록할 때 → <SkillLink name="ywc-adr" />
+
+## 관련 흐름
+
+- [11 기존 repo 진입하기](/develop-with-llm-guide/flows/onboarding-existing-repo/)
+- [22 코드 구조 개선](/develop-with-llm-guide/flows/code-structure/)
 
 <VerifiedStamp />

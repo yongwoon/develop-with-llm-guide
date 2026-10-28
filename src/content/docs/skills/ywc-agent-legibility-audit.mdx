@@ -38,6 +38,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -67,8 +68,12 @@ $ywc-agent-legibility-audit --scope src/components --target code
 
 ## 쓰지 말아야 할 때
 
-- 처음 보는 저장소를 파악할 때 → `ywc-onboard-repo`
-- 쓰지 않는 code 를 지울 때 → `ywc-refactor-clean`
-- code 품질이나 보안을 리뷰할 때 → `ywc-impl-review`
+- 처음 보는 저장소를 파악할 때 → <SkillLink name="ywc-onboard-repo" />
+- 쓰지 않는 code 를 지울 때 → <SkillLink name="ywc-refactor-clean" />
+- code 품질이나 보안을 리뷰할 때 → <SkillLink name="ywc-impl-review" />
+
+## 관련 흐름
+
+- [11 기존 repo 진입하기](/develop-with-llm-guide/flows/onboarding-existing-repo/)
 
 <VerifiedStamp />

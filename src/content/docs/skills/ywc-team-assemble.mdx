@@ -18,6 +18,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -50,8 +51,12 @@ $ywc-team-assemble 검색 기능을 보안, 성능, 문서 담당 agent 팀으�
 ## 쓰지 말아야 할 때
 
 - 간단한 질문이나 file 하나 수정일 때 → skill 없이 요청
-- tasks/ 의 의존 그래프를 실행할 때 → `ywc-parallel-executor`
-- spec 에서 여러 층 code 를 만들 때 → `ywc-code-gen`
-- 목표 하나로 계획부터 구현까지 맡길 때 → `ywc-agentic`
+- tasks/ 의 의존 그래프를 실행할 때 → <SkillLink name="ywc-parallel-executor" />
+- spec 에서 여러 층 code 를 만들 때 → <SkillLink name="ywc-code-gen" />
+- 목표 하나로 계획부터 구현까지 맡길 때 → <SkillLink name="ywc-agentic" />
+
+## 관련 흐름
+
+- [24 로컬 환경과 병렬 작업](/develop-with-llm-guide/flows/local-parallel/)
 
 <VerifiedStamp />

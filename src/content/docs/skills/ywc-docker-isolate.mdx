@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: implement
 tools: [claude-code, codex]
 summary: worktree 마다 Docker port 를 나눠 stack 충돌을 막고 정리합니다.
+next: [ywc-parallel-executor]
 outputs: [worktree 의 .env 와 port 기록 file]
 options:
   - name: "<mode>"
@@ -79,6 +80,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -128,7 +130,11 @@ $ywc-docker-isolate --mode audit --expect-keys 000004-010-ui-flow-pages-10-17,00
 ## 쓰지 말아야 할 때
 
 - Docker 를 쓰지 않는 project 일 때 → 필요 없음
-- git worktree 자체를 만들거나 지울 때 → `ywc-worktrees`
-- compose file 이나 Dockerfile 을 새로 만들 때 → `ywc-docker-compose`
+- git worktree 자체를 만들거나 지울 때 → <SkillLink name="ywc-worktrees" />
+- compose file 이나 Dockerfile 을 새로 만들 때 → <SkillLink name="ywc-docker-compose" />
+
+## 관련 흐름
+
+- [24 로컬 환경과 병렬 작업](/develop-with-llm-guide/flows/local-parallel/)
 
 <VerifiedStamp />

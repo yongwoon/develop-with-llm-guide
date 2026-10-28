@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: implement
 tools: [claude-code, codex]
 summary: tasks/ 의 task 를 순서대로 구현부터 병합까지 진행합니다.
+next: [ywc-impl-review]
 outputs: ["task 별 commit·병합", "tasks/completed/<task>/"]
 argsNote: 실행할 task 는 task 이름이나 <start>..<end> 범위로 적습니다. 생략하면 다음에 실행할 수 있는 task 하나만 실행합니다.
 options:
@@ -115,6 +116,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -163,9 +165,13 @@ $ywc-sequential-executor
 
 ## 쓰지 말아야 할 때
 
-- 서로 독립인 task 를 동시에 돌릴 때 → `ywc-parallel-executor`
-- 순차·병렬을 정하지 않고 맡길 때 → `ywc-task-executor`
-- task 디렉터리 없이 spec 에서 바로 구현할 때 → `ywc-code-gen`
-- 목표 문장 하나로 계획부터 맡길 때 → `ywc-agentic`
+- 서로 독립인 task 를 동시에 돌릴 때 → <SkillLink name="ywc-parallel-executor" />
+- 순차·병렬을 정하지 않고 맡길 때 → <SkillLink name="ywc-task-executor" />
+- task 디렉터리 없이 spec 에서 바로 구현할 때 → <SkillLink name="ywc-code-gen" />
+- 목표 문장 하나로 계획부터 맡길 때 → <SkillLink name="ywc-agentic" />
+
+## 관련 흐름
+
+- [13 중·대형 기능](/develop-with-llm-guide/flows/large-feature/)
 
 <VerifiedStamp />

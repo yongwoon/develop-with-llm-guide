@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: implement
 tools: [claude-code, codex]
 summary: task 의존 관계를 보고 순차 또는 병렬 실행을 골라 맡깁니다.
+next: [ywc-impl-review]
 outputs: [선택된 executor 의 결과]
 argsNote: Claude Code 에서는 실행할 task 를 이름이나 <start>..<end> 범위로 적습니다. 나머지 option 은 선택된 executor 에 그대로 넘깁니다.
 options:
@@ -127,6 +128,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -175,9 +177,14 @@ $ywc-task-executor 000004-010..000004-030 --dry-run
 
 ## 쓰지 말아야 할 때
 
-- 순차 실행을 직접 고를 때 → `ywc-sequential-executor`
-- 병렬 실행을 직접 고를 때 → `ywc-parallel-executor`
-- task 디렉터리가 아직 없을 때 → `ywc-task-generator` 또는 `ywc-code-gen`
-- 목표 문장 하나로 계획부터 맡길 때 → `ywc-agentic`
+- 순차 실행을 직접 고를 때 → <SkillLink name="ywc-sequential-executor" />
+- 병렬 실행을 직접 고를 때 → <SkillLink name="ywc-parallel-executor" />
+- task 디렉터리가 아직 없을 때 → <SkillLink name="ywc-task-generator" /> 또는 <SkillLink name="ywc-code-gen" />
+- 목표 문장 하나로 계획부터 맡길 때 → <SkillLink name="ywc-agentic" />
+
+## 관련 흐름
+
+- [10 새 project 시작하기](/develop-with-llm-guide/flows/new-project/)
+- [13 중·대형 기능](/develop-with-llm-guide/flows/large-feature/)
 
 <VerifiedStamp />

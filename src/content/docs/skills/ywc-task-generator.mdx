@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: plan
 tools: [claude-code, codex]
 summary: 완성된 spec 을 구현 task 디렉터리와 의존 그래프로 나눕니다.
+next: [ywc-confidence-gate]
 outputs: ["tasks/<task>/", tasks/dependency-graph.md]
 argsNote: 분해할 spec 은 요청 문장에 경로로 적습니다.
 options:
@@ -61,6 +62,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -69,7 +71,7 @@ import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 ### 통과한 spec 을 task 로 나누기
 
-`ywc-spec-ready` 를 통과한 spec 이 있습니다. LLM 실행 단위의 task 로 나눕니다.
+<SkillLink name="ywc-spec-ready" /> 를 통과한 spec 이 있습니다. LLM 실행 단위의 task 로 나눕니다.
 
 <Tabs syncKey="tool">
 <TabItem label="Claude Code">
@@ -92,9 +94,14 @@ $ywc-task-generator docs/ywc-plans/20261028-option-table.md --mode llm --lang ko
 
 ## 쓰지 말아야 할 때
 
-- 만든 task 를 실행할 때 → `ywc-sequential-executor` 또는 `ywc-parallel-executor`
-- spec 을 먼저 검토할 때 → `ywc-spec-validate`
-- 아직 spec 이 없을 때 → `ywc-plan`
-- 바로 code 를 쓸 때 → `ywc-code-gen`
+- 만든 task 를 실행할 때 → <SkillLink name="ywc-sequential-executor" /> 또는 <SkillLink name="ywc-parallel-executor" />
+- spec 을 먼저 검토할 때 → <SkillLink name="ywc-spec-validate" />
+- 아직 spec 이 없을 때 → <SkillLink name="ywc-plan" />
+- 바로 code 를 쓸 때 → <SkillLink name="ywc-code-gen" />
+
+## 관련 흐름
+
+- [10 새 project 시작하기](/develop-with-llm-guide/flows/new-project/)
+- [13 중·대형 기능](/develop-with-llm-guide/flows/large-feature/)
 
 <VerifiedStamp />

@@ -28,6 +28,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -60,7 +61,11 @@ $ywc-auth-implement email·password 로그인과 Google OAuth 를 추가한다
 ## 쓰지 말아야 할 때
 
 - spec 이 정해진 인증 bug 하나를 고칠 때 → 직접 수정
-- 인증 계획이나 spec 만 필요할 때 → `ywc-plan` 또는 `ywc-spec-writer`
+- 인증 계획이나 spec 만 필요할 때 → <SkillLink name="ywc-plan" /> 또는 <SkillLink name="ywc-spec-writer" />
 - 권한 표 전체를 다루는 RBAC engine 이 필요할 때 → 이 skill 의 범위 밖
+
+## 관련 흐름
+
+- [21 인증 구현](/develop-with-llm-guide/flows/auth-implementation/)
 
 <VerifiedStamp />
