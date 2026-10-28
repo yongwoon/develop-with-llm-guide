@@ -6,11 +6,8 @@
 - Language: ko / Granularity: llm / Generated: 2026-10-28
 - Branch 정책 (R-RELEASE): Phase yk-000001 은 `main` 에 병합한다. 병합 후 owner 가 main 에서 `content/initial` 을 만들고, Phase yk-000002–000005 는 모두 `content/initial` 을 base 로 한다. 첫 공개는 `yk-000005-030` 의 마지막 단계(`content/initial` → main 병합)다.
 
-## Phase yk-000001 — Foundation (base: main)
-- `yk-000001-010-lib-astro-starlight-scaffold` → (root)
-- `yk-000001-020-lib-starlight-links-validator` → depends on `yk-000001-010`
-- `yk-000001-030-infra-public-guard` → depends on `yk-000001-020`
-- `yk-000001-040-infra-github-actions-deploy` → depends on `yk-000001-030`
+## Phase yk-000001 — done
+- Completed: `yk-000001-010-lib-astro-starlight-scaffold`, `yk-000001-020-lib-starlight-links-validator`, `yk-000001-030-infra-public-guard`, `yk-000001-040-infra-github-actions-deploy`
 
 ## Phase yk-000002 — Site framework (base: content/initial)
 - `yk-000002-010-domain-content-schema` → depends on Phase yk-000001
