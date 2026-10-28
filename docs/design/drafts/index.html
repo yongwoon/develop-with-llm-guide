@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="ko" data-v="a">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>디자인 시안 — develop-with-llm guide</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;900&family=JetBrains+Mono:wght@400;600;800&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* ===== Shared structure (maps to Starlight: Header / Sidebar / PageFrame / TwoColumnContent / TableOfContents) ===== */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-padding-top:5rem}
+body{font-family:"Pretendard Variable",Pretendard,system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased;word-break:keep-all}
+a{color:inherit}
+mark{background:none;color:inherit}
+code,kbd,pre{font-family:var(--mono)}
+.switcher{position:fixed;z-index:50;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:4px;padding:4px;background:#111;border-radius:999px;box-shadow:0 6px 24px rgba(0,0,0,.25);font:500 13px/1 "Pretendard Variable",sans-serif}
+.switcher button{border:0;background:transparent;color:#bbb;padding:9px 14px;border-radius:999px;cursor:pointer;font:inherit;white-space:nowrap}
+.switcher button[aria-pressed=true]{background:#fff;color:#111}
+.hdr{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;height:var(--hdr-h);padding:0 20px;background:var(--hdr-bg);border-bottom:var(--rule)}
+.brand{display:flex;align-items:baseline;gap:10px;text-decoration:none;white-space:nowrap}
+.brand b{font-family:var(--display);font-weight:var(--display-w);font-size:1.05rem;letter-spacing:var(--display-ls)}
+.brand small{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.search{margin-left:auto;display:flex;align-items:center;gap:10px;min-width:0;width:min(360px,45vw);height:38px;padding:0 12px;border:var(--field-border);border-radius:var(--radius);background:var(--field-bg);color:var(--muted);font:inherit;font-size:.9rem;cursor:text}
+.search span{flex:1;text-align:left;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+kbd{font-size:.72rem;padding:2px 6px;border:var(--rule);border-radius:4px;color:var(--muted)}
+.menu{display:none;border:0;background:none;color:var(--text);font-size:1.4rem;cursor:pointer;width:38px;height:38px}
+.shell{display:grid;grid-template-columns:var(--side-w) minmax(0,1fr);min-height:calc(100vh - var(--hdr-h))}
+.side{position:sticky;top:var(--hdr-h);height:calc(100vh - var(--hdr-h));overflow-y:auto;padding:24px 16px 80px;background:var(--side-bg);border-right:var(--rule)}
+.side h4{font-family:var(--label-font);font-size:.72rem;font-weight:600;letter-spacing:var(--label-ls);text-transform:uppercase;color:var(--muted);margin:22px 8px 6px}
+.side h4:first-child{margin-top:0}
+.side a{display:flex;gap:10px;align-items:baseline;padding:5px 8px;font-size:.9rem;text-decoration:none;border-radius:var(--radius-sm);color:var(--text-2)}
+.side a:hover{color:var(--text);background:var(--hover)}
+.side a[aria-current]{color:var(--accent-ink);background:var(--current-bg);font-weight:600}
+.side a i{font-style:normal;font-family:var(--mono);font-size:.72rem;color:var(--muted);min-width:1.6em}
+.frame{display:grid;grid-template-columns:minmax(0,var(--content-w)) 220px;gap:48px;padding:40px 48px 120px;justify-content:center}
+.toc{position:sticky;top:calc(var(--hdr-h) + 40px);align-self:start;font-size:.84rem}
+.toc h5{font-family:var(--label-font);font-size:.72rem;letter-spacing:var(--label-ls);text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.toc a{display:block;padding:4px 0 4px 12px;border-left:2px solid var(--toc-line);text-decoration:none;color:var(--text-2)}
+.toc a.on{border-left-color:var(--accent);color:var(--text);font-weight:600}
+article>*+*{margin-top:1.1em}
+.crumb{font-family:var(--mono);font-size:.78rem;color:var(--muted)}
+h1{font-family:var(--display);font-weight:var(--display-w);font-size:var(--h1-size);line-height:1.2;letter-spacing:var(--display-ls)}
+.lede{font-size:1.1rem;color:var(--text-2)}
+h2{font-family:var(--display);font-weight:var(--display-w);font-size:1.5rem;line-height:1.3;margin-top:2.6em!important;letter-spacing:var(--display-ls)}
+h3{font-size:1.1rem;margin-top:1.8em!important}
+p code,td code,li code{font-size:.86em;padding:.1em .4em;border-radius:4px;background:var(--code-inline-bg);color:var(--code-inline-fg)}
+.note{padding:14px 18px;border-left:3px solid var(--accent);background:var(--note-bg);font-size:.94rem}
+.note b{color:var(--accent-ink)}
+/* flow steps */
+.flow{list-style:none;counter-reset:s;display:grid;gap:var(--flow-gap)}
+.flow li{counter-increment:s;display:grid;grid-template-columns:var(--num-w) minmax(0,1fr);gap:14px;align-items:start;padding:var(--flow-pad);background:var(--card-bg);border:var(--card-border);border-radius:var(--radius)}
+.flow li::before{content:counter(s,decimal-leading-zero);font-family:var(--num-font);font-weight:var(--num-w8);font-size:var(--num-size);line-height:1;color:var(--num-color)}
+.flow strong{font-family:var(--mono);font-size:.95rem}
+.flow .opt{font-size:.72rem;margin-left:6px;padding:1px 7px;border-radius:999px;border:1px solid var(--muted);color:var(--muted);vertical-align:2px;font-family:"Pretendard Variable",sans-serif}
+.flow p{font-size:.92rem;color:var(--text-2);margin-top:2px}
+/* tabs + code */
+.tabs{border:var(--card-border);border-radius:var(--radius);overflow:hidden;background:var(--code-bg)}
+.tabs [role=tablist]{display:flex;gap:2px;padding:6px 6px 0;background:var(--tabbar-bg);border-bottom:var(--code-rule)}
+.tabs [role=tab]{border:0;background:none;padding:8px 14px;font:600 .82rem/1 var(--mono);color:var(--code-muted);cursor:pointer;border-radius:var(--radius-sm) var(--radius-sm) 0 0}
+.tabs [role=tab][aria-selected=true]{color:var(--code-fg);background:var(--code-bg);box-shadow:inset 0 2px 0 var(--accent)}
+.code{position:relative}
+.code pre{padding:18px 20px;overflow-x:auto;font-size:.86rem;line-height:1.7;color:var(--code-fg)}
+.code pre .p{color:var(--accent);user-select:none}
+.copy{position:absolute;top:10px;right:10px;border:1px solid var(--code-muted);background:var(--code-bg);color:var(--code-muted);font:500 .74rem/1 var(--mono);padding:6px 9px;border-radius:var(--radius-sm);cursor:pointer;opacity:.85}
+.copy:hover{color:var(--code-fg);opacity:1}
+/* skill entry */
+.entry{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;padding:20px 22px;background:var(--card-bg);border:var(--card-border);border-radius:var(--radius)}
+.entry h3{margin:0!important;font-family:var(--mono);font-size:1.05rem}
+.entry .tag{align-self:start;font:600 .7rem/1 var(--mono);padding:5px 8px;border-radius:var(--radius-sm);background:var(--accent);color:var(--on-accent)}
+.entry p{grid-column:1/-1;font-size:.93rem;color:var(--text-2)}
+.entry dl{grid-column:1/-1;display:grid;grid-template-columns:max-content 1fr;gap:4px 16px;font-size:.88rem;margin-top:6px}
+.entry dt{font-family:var(--label-font);color:var(--muted);font-size:.78rem;letter-spacing:var(--label-ls);text-transform:uppercase;padding-top:2px}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th{font-family:var(--label-font);text-align:left;font-size:.74rem;letter-spacing:var(--label-ls);text-transform:uppercase;color:var(--muted);font-weight:600;padding:8px 10px;border-bottom:var(--rule-strong)}
+td{padding:9px 10px;border-bottom:var(--rule);vertical-align:top}
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:3em!important}
+.pager a{display:block;padding:14px 18px;border:var(--card-border);border-radius:var(--radius);text-decoration:none;background:var(--card-bg)}
+.pager a:last-child{text-align:right}
+.pager small{display:block;font-size:.75rem;color:var(--muted)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:1100px){.frame{grid-template-columns:minmax(0,1fr);padding:32px 32px 120px}.toc{display:none}}
+@media (max-width:820px){
+  .menu{display:block}
+  .shell{grid-template-columns:1fr}
+  .side{position:fixed;inset:var(--hdr-h) auto 0 0;width:min(300px,85vw);z-index:15;transform:translateX(-100%);transition:transform .2s;box-shadow:none}
+  body.open .side{transform:none;box-shadow:0 0 0 100vmax rgba(0,0,0,.35)}
+  .frame{padding:24px 16px 120px}
+  .search kbd{display:none}
+  .brand small{display:none}
+  .pager{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ===== A. 색인 (Editorial Index) — 흰 종이, 검은 hairline, 주홍 accent, serif 제목 ===== */
+[data-v=a]{
+  --bg:#fdfdfb;--hdr-bg:rgba(253,253,251,.92);--side-bg:#fdfdfb;--text:#111;--text-2:#3a3a3a;--muted:#7a7a7a;
+  --accent:#e8380d;--accent-ink:#c22a03;--on-accent:#fff;--hover:#f1f0ec;--current-bg:transparent;
+  --rule:1px solid #e3e1db;--rule-strong:2px solid #111;--toc-line:#e3e1db;
+  --display:"Noto Serif KR",serif;--display-w:900;--display-ls:-.02em;--h1-size:2.6rem;
+  --mono:"JetBrains Mono",ui-monospace,monospace;--label-font:"JetBrains Mono",monospace;--label-ls:.08em;
+  --radius:0;--radius-sm:0;--field-border:1px solid #111;--field-bg:#fff;
+  --card-bg:transparent;--card-border:0;--flow-gap:0;--flow-pad:16px 0;--num-w:64px;--num-font:"Noto Serif KR",serif;--num-w8:900;--num-size:2.2rem;--num-color:#e8380d;
+  --code-bg:#111;--tabbar-bg:#111;--code-fg:#f3f1ea;--code-muted:#8d8b85;--code-rule:1px solid #2a2a2a;
+  --code-inline-bg:#f1f0ec;--code-inline-fg:#c22a03;--note-bg:#fff4ef;
+  --hdr-h:60px;--side-w:270px;--content-w:720px;
+}
+[data-v=a] .hdr{border-bottom:2px solid #111}
+[data-v=a] .side a[aria-current]{box-shadow:inset 3px 0 0 #e8380d;border-radius:0}
+[data-v=a] .flow li{border-top:1px solid #e3e1db}
+[data-v=a] .flow li:last-child{border-bottom:1px solid #e3e1db}
+[data-v=a] .entry{border-top:2px solid #111;border-bottom:1px solid #e3e1db;padding:18px 0}
+[data-v=a] h2{border-top:2px solid #111;padding-top:.6em}
+[data-v=a] .pager a{border:1px solid #111}
+
+/* ===== B. 콘솔 (Dark Console) — 흑연 배경, 라임 accent, mono 제목, 고밀도 ===== */
+[data-v=b]{
+  --bg:#101214;--hdr-bg:rgba(16,18,20,.9);--side-bg:#0c0d0f;--text:#e7e9ec;--text-2:#b4b9c0;--muted:#6f7680;
+  --accent:#c6f135;--accent-ink:#c6f135;--on-accent:#101214;--hover:#1a1d21;--current-bg:#1a1f12;
+  --rule:1px solid #22262b;--rule-strong:1px solid #3a4048;--toc-line:#22262b;
+  --display:"JetBrains Mono",monospace;--display-w:800;--display-ls:-.03em;--h1-size:2.1rem;
+  --mono:"JetBrains Mono",ui-monospace,monospace;--label-font:"JetBrains Mono",monospace;--label-ls:.04em;
+  --radius:6px;--radius-sm:4px;--field-border:1px solid #2a2f35;--field-bg:#16191c;
+  --card-bg:#15181b;--card-border:1px solid #22262b;--flow-gap:6px;--flow-pad:12px 16px;--num-w:36px;--num-font:"JetBrains Mono",monospace;--num-w8:600;--num-size:.9rem;--num-color:#c6f135;
+  --code-bg:#0a0b0c;--tabbar-bg:#121417;--code-fg:#e7e9ec;--code-muted:#6f7680;--code-rule:1px solid #22262b;
+  --code-inline-bg:#1c2016;--code-inline-fg:#c6f135;--note-bg:#15181b;
+  --hdr-h:52px;--side-w:250px;--content-w:780px;
+  font-size:15px;
+}
+[data-v=b] body{line-height:1.65}
+[data-v=b] h1::before{content:"$ ";color:#c6f135}
+[data-v=b] h2::before{content:"## ";color:#3a4048}
+[data-v=b] .flow li::before{padding-top:4px}
+/* ===== C. 도면 (Blueprint) — 청회색 grid 종이, navy 잉크, cobalt + 형광 노랑 marker ===== */
+[data-v=c]{
+  --bg:#eef2f7;--hdr-bg:rgba(238,242,247,.92);--side-bg:transparent;--text:#13294b;--text-2:#34496b;--muted:#6b7f9e;
+  --accent:#2f5bff;--accent-ink:#1f45d6;--on-accent:#fff;--hover:#e1e8f2;--current-bg:#dfe7ff;
+  --rule:1px solid #cdd7e5;--rule-strong:1.5px solid #13294b;--toc-line:#cdd7e5;
+  --display:"Pretendard Variable",sans-serif;--display-w:800;--display-ls:-.035em;--h1-size:2.5rem;
+  --mono:"DM Mono",ui-monospace,monospace;--label-font:"DM Mono",monospace;--label-ls:.06em;
+  --radius:10px;--radius-sm:6px;--field-border:1.5px solid #13294b;--field-bg:#fff;
+  --card-bg:#fff;--card-border:1.5px solid #13294b;--flow-gap:12px;--flow-pad:14px 18px;--num-w:44px;--num-font:"DM Mono",monospace;--num-w8:500;--num-size:1.3rem;--num-color:#2f5bff;
+  --code-bg:#13294b;--tabbar-bg:#0e1f3a;--code-fg:#eaf0ff;--code-muted:#8ea3c7;--code-rule:1px solid #24406e;
+  --code-inline-bg:#fff4a8;--code-inline-fg:#13294b;--note-bg:#fff;
+  --hdr-h:60px;--side-w:270px;--content-w:740px;
+}
+[data-v=c] body{background-image:linear-gradient(#dde5f0 1px,transparent 1px),linear-gradient(90deg,#dde5f0 1px,transparent 1px);background-size:24px 24px;background-attachment:fixed}
+[data-v=c] .flow li,[data-v=c] .entry,[data-v=c] .tabs,[data-v=c] .pager a{box-shadow:4px 4px 0 #13294b}
+[data-v=c] .note{border:1.5px dashed #2f5bff;border-left-width:1.5px;border-radius:10px}
+[data-v=c] h1 mark,[data-v=c] h2 mark{background:linear-gradient(transparent 60%,#fff4a8 60%);color:inherit}
+[data-v=c] .side a[aria-current]{border:1.5px solid #2f5bff}
+
+/* ===== C+ (C 개선안) — 도면 관례를 정보 구조에 사용: 연결선 흐름, 점선=선택 단계, 표제란(title block), dark blueprint ===== */
+.theme{display:none;border:var(--field-border);background:var(--field-bg);color:var(--text);width:38px;height:38px;border-radius:var(--radius);cursor:pointer;font-size:1rem}
+html.plus .theme{display:block}
+html.plus{--muted:#56698a;--label-ls:.02em;--label-font:"Pretendard Variable",sans-serif;--shadow:#13294b;--grid:#dde5f0;--node-bg:#eef2f7;--tb-bg:#fff}
+html.plus.dark{
+  --bg:#0b1f3a;--hdr-bg:rgba(11,31,58,.92);--text:#e6eeff;--text-2:#b7c6e4;--muted:#7f95bd;
+  --accent:#7fb2ff;--accent-ink:#9cc4ff;--on-accent:#0b1f3a;--hover:#12294a;--current-bg:#14305a;
+  --rule:1px solid #24406e;--rule-strong:1.5px solid #9cc4ff;--toc-line:#24406e;
+  --field-border:1.5px solid #4a6aa0;--field-bg:#0f2646;--card-bg:#0f2646;--card-border:1.5px solid #4a6aa0;
+  --code-bg:#06152b;--tabbar-bg:#081a33;--code-fg:#eaf0ff;--code-muted:#7f95bd;--code-rule:1px solid #1d3760;
+  --code-inline-bg:#3d3a12;--code-inline-fg:#fff4a8;--note-bg:#0f2646;--num-color:#7fb2ff;
+  --shadow:#000814;--grid:#12294a;--node-bg:#0b1f3a;--tb-bg:#0f2646;
+}
+html.plus body{background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px)}
+html.plus.dark mark{background:linear-gradient(transparent 62%,rgba(255,244,168,.28) 62%)!important}
+/* calmer surfaces: shadow only where it marks "copy me" (code) */
+html.plus .flow li,html.plus .pager a{box-shadow:none}
+html.plus .tabs{box-shadow:3px 3px 0 var(--shadow)}
+html.plus .side h4{letter-spacing:.02em}
+/* title block */
+.tblock{display:none}
+html.plus .tblock{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:var(--card-border);background:var(--tb-bg);border-radius:var(--radius-sm);font-size:.85rem}
+.tblock div{padding:8px 12px;border-left:var(--rule)}
+.tblock div:first-child{border-left:0}
+html.plus .crumb{font-family:var(--label-font)}
+.tblock dt{font:500 .7rem/1.4 var(--label-font);color:var(--muted);letter-spacing:.04em}
+.tblock dd{font-weight:700;font-variant-numeric:tabular-nums}
+/* flow as a connected path */
+html.plus .flow{gap:10px;position:relative}
+html.plus .flow::before{content:"";position:absolute;left:21px;top:22px;bottom:50px;border-left:1.5px solid var(--accent)}
+html.plus .flow li{grid-template-columns:44px minmax(0,1fr);padding:10px 16px 10px 0;background:transparent;border:0;position:relative}
+html.plus .flow li::before{position:relative;display:grid;place-items:center;width:44px;height:44px;border:1.5px solid var(--accent);border-radius:50%;background:var(--node-bg);font-size:.9rem;font-weight:500}
+html.plus .flow li>div{padding:10px 16px;border:var(--card-border);border-radius:var(--radius);background:var(--card-bg)}
+html.plus .flow li.o::before{border-style:dashed;color:var(--muted)}
+html.plus .flow li.o>div{border-style:dashed;background:transparent}
+html.plus .flow .opt{border-style:dashed}
+/* section index + skill card with crop marks instead of heavy shadow */
+html.plus article{counter-reset:sec}
+html.plus h2{counter-increment:sec}
+html.plus h2::before{content:"§" counter(sec);font:500 .8rem/1 var(--mono);color:var(--accent);margin-right:10px;vertical-align:4px}
+html.plus .entry{box-shadow:none;position:relative;border-style:solid}
+html.plus .entry::before,html.plus .entry::after{content:"";position:absolute;width:14px;height:14px;border:2px solid var(--accent)}
+html.plus .entry::before{top:-6px;left:-6px;border-right:0;border-bottom:0}
+html.plus .entry::after{bottom:-6px;right:-6px;border-left:0;border-top:0}
+@media (max-width:820px){html.plus .tblock{grid-template-columns:repeat(2,minmax(0,1fr))}html.plus .tblock div:nth-child(3){border-left:0}html.plus .tblock div:nth-child(n+3){border-top:var(--rule)}}
+</style>
+</head>
+<body>
+<div class="switcher" role="group" aria-label="디자인 시안 선택">
+  <button data-set="a" aria-pressed="true">A · 색인</button>
+  <button data-set="b" aria-pressed="false">B · 콘솔</button>
+  <button data-set="c" aria-pressed="false">C · 도면</button>
+  <button data-set="c+" aria-pressed="false">C+ · 개선</button>
+</div>
+
+<header class="hdr">
+  <button class="menu" aria-label="메뉴 열기" aria-expanded="false">≡</button>
+  <a class="brand" href="#"><b>develop-with-llm guide</b><small>ywc skills · 63</small></a>
+  <button class="search" aria-label="검색"><span>skill, 상황, 인자 검색…</span><kbd>⌘K</kbd></button>
+  <button class="theme" aria-label="다크 모드 전환">◐</button>
+</header>
+
+<div class="shell">
+  <nav class="side" aria-label="문서 목차">
+    <h4>시작하기</h4>
+    <a href="#"><i>00</i>이 guide 사용법</a>
+    <a href="#"><i>01</i>설치와 ywc-setup</a>
+    <h4>상황별 흐름</h4>
+    <a href="#" aria-current="page"><i>10</i>새 project 시작하기</a>
+    <a href="#"><i>11</i>기존 repo 진입하기</a>
+    <a href="#"><i>12</i>작은 변경 (small cycle)</a>
+    <a href="#"><i>13</i>중·대형 변경</a>
+    <a href="#"><i>14</i>목표 하나로 자율 실행</a>
+    <a href="#"><i>15</i>장기·불확실한 작업 (wayfinder)</a>
+    <a href="#"><i>16</i>디버깅과 장애 회고</a>
+    <h4>Skill reference</h4>
+    <a href="#"><i>A</i>계획·사양</a>
+    <a href="#"><i>B</i>구현·실행</a>
+    <a href="#"><i>C</i>리뷰·검증</a>
+    <a href="#"><i>D</i>Git·PR·배포</a>
+    <a href="#"><i>E</i>인프라·클라우드</a>
+    <a href="#"><i>F</i>세션·운영</a>
+    <h4>Agents</h4>
+    <a href="#"><i>—</i>구현 agent</a>
+    <a href="#"><i>—</i>리뷰 agent</a>
+  </nav>
+
+  <div class="frame">
+    <article>
+      <p class="crumb">상황별 흐름 / 10</p>
+      <h1>새 <mark>project</mark> 시작하기</h1>
+      <p class="lede">백지 상태에서 why → stack → 구조 → 사양 → task 순으로 좁혀 들어가는 흐름입니다. 이 guide 자체도 이 흐름으로 만들어졌습니다.</p>
+      <dl class="tblock" aria-label="페이지 요약">
+        <div><dt>도면 No.</dt><dd>10</dd></div>
+        <div><dt>단계</dt><dd>7</dd></div>
+        <div><dt>필수 / 선택</dt><dd>5 / 2</dd></div>
+        <div><dt>산출물</dt><dd>mission · spec · tasks</dd></div>
+      </dl>
+
+      <div class="note"><b>언제 쓰나</b> — repo 가 비어 있거나 코드가 거의 없을 때. 이미 코드가 있는 repo 라면 <a href="#">11. 기존 repo 진입하기</a>로 가세요.</div>
+
+      <h2 id="flow">전체 <mark>흐름</mark></h2>
+      <ol class="flow">
+        <li class="o"><div><strong>ywc-brainstorm</strong><span class="opt">선택</span><p>의도가 흐릿할 때 Socratic 대화로 목적·제약·대안을 확정</p></div></li>
+        <li><div><strong>ywc-mission</strong><p>why, success criteria, non-goal, rejected approach 를 docs/mission.md 에 고정</p></div></li>
+        <li class="o"><div><strong>ywc-tech-research</strong><span class="opt">선택</span><p>stack 후보를 병렬 비교하고 근거를 docs/research 에 남김</p></div></li>
+        <li><div><strong>ywc-project-scaffold</strong><p>확정된 stack 기준 directory 구조 plan</p></div></li>
+        <li><div><strong>ywc-spec-writer → ywc-spec-validate</strong><p>사양서 작성 후 DONE 이 될 때까지 검증 반복</p></div></li>
+        <li><div><strong>ywc-task-generator → ywc-confidence-gate</strong><p>task 로 분해하고 착수 준비도를 점수화</p></div></li>
+        <li><div><strong>ywc-task-executor</strong><p>dependency 를 보고 순차/병렬 executor 를 자동 선택</p></div></li>
+      </ol>
+
+      <h2 id="example">실행 예시</h2>
+      <h3>2. why 를 고정한다</h3>
+      <div class="tabs" data-sync="tool">
+        <div role="tablist">
+          <button role="tab" aria-selected="true" data-key="claude">Claude Code</button>
+          <button role="tab" aria-selected="false" data-key="codex">Codex</button>
+        </div>
+        <div class="code" data-panel="claude"><button class="copy">copy</button><pre><span class="p">› </span>/ywc-mission develop-with-llm 의 skill 사용법을 웹에서 바로 찾아보는
+  한국어 guidebook 을 만든다. 성공 기준은 63개 skill 전부 수록.</pre></div>
+        <div class="code" data-panel="codex" hidden><button class="copy">copy</button><pre><span class="p">› </span>$ywc-mission develop-with-llm 의 skill 사용법을 웹에서 바로 찾아보는
+  한국어 guidebook 을 만든다. 성공 기준은 63개 skill 전부 수록.</pre></div>
+      </div>
+      <p>구조나 사양보다 <code>why</code> 를 먼저 못박습니다. 이후 단계는 모두 이 mission 을 기준으로 판단합니다.</p>
+
+      <h3>3. stack 을 비교한다</h3>
+      <div class="tabs" data-sync="tool">
+        <div role="tablist">
+          <button role="tab" aria-selected="true" data-key="claude">Claude Code</button>
+          <button role="tab" aria-selected="false" data-key="codex">Codex</button>
+        </div>
+        <div class="code" data-panel="claude"><button class="copy">copy</button><pre><span class="p">› </span>/ywc-tech-research --compare 'Astro Starlight,VitePress,Next.js'</pre></div>
+        <div class="code" data-panel="codex" hidden><button class="copy">copy</button><pre><span class="p">› </span>$ywc-tech-research --compare 'Astro Starlight,VitePress,Next.js'</pre></div>
+      </div>
+
+      <h2 id="skill">Skill 카드</h2>
+      <div class="entry">
+        <h3>ywc-mission</h3><span class="tag">계획·사양</span>
+        <p>project 의 why 를 세션을 넘어 유지되는 파일로 고정합니다. read / update / curate 세 mode 가 있으며, 쓰기 전에 항상 CHANGESET 확인을 받습니다.</p>
+        <dl>
+          <dt>산출물</dt><dd><code>docs/mission.md</code></dd>
+          <dt>인자</dt><dd><code>--mode</code> <code>--output</code> <code>--dry-run</code></dd>
+          <dt>다음</dt><dd><code>ywc-tech-research</code>, <code>ywc-project-scaffold</code></dd>
+        </dl>
+      </div>
+
+      <h2 id="ref">참고</h2>
+      <table>
+        <thead><tr><th>상황</th><th>건너뛸 수 있는 단계</th></tr></thead>
+        <tbody>
+          <tr><td>의도가 이미 명확</td><td><code>ywc-brainstorm</code></td></tr>
+          <tr><td>stack 이 정해져 있음</td><td><code>ywc-tech-research</code></td></tr>
+          <tr><td>규모가 작음</td><td>전체 — <code>ywc-plan</code> 이 small path 로 routing</td></tr>
+        </tbody>
+      </table>
+
+      <nav class="pager" aria-label="이전/다음">
+        <a href="#"><small>← 이전</small>01. 설치와 ywc-setup</a>
+        <a href="#"><small>다음 →</small>11. 기존 repo 진입하기</a>
+      </nav>
+    </article>
+
+    <aside class="toc" aria-label="이 페이지">
+      <h5>이 페이지</h5>
+      <a href="#flow" class="on">전체 흐름</a>
+      <a href="#example">실행 예시</a>
+      <a href="#skill">Skill 카드</a>
+      <a href="#ref">참고</a>
+    </aside>
+  </div>
+</div>
+
+<script>
+const root = document.documentElement;
+const store = { get: k => { try { return localStorage.getItem(k) } catch { return null } }, set: (k, v) => { try { localStorage.setItem(k, v) } catch {} } };
+
+function setVariant(v) {
+  root.dataset.v = v === 'c+' ? 'c' : v;
+  root.classList.toggle('plus', v === 'c+');
+  document.querySelectorAll('.switcher button').forEach(b => b.setAttribute('aria-pressed', b.dataset.set === v));
+  store.set('draft-variant', v);
+}
+document.querySelectorAll('.switcher button').forEach(b => b.onclick = () => setVariant(b.dataset.set));
+setVariant(store.get('draft-variant') || 'c+');
+
+const savedTheme = store.get('draft-theme');
+root.classList.toggle('dark', savedTheme ? savedTheme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches);
+document.querySelector('.theme').onclick = () => store.set('draft-theme', root.classList.toggle('dark') ? 'dark' : 'light');
+
+// Synced tabs, like Starlight <Tabs syncKey="tool">
+function selectTool(key) {
+  document.querySelectorAll('.tabs[data-sync=tool]').forEach(t => {
+    t.querySelectorAll('[role=tab]').forEach(b => b.setAttribute('aria-selected', b.dataset.key === key));
+    t.querySelectorAll('[data-panel]').forEach(p => p.hidden = p.dataset.panel !== key);
+  });
+  store.set('draft-tool', key);
+}
+document.querySelectorAll('[role=tab]').forEach(b => b.onclick = () => selectTool(b.dataset.key));
+selectTool(store.get('draft-tool') || 'claude');
+
+document.querySelectorAll('.copy').forEach(btn => btn.onclick = async () => {
+  const text = btn.nextElementSibling.innerText.replace(/^›\s*/, '');
+  try { await navigator.clipboard.writeText(text); btn.textContent = 'copied'; } catch { btn.textContent = 'failed'; }
+  setTimeout(() => btn.textContent = 'copy', 1200);
+});
+
+const menu = document.querySelector('.menu');
+menu.onclick = () => { const o = document.body.classList.toggle('open'); menu.setAttribute('aria-expanded', o); };
+</script>
+</body>
+</html>
