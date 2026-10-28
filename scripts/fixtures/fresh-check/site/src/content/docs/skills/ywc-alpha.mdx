@@ -1,0 +1,18 @@
+---
+title: ywc-alpha
+description: alpha
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.1.0 }
+category: plan
+tools: [claude-code, codex]
+summary: alpha
+options:
+  - { name: --draft, format: flag, when: w, tools: [claude-code, codex] }
+  - { name: --pr-lang / --lang, format: "ko|ja", when: w, tools: [claude-code] }
+  - { name: --base, format: "<branch>", when: w, tools: [claude-code] }
+  - { name: "<PR#>", format: number, when: w, tools: [claude-code, codex] }
+  - { name: --format, format: "md|html", when: w, tools: [claude-code] }
+  - { name: --codex-only, format: flag, when: w, tools: [codex] }
+excludedOptions: { claude-code: [--skip-post-ci-check] }
+---
