@@ -1,0 +1,87 @@
+---
+// Title block of a flow page: number, step count, required/optional, outputs.
+// 2×2 on narrow screens, one row of four cells from 50rem (design-system).
+const { entry } = Astro.locals.starlightRoute;
+const { data } = entry;
+if (data.kind !== 'flow') {
+	throw new Error(`TitleBlock: ${entry.id} is kind "${data.kind}", not a flow page`);
+}
+const { number, steps, required, optional, outputs } = data.titleBlock;
+---
+
+<dl class="title-block" aria-label="흐름 표제란">
+	<div>
+		<dt>번호</dt>
+		<dd>{number}</dd>
+	</div>
+	<div>
+		<dt>단계 수</dt>
+		<dd>{steps}</dd>
+	</div>
+	<div>
+		<dt>필수 / 선택</dt>
+		<dd>{required} / {optional}</dd>
+	</div>
+	<div>
+		<dt>산출물</dt>
+		<dd class="outputs">{outputs.join(', ')}</dd>
+	</div>
+</dl>
+
+<style>
+	.title-block {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		margin: 1rem 0 0;
+		border: var(--card-border);
+		border-radius: var(--radius-sm);
+		background-color: var(--card-bg);
+		font-size: 0.85rem;
+	}
+
+	.title-block > div {
+		padding: 0.5rem 0.75rem;
+		border-color: var(--rule-color);
+	}
+
+	.title-block > div:nth-child(even) {
+		border-left: 1px solid var(--rule-color);
+	}
+
+	.title-block > div:nth-child(n + 3) {
+		border-top: 1px solid var(--rule-color);
+	}
+
+	dt {
+		color: var(--muted);
+		font-size: 0.7rem;
+		letter-spacing: 0.04em;
+	}
+
+	dd {
+		margin: 0;
+		color: var(--text);
+		font-weight: 700;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.outputs {
+		font-family: var(--sl-font-mono);
+		font-weight: 500;
+		overflow-wrap: anywhere;
+	}
+
+	@media (min-width: 50rem) {
+		.title-block {
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+		}
+
+		.title-block > div:nth-child(n + 2) {
+			border-left: 1px solid var(--rule-color);
+		}
+
+		.title-block > div:nth-child(n + 3) {
+			border-top: 0;
+		}
+	}
+</style>

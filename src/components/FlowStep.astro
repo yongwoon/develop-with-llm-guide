@@ -1,0 +1,169 @@
+---
+// One step of a flow (spec 02-features 흐름 표기 범례). kind: step = sequential,
+// loop = one half of a ↔ pair, alt = pick one of `skill` and `alt`. Optional
+// steps are dashed and also say "선택" in text. Numbering comes from <Flow>,
+// so a FlowStep must sit inside one. `desc` is plain text (no Markdown).
+import { TOOLS, type Tool } from '../content.config';
+import SkillLink from './SkillLink.astro';
+
+const STEP_KINDS = ['step', 'loop', 'alt'] as const;
+type StepKind = (typeof STEP_KINDS)[number];
+
+interface Props {
+	skill: string;
+	desc: string;
+	optional?: boolean;
+	tools?: Tool[];
+	kind?: StepKind;
+	alt?: string[];
+}
+
+// Tool display labels; keep in sync with SkillCard, OptionTable, SkillIndex, VerifiedStamp.
+const TOOL_LABELS: Record<Tool, string> = { 'claude-code': 'Claude Code', codex: 'Codex' };
+
+const { skill, desc, optional = false, tools = [], kind = 'step', alt = [] } = Astro.props;
+const pageId = Astro.locals.starlightRoute.entry.id;
+// MDX props are not type-checked, so typos are caught here.
+if (!STEP_KINDS.includes(kind)) {
+	throw new Error(`FlowStep: ${skill} has unknown kind="${kind}"; use ${STEP_KINDS.join(' | ')} (${pageId})`);
+}
+const unknownTools = tools.filter((tool) => !(TOOLS as readonly string[]).includes(tool));
+if (unknownTools.length > 0) {
+	throw new Error(`FlowStep: ${skill} has unknown tools ${unknownTools.join(', ')}; use ${TOOLS.join(' | ')} (${pageId})`);
+}
+if (kind === 'alt' && alt.length === 0) {
+	throw new Error(`FlowStep: ${skill} has kind="alt" but no alt={[...]} alternatives (${pageId})`);
+}
+if (kind !== 'alt' && alt.length > 0) {
+	throw new Error(`FlowStep: ${skill} lists alt alternatives but kind is "${kind}", not "alt" (${pageId})`);
+}
+const isOneTool = tools.length > 0 && tools.length < TOOLS.length;
+---
+
+<li class:list={['flow-step', { optional }]} data-flow-step={kind} data-flow-optional={optional ? 'true' : 'false'}>
+	<div class="card">
+		<p class="head">
+			<span class="sr-only">{optional ? '선택 단계:' : '필수 단계:'}</span>
+			<SkillLink name={skill} />
+			{
+				alt.map((name) => (
+					<>
+						<span class="or">또는</span>
+						<SkillLink name={name} />
+					</>
+				))
+			}
+		</p>
+		<p class="meta">
+			{kind === 'loop' && <span class="badge loop">↔ 반복</span>}
+			{optional && <span class="badge" aria-hidden="true">선택</span>}
+			{isOneTool && <span class="badge tools">{tools.map((tool) => TOOL_LABELS[tool]).join(' · ')} 전용</span>}
+		</p>
+		<p class="desc">{desc}</p>
+	</div>
+</li>
+
+<style>
+	.flow-step {
+		position: relative;
+		display: grid;
+		grid-template-columns: 2.75rem minmax(0, 1fr);
+		gap: 0.75rem;
+		margin: 0;
+		padding: 0.5rem 0;
+		list-style: none;
+	}
+
+	/* Number circle; the counter is reset by <Flow>. */
+	.flow-step::before {
+		counter-increment: flow-step;
+		content: counter(flow-step);
+		position: relative;
+		z-index: 1;
+		display: grid;
+		place-items: center;
+		width: 2.75rem;
+		height: 2.75rem;
+		border: 1.5px solid var(--accent);
+		border-radius: 50%;
+		background-color: var(--bg);
+		color: var(--accent);
+		font: 500 0.9rem var(--sl-font-mono);
+	}
+
+	/* Connector from this circle down to the next one; none after the last. */
+	.flow-step:not(:last-child)::after {
+		content: '';
+		position: absolute;
+		top: 3.25rem;
+		bottom: -0.5rem;
+		left: calc(1.375rem - 0.75px);
+		border-left: 1.5px solid var(--accent);
+	}
+
+	.card {
+		padding: 0.625rem 1rem;
+		border: var(--card-border);
+		border-radius: var(--radius);
+		background-color: var(--card-bg);
+	}
+
+	.optional::before,
+	.optional .card {
+		border-style: dashed;
+	}
+
+	.optional::before {
+		color: var(--muted);
+	}
+
+	.optional .card {
+		background-color: transparent;
+	}
+
+	.head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.25rem 0.5rem;
+		margin: 0;
+		font-weight: 500;
+	}
+
+	.or {
+		color: var(--muted);
+		font-size: var(--sl-text-sm);
+	}
+
+	.meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.375rem;
+		margin: 0.25rem 0 0;
+	}
+
+	.meta:not(:has(.badge)) {
+		display: none;
+	}
+
+	.badge {
+		padding: 0 0.4rem;
+		border: 1px dashed var(--muted);
+		border-radius: var(--radius-sm);
+		color: var(--muted);
+		font-size: var(--sl-text-xs);
+	}
+
+	.badge.loop,
+	.badge.tools {
+		border-style: solid;
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+
+	.desc {
+		margin: 0.375rem 0 0;
+		color: var(--text-2);
+		font-size: var(--sl-text-sm);
+	}
+</style>

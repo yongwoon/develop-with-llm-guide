@@ -14,6 +14,7 @@ export default defineConfig({
 			customCss: ['./src/styles/theme.css'],
 			components: {
 				Search: './src/components/overrides/Search.astro',
+				PageTitle: './src/components/overrides/PageTitle.astro',
 			},
 			// Pretendard ships as unicode-range subsets; the browser fetches only
 			// the subsets a page uses. Subset 91 holds Latin and a few Hangul

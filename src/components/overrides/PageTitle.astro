@@ -1,0 +1,10 @@
+---
+// Starlight's page title, plus the title block on flow pages.
+import Default from '@astrojs/starlight/components/PageTitle.astro';
+import TitleBlock from '../TitleBlock.astro';
+
+const isFlow = Astro.locals.starlightRoute.entry.data.kind === 'flow';
+---
+
+<Default {...Astro.props} />
+{isFlow && <TitleBlock />}
