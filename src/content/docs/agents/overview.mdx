@@ -39,7 +39,7 @@ agent 는 skill 이 일부 작업을 맡기는 전문 역할입니다. 직접 �
 
 ## model 고정 방식
 
-- **Claude Code**: agent 마다 쓸 model 이 정의 file 에 정해져 있습니다. 판단이 무거운 agent 는 큰 model, 반복 작업 agent 는 가벼운 model 을 씁니다.
-- **Codex**: 설치할 때 `--agent-model-policy` 로 고릅니다. 기본값 `fixed` 는 agent 마다 model 과 reasoning effort 를 고정하고, `routed` 는 고정을 빼고 Codex 설정을 따르게 합니다.
+- **Claude Code**: agent 마다 쓸 model 이 정의 file 에 정해져 있습니다. 설치할 때 고르는 option 은 없습니다.
+- **Codex**: 설치할 때 `--agent-model-policy` 로 고릅니다. 기본값 `fixed` 는 agent 마다 model 과 reasoning effort 를 고정하고, `routed` 는 고정을 빼고 Codex 설정을 따르게 하며, `--codex-only` 와 함께 설치할 때만 쓸 수 있습니다.
 
 <VerifiedStamp />

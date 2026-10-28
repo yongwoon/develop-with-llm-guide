@@ -51,3 +51,4 @@ Covers: F-AGENT (3 page, 17행, CN004 경계), F-START (3 page, setup link, 설�
 - 설치 page: install script 이름과 option, 설치 위치·환경 변수, 사전 요구 도구만. 저장소 URL·clone 명령·인증 정보 없음.
 - 홈의 흐름 목록은 번호(10–25)와 겹치지 않도록 순서 없는 목록으로 두었다.
 - 확인: `pnpm run build` 성공, `pnpm run guard` 통과, `pnpm run fresh-check` exit 0 (agent 차이 0건), preview 375px 에서 6 page scrollWidth = clientWidth.
+- review 반영: `--agent-model-policy routed` 는 `--codex-only` 와 함께일 때만 동작함을 설치·개요 page 에 명시 (install script 의 조건 확인). 작업 agent 의 역할 문구에서 내부 분류를 암시하는 표현을 뺐다.
