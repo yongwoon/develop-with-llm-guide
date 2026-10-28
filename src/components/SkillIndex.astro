@@ -1,0 +1,282 @@
+---
+// Skill index built from every skill page's frontmatter (spec F-INDEX). Sorted
+// by name; a category filter narrows the rows and stays hidden without JS, so
+// the full list always shows. Narrow screens get one card per skill.
+import { getCollection } from 'astro:content';
+import { CATEGORIES, CATEGORY_LABELS, type Tool } from '../content.config';
+import SkillLink from './SkillLink.astro';
+
+// Tool display labels; keep in sync with SkillCard, OptionTable, VerifiedStamp.
+const TOOL_COLUMNS: [Tool, string][] = [
+	['claude-code', 'Claude Code'],
+	['codex', 'Codex'],
+];
+
+const entries = await getCollection('docs', (entry) => entry.data.kind === 'skill');
+// The file name is the skill name; SkillCard checks that the title matches.
+const skills = entries
+	.flatMap(({ id, data }) => (data.kind === 'skill' ? [{ ...data, name: id.split('/').pop() ?? id }] : []))
+	.sort((a, b) => a.name.localeCompare(b.name, 'en'));
+// Checked here too so a page without <SkillCard /> cannot drift.
+for (const skill of skills) {
+	if (skill.title !== skill.name) {
+		throw new Error(`SkillIndex: title "${skill.title}" must equal the file name "${skill.name}" (skills/${skill.name})`);
+	}
+}
+---
+
+<div class="skill-index not-content" data-skill-index>
+	{
+		skills.length === 0 ? (
+			<p class="empty">아직 작성된 skill page 가 없습니다.</p>
+		) : (
+			<>
+				<div class="filter" hidden>
+					<label>
+						분류
+						<select>
+							<option value="">전체</option>
+							{CATEGORIES.map((category) => (
+								<option value={category}>{CATEGORY_LABELS[category]}</option>
+							))}
+						</select>
+					</label>
+					<span class="count" role="status" aria-live="polite" />
+				</div>
+				<table aria-label="skill 목록">
+					<thead>
+						<tr>
+							<th scope="col">skill</th>
+							<th scope="col">분류</th>
+							<th scope="col">도구</th>
+							<th scope="col">한 줄 용도</th>
+							<th scope="col">option 수</th>
+						</tr>
+					</thead>
+					<tbody>
+						{skills.map((skill) => (
+							<tr data-category={skill.category}>
+								<th scope="row" class="name">
+									<SkillLink name={skill.name} />
+								</th>
+								<td data-label="분류">
+									<span class="tag">{CATEGORY_LABELS[skill.category]}</span>
+								</td>
+								<td data-label="도구" class="tools">
+									{TOOL_COLUMNS.map(([tool, label]) => {
+										const isSupported = skill.tools.includes(tool);
+										return (
+											<span class={isSupported ? 'tool' : 'tool off'}>
+												<span aria-hidden="true">{isSupported ? '●' : '–'}</span>
+												<span class="sr-only">{isSupported ? '지원' : '미지원'}:</span> {label}
+											</span>
+										);
+									})}
+								</td>
+								<td data-label="한 줄 용도">{skill.summary}</td>
+								<td data-label="option 수" class="option-count">
+									{skill.options.length}
+								</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</>
+		)
+	}
+</div>
+
+<script>
+	for (const root of document.querySelectorAll<HTMLElement>('[data-skill-index]')) {
+		const filter = root.querySelector<HTMLElement>('.filter');
+		const select = root.querySelector('select');
+		const count = root.querySelector('.count');
+		const rows = [...root.querySelectorAll<HTMLTableRowElement>('tbody tr')];
+		if (!filter || !select || !count) continue;
+		const apply = () => {
+			let shown = 0;
+			for (const row of rows) {
+				row.hidden = select.value !== '' && row.dataset.category !== select.value;
+				if (!row.hidden) shown += 1;
+			}
+			count.textContent = `${shown} / ${rows.length}개`;
+		};
+		select.addEventListener('change', apply);
+		filter.hidden = false;
+		apply();
+	}
+</script>
+
+<style>
+	.skill-index {
+		margin-block: 1rem 1.5rem;
+	}
+
+	.filter {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem 1rem;
+		margin-bottom: 1rem;
+		color: var(--text);
+	}
+
+	.filter[hidden] {
+		display: none;
+	}
+
+	select {
+		margin-inline-start: 0.5rem;
+		padding: 0.25rem 0.5rem;
+		border: var(--card-border);
+		border-radius: var(--radius-sm);
+		background-color: var(--card-bg);
+		color: var(--text);
+		font: inherit;
+	}
+
+	.count,
+	.empty {
+		color: var(--muted);
+		font-size: var(--sl-text-sm);
+	}
+
+	/* Base (narrow): one card per skill. */
+	table,
+	tbody,
+	tr,
+	th,
+	td {
+		display: block;
+	}
+
+	table {
+		width: 100%;
+		border-collapse: collapse;
+	}
+
+	thead {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+		white-space: nowrap;
+	}
+
+	tbody tr {
+		margin-bottom: 0.75rem;
+		padding: 0.75rem 1rem;
+		border: var(--card-border);
+		border-radius: var(--radius);
+		background-color: var(--card-bg);
+	}
+
+	tbody tr[hidden] {
+		display: none;
+	}
+
+	th,
+	td {
+		padding: 0.15rem 0;
+		text-align: start;
+		color: var(--text);
+	}
+
+	td::before {
+		content: attr(data-label);
+		display: block;
+		color: var(--muted);
+		font-size: var(--sl-text-xs);
+	}
+
+	.name {
+		font-size: 1rem;
+	}
+
+	.tag {
+		padding: 0.05rem 0.4rem;
+		border: 1px solid var(--accent);
+		border-radius: var(--radius-sm);
+		color: var(--accent);
+		font-size: var(--sl-text-xs);
+		white-space: nowrap;
+	}
+
+	.tools {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0 0.75rem;
+	}
+
+	.tools::before {
+		flex-basis: 100%;
+	}
+
+	.tool.off {
+		color: var(--muted);
+	}
+
+	.option-count {
+		font-variant-numeric: tabular-nums;
+	}
+
+	/* Wide: a real table. */
+	@media (min-width: 50rem) {
+		table {
+			display: table;
+			font-size: var(--sl-text-sm);
+		}
+
+		thead {
+			position: static;
+			display: table-header-group;
+			width: auto;
+			height: auto;
+			overflow: visible;
+			clip-path: none;
+			white-space: normal;
+		}
+
+		tbody {
+			display: table-row-group;
+		}
+
+		tr,
+		tbody tr {
+			display: table-row;
+			margin: 0;
+			padding: 0;
+			border: 0;
+			background: none;
+		}
+
+		th,
+		td,
+		.tools {
+			display: table-cell;
+			padding: 0.5rem 0.75rem;
+			border-bottom: 1px solid var(--rule-color);
+			vertical-align: top;
+		}
+
+		thead th {
+			color: var(--muted);
+			font-weight: 500;
+			border-bottom: 1.5px solid var(--text);
+		}
+
+		td::before {
+			content: none;
+		}
+
+		.tool {
+			display: block;
+			white-space: nowrap;
+		}
+
+		.option-count {
+			text-align: end;
+		}
+	}
+</style>

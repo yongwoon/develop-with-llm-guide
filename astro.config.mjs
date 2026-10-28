@@ -12,6 +12,9 @@ export default defineConfig({
 			title: 'develop-with-llm guide',
 			plugins: [starlightLinksValidator()],
 			customCss: ['./src/styles/theme.css'],
+			components: {
+				Search: './src/components/overrides/Search.astro',
+			},
 			// Pretendard ships as unicode-range subsets; the browser fetches only
 			// the subsets a page uses. Subset 91 holds Latin and a few Hangul
 			// syllables, so the preload helps UI text; other Hangul loads on demand.
