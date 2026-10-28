@@ -14,7 +14,7 @@ const REPO_ROOT = join(SCRIPTS_DIR, '..');
 const GUARD = join(SCRIPTS_DIR, 'guard.mjs');
 const VIRTUAL_WORD = 'fixture-secret-word';
 const MATCHED_STRINGS = ['someone@example.com', '/Users/fixture-user', 'develop-with-llm/prompts', VIRTUAL_WORD];
-const WITHHELD_LINE = /^withheld-path-[0-9a-f]{12} 4$/;
+const WITHHELD_LINE = /^withheld-path-[12] 4$/;
 
 function makeRepo(fixture) {
 	const dir = mkdtempSync(join(tmpdir(), 'guard-test-'));

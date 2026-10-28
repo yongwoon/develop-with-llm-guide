@@ -3,7 +3,6 @@
 // contain forbidden strings. Prints only "<path> <rule>" lines on stdout and
 // never echoes the matched text or the sensitive word list.
 import { execFileSync } from 'node:child_process';
-import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
@@ -13,7 +12,7 @@ const WORDS_ENV = 'GUARD_SENSITIVE_WORDS';
 const BINARY_SNIFF_BYTES = 8000;
 const SENSITIVE_WORD_NAME = 'sensitive word';
 const WITHHELD_PREFIX = 'withheld-path-';
-const WITHHELD_HASH_LENGTH = 12;
+const withheldIds = new Map();
 const HTML_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
 
 const root = process.cwd();
@@ -127,11 +126,12 @@ function checkFile(path, { generalRules, words, sensitiveWordRule }) {
 	return hits.map((rule) => `${shownPath} ${rule}`);
 }
 
-// In CI (public log) a path containing a sensitive word becomes one token
-// with a short hash, so findings stay distinct without revealing the word.
-// Locally the real path is shown in the owner's own terminal.
+// In CI (public log) a path containing a sensitive word becomes a numbered
+// token. The number is a per-run counter, not derived from the path, so it
+// cannot be reversed by guessing words. Locally the real path is shown.
 function withheldPath(path) {
-	return `${WITHHELD_PREFIX}${createHash('sha256').update(path).digest('hex').slice(0, WITHHELD_HASH_LENGTH)}`;
+	if (!withheldIds.has(path)) withheldIds.set(path, withheldIds.size + 1);
+	return `${WITHHELD_PREFIX}${withheldIds.get(path)}`;
 }
 
 function ruleLegend(config) {
