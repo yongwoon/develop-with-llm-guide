@@ -52,7 +52,7 @@
 
 - **비공개 자료 경로의 범위 (OQ-15 결정)**: 저장소명 접두 형태만 금지한다. 맨 `prompts` 단어는 금지하지 않는다. skill 산출물로 표기되는 사용자 project 쪽 경로(예: research 산출 경로, learnings file)는 허용한다.
 - **allowlist**: 규칙 번호별 허용 문자열 목록을 일반 패턴 설정 file 에 둔다 (예: Co-Authored-By 에 쓰는 공개 noreply 주소).
-- **commit identity**: 이 저장소의 commit author email 은 GitHub noreply 주소를 쓴다. 저장소 local 설정으로 이미 적용했다.
+- **commit identity**: 이 저장소의 commit author email 은 owner 가 지정한 주소를 저장소 local 설정으로 쓴다. 전역 설정의 업무용 주소를 쓰지 않기 위해서다. commit 이력은 가드 검사 대상이 아니다.
 - **설치 page**: private 저장소 URL, clone 명령, 인증 정보는 쓰지 않는다. 저장소명 접두 규칙이 이를 포괄한다.
 
 금지 목록은 두 층으로 나눠 둔다 (OQ-03 결정, 2026-10-28).
