@@ -1,0 +1,36 @@
+---
+title: 자문·리뷰 agent
+description: architecture 판단, 보안·성능·언어별 code 리뷰, 원인 분석, 인프라 리뷰를 맡는 read-only 자문·리뷰 agent 와 그 agent 를 쓰는 skill 목록입니다.
+kind: agent
+agentGroup: advisor
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+sidebar:
+  order: 3
+  label: 자문·리뷰 agent
+---
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+자문·리뷰 agent 는 file 을 고치지 않고 읽기만 합니다. 판단, 리뷰 지적, 원인 분석 결과를 skill 에 돌려줍니다.
+
+## 자문·리뷰 agent 목록
+
+| agent | 사용 가능 도구 | 권한 | 역할 | 주로 쓰는 skill |
+|---|---|---|---|---|
+| `ywc-architect` | Claude Code, Codex | read-only | module 경계, 의존 방향, 추상화 같은 architecture 판단을 내립니다 | <SkillLink name="ywc-plan" />, <SkillLink name="ywc-confidence-gate" />, <SkillLink name="ywc-impl-review" />, <SkillLink name="ywc-debug-rootcause" />, <SkillLink name="ywc-improve-architecture" /> |
+| `ywc-security-engineer` | Claude Code, Codex | read-only | OWASP 기준 정적 보안 리뷰와 secret 검사를 합니다 | <SkillLink name="ywc-security-audit" />, <SkillLink name="ywc-impl-review" />, <SkillLink name="ywc-incident-postmortem" />, <SkillLink name="ywc-infra-review" /> |
+| `ywc-performance-engineer` | Claude Code, Codex | read-only | backend·frontend 성능과 비용을 분석하고 측정 방법을 추천합니다 | <SkillLink name="ywc-impl-review" />, <SkillLink name="ywc-infra-review" /> |
+| `ywc-root-cause-analyst` | Claude Code, Codex | read-only | bug 와 장애의 근본 원인을 분석합니다 | <SkillLink name="ywc-debug-rootcause" />, <SkillLink name="ywc-incident-postmortem" />, <SkillLink name="ywc-confidence-gate" /> |
+| `ywc-typescript-reviewer` | Claude Code, Codex | read-only | TypeScript·JavaScript code 를 type, 비동기, framework 관점에서 리뷰합니다 | <SkillLink name="ywc-impl-review" /> |
+| `ywc-python-reviewer` | Claude Code, Codex | read-only | Python code 를 type, asyncio, framework 관점에서 리뷰합니다 | <SkillLink name="ywc-impl-review" /> |
+| `ywc-go-reviewer` | Claude Code, Codex | read-only | Go code 를 goroutine, interface, error 처리 관점에서 리뷰합니다 | <SkillLink name="ywc-impl-review" /> |
+| `ywc-infra-reviewer` | Claude Code | read-only | Terraform plan 과 IaC 의 권한·노출·비용·신뢰성 문제를 리뷰합니다 | <SkillLink name="ywc-infra-review" /> |
+| `ywc-cloud-engineer` | Codex | read-only | Terraform 변경의 실현 가능성과 신뢰성을 자문합니다 | <SkillLink name="ywc-infra-design" />, <SkillLink name="ywc-iac-author" />, <SkillLink name="ywc-infra-review" />, <SkillLink name="ywc-infra-optimize" /> |
+
+## 도구에 없는 agent
+
+- Codex 에는 `ywc-infra-reviewer` 가 없습니다. Codex 의 인프라 skill 은 `ywc-cloud-engineer` 를 씁니다.
+- Claude Code 에는 `ywc-cloud-engineer` 가 없습니다.
+
+<VerifiedStamp />

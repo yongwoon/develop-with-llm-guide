@@ -70,7 +70,11 @@ export default defineConfig({
 			sidebar: [
 				{
 					label: '시작하기',
-					items: [{ label: '홈', slug: 'index' }],
+					items: [
+						{ label: '홈', slug: 'index' },
+						{ label: '설치', slug: 'getting-started/install' },
+						{ label: '두 도구의 차이', slug: 'getting-started/tool-differences' },
+					],
 				},
 				{
 					label: '상황별 흐름',

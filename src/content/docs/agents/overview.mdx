@@ -1,0 +1,45 @@
+---
+title: Agent 개요
+description: ywc skill 이 일을 맡기는 agent 의 도구별 구성, 권한 구분, 설치 위치와 model 고정 방식을 정리합니다.
+kind: agent
+agentGroup: overview
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+sidebar:
+  order: 1
+  label: 개요
+---
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+agent 는 skill 이 일부 작업을 맡기는 전문 역할입니다. 직접 부를 일은 드물고, 대부분 skill 을 실행하면 skill 이 필요한 agent 를 씁니다. 이 섹션은 어떤 agent 가 어느 도구에 있고 어느 skill 이 쓰는지만 다룹니다.
+
+## 권한으로 나눈 두 묶음
+
+- [작업 agent](/develop-with-llm-guide/agents/workers/): file 을 고치거나 commit 할 수 있는 agent 입니다.
+- [자문·리뷰 agent](/develop-with-llm-guide/agents/advisors/): 읽기만 하고 판단이나 리뷰 결과를 돌려주는 agent 입니다.
+
+## 도구별 구성
+
+두 도구의 agent 구성은 같지 않습니다. 한쪽에만 있는 agent 는 그 도구의 skill 만 씁니다.
+
+| 구분 | agent |
+|---|---|
+| 두 도구 공통 | `ywc-architect`, `ywc-go-reviewer`, `ywc-performance-engineer`, `ywc-python-reviewer`, `ywc-refactor-cleaner`, `ywc-root-cause-analyst`, `ywc-security-engineer`, `ywc-typescript-reviewer` |
+| Claude Code 전용 | `ywc-backend-coder`, `ywc-frontend-coder`, `ywc-doc-writer`, `ywc-qa-engineer`, `ywc-infra-engineer`, `ywc-infra-reviewer` |
+| Codex 전용 | `ywc-cloud-engineer`, `ywc-complexity-cleaner`, `ywc-test-hardener` |
+
+## 설치 위치
+
+| 도구 | 설치 위치 | 위치를 바꾸는 환경 변수 |
+|---|---|---|
+| Claude Code | `~/.claude/agents/<agent>.md` | `CLAUDE_AGENTS_DIR` |
+| Codex | `~/.codex/agents/<agent>.toml` | `CODEX_HOME` |
+
+설치 방법은 [설치](/develop-with-llm-guide/getting-started/install/) page 를 봅니다. 설치한 뒤에는 도구를 다시 시작해야 새 agent 가 보입니다.
+
+## model 고정 방식
+
+- **Claude Code**: agent 마다 쓸 model 이 정의 file 에 정해져 있습니다. 판단이 무거운 agent 는 큰 model, 반복 작업 agent 는 가벼운 model 을 씁니다.
+- **Codex**: 설치할 때 `--agent-model-policy` 로 고릅니다. 기본값 `fixed` 는 agent 마다 model 과 reasoning effort 를 고정하고, `routed` 는 고정을 빼고 Codex 설정을 따르게 합니다.
+
+<VerifiedStamp />

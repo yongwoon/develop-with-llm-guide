@@ -43,3 +43,11 @@ Covers: F-AGENT (3 page, 17행, CN004 경계), F-START (3 page, setup link, 설�
 - [ ] lint / typecheck: N/A — spec·tech-stack 이 정의한 script 가 없다
 
 ## Implementation Notes (optional)
+
+- 사실 메모: `.fact-memos/agents/<agent>.md` 17개 (도구·권한·역할·사용 skill 만). 비추적 확인 (`git ls-files .fact-memos` 빈 출력).
+- 권한 출처: Claude Code 는 정의 file 의 tools 에 Write 가 있으면 write-enabled, Codex 는 sandbox 가 workspace-write 이면 write-enabled. 작업 agent 8개 / 자문·리뷰 agent 9개.
+- "주로 쓰는 skill" 열은 관계만 적었다 (dispatch 방식·순서·조건 없음, OQ-12). 근거는 도구별 SKILL.md 의 agent 이름 언급과 agent README 의 caller 표. "쓰지 말 것" 맥락의 언급만 있는 skill 은 넣지 않았다.
+- 개수는 본문에 쓰지 않고 표 행으로만 나타냈다 (spec 수치 하드코딩 금지).
+- 설치 page: install script 이름과 option, 설치 위치·환경 변수, 사전 요구 도구만. 저장소 URL·clone 명령·인증 정보 없음.
+- 홈의 흐름 목록은 번호(10–25)와 겹치지 않도록 순서 없는 목록으로 두었다.
+- 확인: `pnpm run build` 성공, `pnpm run guard` 통과, `pnpm run fresh-check` exit 0 (agent 차이 0건), preview 375px 에서 6 page scrollWidth = clientWidth.
