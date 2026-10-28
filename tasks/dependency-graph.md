@@ -12,12 +12,8 @@
 ## Phase yk-000002 — done
 - Completed: `yk-000002-010-domain-content-schema`, `yk-000002-020-ui-design-theme`, `yk-000002-030-ui-skill-components`, `yk-000002-040-ui-flow-components`, `yk-000002-050-domain-fresh-check`
 
-## Phase yk-000003 — Skill pages 1st pass (base: content/initial)
-- `yk-000003-010-ui-skill-pages-plan` → depends on `yk-000002-030`, `yk-000002-050`
-- `yk-000003-020-ui-skill-pages-implement` → depends on `yk-000002-030`, `yk-000002-050`
-- `yk-000003-030-ui-skill-pages-review` → depends on `yk-000002-030`, `yk-000002-050`
-- `yk-000003-040-ui-skill-pages-test-git` → depends on `yk-000002-030`, `yk-000002-050`
-- `yk-000003-050-ui-skill-pages-infra-docs-meta` → depends on `yk-000002-030`, `yk-000002-050`
+## Phase yk-000003 — done
+- Completed: `yk-000003-010-ui-skill-pages-plan`, `yk-000003-020-ui-skill-pages-implement`, `yk-000003-030-ui-skill-pages-review`, `yk-000003-040-ui-skill-pages-test-git`, `yk-000003-050-ui-skill-pages-infra-docs-meta`
 
 ## Phase yk-000004 — Flow, agent, guide pages (base: content/initial)
 - `yk-000004-010-ui-flow-pages-10-17` → depends on Phase yk-000003, `yk-000002-040`
