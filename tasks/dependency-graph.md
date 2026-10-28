@@ -15,10 +15,8 @@
 ## Phase yk-000003 — done
 - Completed: `yk-000003-010-ui-skill-pages-plan`, `yk-000003-020-ui-skill-pages-implement`, `yk-000003-030-ui-skill-pages-review`, `yk-000003-040-ui-skill-pages-test-git`, `yk-000003-050-ui-skill-pages-infra-docs-meta`
 
-## Phase yk-000004 — Flow, agent, guide pages (base: content/initial)
-- `yk-000004-010-ui-flow-pages-10-17` → depends on Phase yk-000003, `yk-000002-040`
-- `yk-000004-020-ui-flow-pages-18-25` → depends on `yk-000004-010`
-- `yk-000004-030-ui-agent-getting-started-pages` → depends on `yk-000004-020`
+## Phase yk-000004 — done
+- Completed: `yk-000004-010-ui-flow-pages-10-17`, `yk-000004-020-ui-flow-pages-18-25`, `yk-000004-030-ui-agent-getting-started-pages`
 
 ## Phase yk-000005 — Crosslinks 2nd pass and first release (base: content/initial → main)
 - `yk-000005-010-ui-skill-crosslinks-plan-to-review` → depends on Phase yk-000004
