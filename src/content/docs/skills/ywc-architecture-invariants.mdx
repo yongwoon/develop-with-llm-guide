@@ -7,7 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: review
 tools: [claude-code, codex]
 summary: module 경계 규칙을 yaml 로 선언하고 code 가 지키는지 점검합니다.
-outputs: [architecture-invariants.yaml]
+outputs: [architecture-invariants.yaml, 점검 보고]
 options:
   - name: --mode
     format: "draft|audit|validate"
@@ -96,6 +96,8 @@ $ywc-architecture-invariants --mode audit --root . --changed-path src/components
 ```
 </TabItem>
 </Tabs>
+
+Codex 에는 --git-range 가 없어 점검할 경로를 --changed-path 로 줍니다.
 
 **결과물**: 변경된 file 이 어느 component 에 속하는지와, 금지된 의존을 만든 곳이 있는지 보고합니다.
 

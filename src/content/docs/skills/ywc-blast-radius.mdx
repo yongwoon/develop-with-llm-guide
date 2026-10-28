@@ -13,10 +13,12 @@ options:
     format: "<range>"
     when: main..HEAD 같은 commit 범위의 변경을 대상으로 합니다.
     tools: [codex]
+    note: --diff 와 --paths 중 하나만 줍니다.
   - name: --paths
     format: "<list>"
     when: 바꿀 예정인 file 경로를 쉼표로 나열합니다.
     tools: [codex]
+    note: --diff 와 --paths 중 하나만 줍니다.
   - name: --scope
     format: "<text>"
     when: 알고 싶은 질문을 좁히는 설명을 덧붙입니다.
