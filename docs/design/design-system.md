@@ -77,7 +77,7 @@
 | 흐름 `Flow` / `FlowStep` | custom component | 번호 원 + 연결선 + 카드로 구성한다. `optional` prop 이 있으면 원과 카드를 점선으로 그리고, 필수/선택을 텍스트 대체로도 전달한다 |
 | 실행 예시 | Starlight `Tabs syncKey="tool"` | Claude Code / Codex 선택이 모든 페이지에서 유지된다 |
 | 코드 블록 | Expressive Code theme 설정 | navy 배경, copy 버튼, 3px offset 그림자 |
-| Skill 카드 `SkillCard` | custom component | skill 이름(mono) + 분류 tag 로 구성한다. 정의 목록(사용 가능 도구·산출물·다음 skill)을 넣고, 모서리 crop mark 를 단다 |
+| Skill 카드 `SkillCard` | custom component | skill 이름(mono) + 분류 tag 로 구성한다. 정의 목록(사용 가능 도구·직접 호출 전용·산출물·다음 skill)을 넣고. 직접 호출 전용은 `userInvoked` 가 있는 도구만 보이고, Codex 는 "(권고)"를 붙인다 (OQ-13), 모서리 crop mark 를 단다 |
 | Option 표 `OptionTable` | custom component | 바로 위 "Options" heading 이 `#options` anchor 가 된다. option 이름은 mono 로 쓴다. Claude Code / Codex 열에는 지원하면 ●, 지원하지 않으면 – 를 표시하고 각각 텍스트 대체(aria-label 또는 숨김 텍스트)를 둔다. 빈 칸은 `—`, `note` 는 "언제 쓰나" 칸 아래 작은 글씨로 쓴다. 모바일에서는 행을 카드로 쌓는다 |
 | Skill 링크 `SkillLink` | custom component | 본문 안의 skill 이름. mono + accent 밑줄. 누르면 `#options` 로 이동한다 |
 | Skill 색인 `SkillIndex` | custom component | 이름순 표와 분류 필터. 분류는 tag, 도구는 ● 로 표시한다(텍스트 대체 포함). 1152px 미만에서는 "한 줄 용도" 열을 줄바꿈해 표시하고, 375px 에서는 카드 목록으로 바꾼다 |

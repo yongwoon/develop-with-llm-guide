@@ -83,12 +83,17 @@ test('siteKeys splits aliases and keeps placeholders positional', () => {
 	assert.deepEqual(siteKeys('<PR#>'), ['positional:<PR#>']);
 });
 
-test('matching fixture exits 0 and lists hints as notes only', () => {
+test('matching fixture exits 0 and stays quiet about options the page already decided', () => {
 	const result = run(withFixture());
 	assert.equal(result.code, 0, result.out + result.err);
 	assert.match(result.out, /차이 없음/);
-	assert.match(result.out, /위임 문구 후보.*--skip-post-ci-check/);
+	assert.doesNotMatch(result.out, /위임 문구 후보/);
 	assert.match(result.out, /자연어 인자 행 1개/);
+});
+
+test('delegation hints show for a skill whose page is not written yet', () => {
+	const result = run(withFixture((d) => rmSync(docs(d, 'skills/ywc-alpha.mdx'))));
+	assert.match(result.out, /ywc-alpha claude-code 위임 문구 후보.*--skip-post-ci-check/);
 });
 
 const differences = [

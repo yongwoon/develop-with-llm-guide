@@ -214,6 +214,13 @@ function siteAgents(pages) {
 
 const difference = (a, b) => [...a].filter((item) => !b.has(item)).sort();
 
+// Keys the page has already decided for a tool: listed as options or excluded.
+const decidedKeys = (data, tool) =>
+	new Set([
+		...(data.options ?? []).filter((option) => option.tools?.includes(tool)).flatMap((option) => siteKeys(option.name)),
+		...(data.excludedOptions?.[tool] ?? []).flatMap(siteKeys),
+	]);
+
 function compareSkill(name, source, page) {
 	const issues = [];
 	const sourceTools = TOOL_NAMES.filter((tool) => source[tool].skills.has(name));
@@ -228,10 +235,7 @@ function compareSkill(name, source, page) {
 			issues.push(`${tool} Arguments parse error: ${args.error}`);
 			continue;
 		}
-		const site = new Set([
-			...(data.options ?? []).filter((option) => option.tools?.includes(tool)).flatMap((option) => siteKeys(option.name)),
-			...(data.excludedOptions?.[tool] ?? []).flatMap(siteKeys),
-		]);
+		const site = decidedKeys(data, tool);
 		const missing = difference(args.keys, site);
 		const extra = difference(site, args.keys);
 		if (missing.length > 0) issues.push(`${tool} option 누락: ${missing.join(', ')}`);
@@ -242,12 +246,16 @@ function compareSkill(name, source, page) {
 	return issues;
 }
 
-function notes(name, source) {
+// Delegation hints only for keys the page has not decided yet; with no page,
+// every hint is still open.
+function notes(name, source, page) {
 	return TOOL_NAMES.flatMap((tool) => {
 		const args = source[tool].skills.get(name)?.args;
 		if (!args || args.error) return [];
+		const decided = page ? decidedKeys(page.data, tool) : new Set();
+		const hints = [...new Set(args.hints)].filter((key) => !decided.has(key));
 		const lines = [];
-		if (args.hints.length > 0) lines.push(`${name} ${tool} 위임 문구 후보 (excludedOptions 판정 필요): ${[...new Set(args.hints)].join(', ')}`);
+		if (hints.length > 0) lines.push(`${name} ${tool} 위임 문구 후보 (excludedOptions 판정 필요): ${hints.join(', ')}`);
 		if (args.naturalRows > 0) lines.push(`${name} ${tool} 자연어 인자 행 ${args.naturalRows}개 (argsNote 로 설명)`);
 		return lines;
 	});
@@ -270,7 +278,7 @@ export function check(sourceRoot, siteRoot) {
 		if (!sourceSkills.has(name)) report.push({ skill: name, text: `${name}: develop-with-llm 에 없는 skill page` });
 		else if (!page) missingPages.push(name);
 		else report.push(...compareSkill(name, source, page).map((issue) => ({ skill: name, text: `${name}: ${issue}` })));
-		if (sourceSkills.has(name)) info.push(...notes(name, source).map((text) => ({ skill: name, text })));
+		if (sourceSkills.has(name)) info.push(...notes(name, source, page).map((text) => ({ skill: name, text })));
 	}
 
 	const agentPages = pages.filter((page) => page.data.kind === 'agent');
