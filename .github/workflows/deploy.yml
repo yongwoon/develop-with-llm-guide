@@ -7,10 +7,9 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Only the deploy job gets Pages and OIDC tokens; build runs project code.
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: pages
@@ -21,12 +20,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        # Keep the token out of .git/config so later steps cannot reuse it.
         with:
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
           cache: npm
+      # Lifecycle scripts stay disabled: dependencies never run code at install.
       - run: npm ci --ignore-scripts
       - run: npm run build
       # The secret is exposed to this step only, never to install or build.
@@ -40,6 +41,10 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    # The github-pages environment only allows main (repository setting).
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
