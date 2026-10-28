@@ -5,6 +5,7 @@
 import type { SkillOption, Tool } from '../content.config';
 
 const COLUMNS = { format: '형식', default: '기본값', when: '언제 쓰나' } as const;
+// Tool display labels; keep in sync with SkillCard, SkillIndex, VerifiedStamp.
 const TOOL_COLUMNS: [Tool, string][] = [
 	['claude-code', 'Claude Code'],
 	['codex', 'Codex'],
@@ -24,7 +25,7 @@ const options: SkillOption[] = data.options;
 		options.length === 0 ? (
 			<p class="none">option 없음</p>
 		) : (
-			<table>
+			<table aria-label="option 목록">
 				<thead>
 					<tr>
 						<th scope="col">option</th>

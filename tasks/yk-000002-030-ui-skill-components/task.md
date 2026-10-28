@@ -64,3 +64,5 @@ Covers: F-SKILL (option 표, 도구 표시), F-INDEX (전 항목), F-NAV (skill 
   - 375px: option 행·색인 행이 카드로 쌓이고 page 가로 scroll 0. ●/– 숨김 텍스트 "지원/미지원".
   - 색인: 이름순, 분류 필터(review 선택 시 1/2개), 이름 link 는 `#options`.
   - 검색: 정상이면 dialog 를 열 때 상태 문구가 숨겨지고 Pagefind 입력창이 뜬다. `dist/pagefind/pagefind.js` 를 잠시 치우면 "검색을 불러오지 못했습니다. Skill 색인에서 찾아 주세요." 가 표시된다. `<noscript>` link 는 build HTML 에서 확인.
+- review 반영: SkillLink 에 `name` 누락 오류 메시지 추가. title=file 이름 검사를 SkillIndex 에서도 수행해 SkillCard 를 빠뜨린 page 도 build 가 실패하게 함. 표 2개에 `aria-label`. Search 의 noscript style 을 `is:inline` 으로 명시(build 결과 scope 없음 확인). 상태 문구는 빈 live region 을 넣은 뒤 채움. SkillCard 주석에 skill page 구성(import 경로, JSX 앞 빈 줄, Options heading, VerifiedStamp 위치)을 적음. 도구 라벨 4곳에 동기화 주석.
+- 1152px 미만 "한 줄 용도" 줄바꿈: 열에 `nowrap` 을 두지 않아 모든 폭에서 자연스럽게 줄바꿈된다.

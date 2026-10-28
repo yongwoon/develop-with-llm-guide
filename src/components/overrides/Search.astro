@@ -12,16 +12,14 @@ const bundleHref = `${base}/pagefind/pagefind.js`;
 <Default {...Astro.props} />
 <noscript>
 	<a class="search-fallback" href={indexHref}>Skill 색인</a>
-	<style>
+	<style is:inline>
 		site-search {
 			display: none;
 		}
 	</style>
 </noscript>
 <template id="search-status-template">
-	<p class="search-status" role="status" aria-live="polite">
-		검색 index 를 불러오는 중입니다…
-	</p>
+	<p class="search-status" role="status" aria-live="polite"></p>
 </template>
 
 <script define:vars={{ indexHref, bundleHref }}>
@@ -33,7 +31,9 @@ const bundleHref = `${base}/pagefind/pagefind.js`;
 	const template = document.getElementById('search-status-template');
 	if (container && dialog && template) {
 		const status = template.content.firstElementChild.cloneNode(true);
+		// Insert the live region empty, then fill it, so it is announced.
 		container.before(status);
+		status.textContent = '검색 index 를 불러오는 중입니다…';
 		const showFailure = () => {
 			status.textContent = '검색을 불러오지 못했습니다. ';
 			const link = document.createElement('a');

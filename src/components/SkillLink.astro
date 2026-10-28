@@ -8,6 +8,9 @@ interface Props {
 }
 
 const { name } = Astro.props;
+if (!name) {
+	throw new Error('SkillLink: the name prop is required, e.g. <SkillLink name="ywc-mission" />');
+}
 const skills = await getCollection('docs', (entry) => entry.data.kind === 'skill');
 if (!skills.some((entry) => entry.id === `skills/${name}`)) {
 	throw new Error(`SkillLink: no skill page for "${name}" (expected src/content/docs/skills/${name}.mdx)`);

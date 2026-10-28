@@ -6,6 +6,7 @@ import { getCollection } from 'astro:content';
 import { CATEGORIES, CATEGORY_LABELS, type Tool } from '../content.config';
 import SkillLink from './SkillLink.astro';
 
+// Tool display labels; keep in sync with SkillCard, OptionTable, VerifiedStamp.
 const TOOL_COLUMNS: [Tool, string][] = [
 	['claude-code', 'Claude Code'],
 	['codex', 'Codex'],
@@ -16,6 +17,12 @@ const entries = await getCollection('docs', (entry) => entry.data.kind === 'skil
 const skills = entries
 	.flatMap(({ id, data }) => (data.kind === 'skill' ? [{ ...data, name: id.split('/').pop() ?? id }] : []))
 	.sort((a, b) => a.name.localeCompare(b.name, 'en'));
+// Checked here too so a page without <SkillCard /> cannot drift.
+for (const skill of skills) {
+	if (skill.title !== skill.name) {
+		throw new Error(`SkillIndex: title "${skill.title}" must equal the file name "${skill.name}" (skills/${skill.name})`);
+	}
+}
 ---
 
 <div class="skill-index not-content" data-skill-index>
@@ -36,7 +43,7 @@ const skills = entries
 					</label>
 					<span class="count" role="status" aria-live="polite" />
 				</div>
-				<table>
+				<table aria-label="skill 목록">
 					<thead>
 						<tr>
 							<th scope="col">skill</th>

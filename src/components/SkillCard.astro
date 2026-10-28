@@ -2,9 +2,17 @@
 // Summary card at the top of a skill page, read from the page's own
 // frontmatter. Also enforces title = file name; `next` names are checked by
 // SkillLink (spec 03-data cross-checks).
+//
+// Skill page layout (src/content/docs/skills/<name>.mdx, spec 03-data):
+//   import SkillCard from '../../../components/SkillCard.astro';  (likewise
+//   OptionTable, SkillLink, VerifiedStamp), then a blank line before any JSX,
+//   then <SkillCard />, the use cases, "## Options" directly above
+//   <OptionTable />, and <VerifiedStamp /> last. A `next` entry or SkillLink
+//   to a skill page that does not exist yet fails the build.
 import { CATEGORY_LABELS } from '../content.config';
 import SkillLink from './SkillLink.astro';
 
+// Tool display labels; keep in sync with OptionTable, SkillIndex, VerifiedStamp.
 const TOOL_LABELS = { 'claude-code': 'Claude Code', codex: 'Codex' } as const;
 
 const { entry } = Astro.locals.starlightRoute;
