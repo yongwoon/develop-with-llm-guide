@@ -11,6 +11,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "guard": "node scripts/guard.mjs",
+    "fresh-check": "node scripts/fresh-check.mjs",
     "astro": "astro"
   },
   "dependencies": {
