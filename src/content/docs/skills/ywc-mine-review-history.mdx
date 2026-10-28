@@ -1,0 +1,79 @@
+---
+title: ywc-mine-review-history
+description: 병합된 PR 여러 개의 bot 리뷰 코멘트를 모아 반복되는 결함 유형을 찾습니다. "리뷰 이력 마이닝", "과거 리뷰 코멘트 분석" 요청에 유형별로 묶어 리뷰 선호 후보를 만듭니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: review
+tools: [claude-code, codex]
+summary: 과거 PR 의 bot 리뷰 코멘트에서 반복 결함 유형을 찾아 정리합니다.
+outputs: [docs/review-learnings.md 에 넣을 후보]
+options:
+  - name: --repo
+    format: "<owner/repo>"
+    default: 현재 저장소
+    when: 다른 저장소의 이력을 분석할 때 씁니다.
+    tools: [claude-code, codex]
+  - name: --limit
+    format: "<N>"
+    default: 물어봄 (200 권장)
+    when: 최근에 병합된 PR 을 몇 개까지 볼지 정합니다.
+    tools: [claude-code]
+  - name: --limit
+    format: "<N>"
+    default: "200"
+    when: 최근에 병합된 PR 을 몇 개까지 볼지 정합니다.
+    tools: [codex]
+  - name: --since
+    format: "<YYYY-MM-DD>"
+    when: 이 날짜 이후에 병합된 PR 만 봅니다. --limit 은 상한으로 함께 적용됩니다.
+    tools: [claude-code, codex]
+  - name: --min-recurrence
+    format: "<N>"
+    default: "3"
+    when: 여러 project 공통 결함으로 올릴 최소 PR 수를 정합니다. PR 이 적은 저장소에서는 낮춥니다. 2 이상이어야 합니다.
+    tools: [claude-code, codex]
+  - name: --dry-run
+    format: flag
+    when: 분류 결과만 보여 주고 file 에는 쓰지 않습니다.
+    tools: [claude-code, codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### 처음으로 리뷰 선호를 쌓을 때
+
+리뷰 선호 file 이 아직 없습니다. 지난 반년치 PR 에서 반복된 지적부터 모읍니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-mine-review-history --since 2026-05-01 --limit 200 --dry-run
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-mine-review-history --since 2026-05-01 --limit 200 --dry-run
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 반복된 지적이 결함 유형별로 묶여 나옵니다. 유형마다 이 저장소 전용 선호로 둘지, 여러 project 공통 결함 후보로 둘지 분류됩니다. `--dry-run` 이라 file 은 바꾸지 않습니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- PR 하나의 지적을 선호로 남길 때 → `ywc-review-learnings`
+- 열린 PR 의 미해결 코멘트를 처리할 때 → `ywc-handle-pr-reviews`
+- 지금 일어난 장애를 정리할 때 → `ywc-incident-postmortem`
+
+<VerifiedStamp />

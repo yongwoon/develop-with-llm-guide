@@ -1,0 +1,130 @@
+---
+title: ywc-impl-review
+description: 구현을 마치고 PR 을 만들기 전에 code 를 리뷰합니다. "구현 검증", "코드 리뷰", "PR 전 검증" 요청에 spec 과 맞는지, 설계·보안·test 에 문제가 없는지 보고합니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: review
+tools: [claude-code, codex]
+summary: 구현한 code 가 spec 과 맞는지와 품질 문제를 PR 전에 리뷰합니다.
+outputs: [심각도별 지적과 spec 대응표가 담긴 리뷰 보고]
+options:
+  - name: --spec
+    format: "<path>"
+    when: 대조할 spec file 을 줍니다. 생략하면 spec 대응표 없이 리뷰합니다.
+    tools: [claude-code]
+  - name: --spec
+    format: "<path>"
+    when: 대조할 spec file 을 줍니다. 반드시 줍니다.
+    tools: [codex]
+  - name: --code
+    format: "<path>"
+    when: 리뷰할 code 경로를 줍니다.
+    tools: [claude-code, codex]
+    note: 리뷰 대상은 하나만 고릅니다. Claude Code 는 --code·--git-range·--working-tree 중 하나, Codex 는 --code·--git-range 중 하나입니다.
+  - name: --git-range
+    format: "<sha>..<sha>"
+    when: commit 범위에서 바뀐 file 을 리뷰합니다. branch 의 작업만 볼 때 씁니다.
+    tools: [claude-code, codex]
+  - name: --working-tree
+    format: flag
+    when: 아직 commit 하지 않은 변경만 리뷰합니다.
+    tools: [claude-code]
+  - name: --profile
+    format: "chill|assertive"
+    default: chill
+    when: 지적의 범위를 고릅니다. chill 은 정확성·보안 위주로만 보고하고, assertive 는 문체·문서 같은 사소한 지적도 냅니다.
+    tools: [claude-code, codex]
+  - name: --no-advisor
+    format: flag
+    when: 판단이 애매한 지적의 추가 검토를 끕니다. 시험용 code 를 빠르게 볼 때 씁니다.
+    tools: [claude-code, codex]
+    note: Claude Code 에서 --criticality critical 이면 무시합니다.
+  - name: --advisor-budget
+    format: "<n>"
+    default: "5"
+    when: 추가 검토 횟수의 상한을 정합니다.
+    tools: [claude-code, codex]
+  - name: --skip-learnings
+    format: flag
+    when: docs/review-learnings.md 에 쌓인 리뷰 선호를 읽지 않고 리뷰합니다.
+    tools: [claude-code, codex]
+  - name: --non-interactive
+    format: flag
+    when: 끝난 뒤 리뷰 선호로 남길지 묻지 않습니다. 후보는 보고서에만 적습니다.
+    tools: [claude-code]
+  - name: --criticality
+    format: "critical|normal"
+    default: normal
+    when: 인증·결제처럼 중요한 변경을 더 엄격하게 리뷰할 때 critical 을 줍니다.
+    tools: [claude-code]
+  - name: --depth
+    format: "full|auto"
+    default: auto
+    when: 변경이 문서뿐이어도 모든 관점의 리뷰를 강제하려면 full 을 줍니다.
+    tools: [claude-code]
+  - name: --format
+    format: "markdown|html"
+    default: markdown
+    when: 브라우저로 볼 단독 HTML 보고서가 필요하면 html 을 고릅니다.
+    tools: [claude-code, codex]
+    note: HTML 보고서가 생기는 디렉터리는 도구마다 다릅니다. Claude Code 는 claudedocs/, Codex 는 codexdocs/ 입니다.
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### branch 의 작업을 spec 과 대조
+
+option 표 기능을 다 만들었습니다. PR 전에 spec 과 맞는지 확인합니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-impl-review --spec docs/ywc-plans/20261028-option-table.md --git-range main..HEAD
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-impl-review --spec docs/ywc-plans/20261028-option-table.md --git-range main..HEAD
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 여러 관점의 지적이 심각도와 함께 나옵니다. spec 의 요구사항마다 구현 여부를 표시한 대응표와 수정 우선순위도 나옵니다.
+
+### commit 전 변경만 빠르게
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-impl-review --working-tree
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-impl-review --spec docs/ywc-plans/20261028-option-table.md --code src/components/
+```
+</TabItem>
+</Tabs>
+
+**결과물**: Claude Code 는 commit 하지 않은 변경을 spec 없이 리뷰합니다. Codex 에는 이 option 이 없어 code 경로와 spec 으로 리뷰합니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- spec 문서만 검토할 때 → `ywc-spec-validate`
+- 보안만 집중해서 볼 때 → `ywc-security-audit`
+- 받은 리뷰 지적에 대응할 때 → `ywc-receive-review`
+- 열린 PR 의 리뷰 코멘트를 처리할 때 → `ywc-handle-pr-reviews`
+- 작업이 정말 끝났는지 확인할 때 → `ywc-verify-done`
+
+<VerifiedStamp />

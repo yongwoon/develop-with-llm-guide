@@ -1,0 +1,81 @@
+---
+title: ywc-refactor-clean
+description: 쓰지 않는 code, export, file, 의존성, import 를 지우고 비슷한 util 을 합칩니다. "dead code 제거", "unused import 정리" 요청이나 정기 정리 작업에 씁니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: review
+tools: [claude-code, codex]
+summary: 쓰지 않는 code 와 의존성을 안전한 것부터 지웁니다.
+outputs: [항목별 삭제 commit, 정리 보고]
+options:
+  - name: --scope
+    format: "<dir>"
+    default: 저장소 root
+    when: 찾고 지울 범위를 한 경로로 좁힙니다.
+    tools: [claude-code, codex]
+  - name: --tier
+    format: "safe|safe+caution|all"
+    default: safe
+    when: 어느 위험 등급까지 지울지 정합니다. safe 가 가장 보수적입니다.
+    tools: [claude-code, codex]
+  - name: --dry-run
+    format: flag
+    when: 지우지 않고 후보와 등급만 보고합니다.
+    tools: [claude-code, codex]
+excludedOptions: { claude-code: [--skip-verify-done], codex: [--skip-verify-done] }
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### 먼저 후보만 보기
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-refactor-clean --scope src/ --dry-run
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-refactor-clean --scope src/ --dry-run
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 지울 후보가 safe, caution, danger 등급으로 나뉘어 나옵니다. file 은 바꾸지 않습니다.
+
+### 안전한 것만 지우기
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-refactor-clean --scope src/ --tier safe
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-refactor-clean --scope src/ --tier safe
+```
+</TabItem>
+</Tabs>
+
+**결과물**: safe 등급만 하나씩 지웁니다. 항목마다 test 를 확인하고 commit 을 따로 남깁니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 기능 구현이 진행 중일 때 → 구현을 먼저 끝낸 뒤 실행
+- 동작을 바꾸는 refactor 일 때 → `ywc-tdd-ritual`
+- 얕은 module 여러 개를 합쳐 구조를 바꿀 때 → `ywc-improve-architecture`
+
+<VerifiedStamp />

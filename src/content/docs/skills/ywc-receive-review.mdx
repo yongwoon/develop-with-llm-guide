@@ -1,0 +1,59 @@
+---
+title: ywc-receive-review
+description: 받은 리뷰 지적에 답하거나 고치기 전에 지적이 맞는지 먼저 확인합니다. "리뷰 받았어", "리뷰 코멘트 대응" 요청에 사람·bot 의 지적을 검증하고, 불분명한 지적은 먼저 되묻습니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: review
+tools: [claude-code, codex]
+summary: 받은 리뷰 지적이 맞는지 확인한 뒤 대응합니다.
+outputs: [지적별 검증 결과와 대응안]
+options:
+  - name: "<feedback>"
+    format: 자유 문장
+    when: 받은 리뷰 지적을 붙여 넣습니다. 사람, CodeRabbit, Codex, Claude, ChatGPT 의 지적 모두 됩니다.
+    tools: [claude-code]
+  - name: "<review feedback>"
+    format: 자유 문장 또는 리뷰 코멘트
+    when: 받은 사람·bot 의 리뷰 지적을 붙여 넣습니다.
+    tools: [codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### bot 의 지적을 바로 받아들이기 전에
+
+CodeRabbit 이 "이 함수는 null 을 처리하지 않습니다"라고 지적했습니다. 실제로 그런지 확인하고 대응합니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-receive-review CodeRabbit: src/components/SkillIndex.astro 의 filter 함수가 null 을 처리하지 않는다
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-receive-review CodeRabbit: src/components/SkillIndex.astro 의 filter 함수가 null 을 처리하지 않는다
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 지적마다 code 를 확인한 근거와 함께 맞음·틀림·불분명으로 판정합니다. 맞는 지적만 고치고, 틀린 지적에는 근거를 담은 답변안을 냅니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 직접 리뷰를 할 때 → `ywc-impl-review`
+- 열린 PR 의 코멘트를 가져와 답하고 PR 을 정리할 때 → `ywc-handle-pr-reviews`
+- 지적을 리뷰 선호로 남길 때 → `ywc-review-learnings`
+
+<VerifiedStamp />

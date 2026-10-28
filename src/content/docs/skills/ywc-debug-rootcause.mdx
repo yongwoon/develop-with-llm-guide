@@ -1,0 +1,53 @@
+---
+title: ywc-debug-rootcause
+description: bug, test 실패, build 실패, 예상과 다른 동작의 근본 원인을 먼저 찾습니다. "왜 안돼", "디버깅", "원인 찾아줘" 요청에 증상만 덮는 수정을 막고 원인을 확인한 뒤 고칩니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: review
+tools: [claude-code, codex]
+summary: bug·실패의 근본 원인을 찾은 뒤에 고칩니다.
+outputs: [원인 분석과 수정]
+options:
+  - name: "<defect>"
+    format: 자유 문장
+    when: 문제 상황을 적습니다. 오류 출력이 있으면 함께 붙입니다.
+    tools: [claude-code, codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### build 가 갑자기 실패할 때
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-debug-rootcause pnpm run build 가 InvalidContentEntryDataError 로 실패한다. 어제까지는 됐다
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-debug-rootcause pnpm run build 가 InvalidContentEntryDataError 로 실패한다. 어제까지는 됐다
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 재현 방법, 확인한 증거, 근본 원인이 정리됩니다. 원인을 확인한 뒤에만 수정하고, 수정이 원인을 고쳤는지 확인한 결과도 나옵니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 새 기능을 구현할 때 → `ywc-code-gen`
+- 장애가 끝난 뒤 사후 보고서를 쓸 때 → `ywc-incident-postmortem`
+- 보안 취약점을 점검할 때 → `ywc-security-audit`
+
+<VerifiedStamp />

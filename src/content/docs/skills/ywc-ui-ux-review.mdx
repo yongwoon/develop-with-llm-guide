@@ -1,0 +1,65 @@
+---
+title: ywc-ui-ux-review
+description: 화면의 정보 구조, 시각 디자인, 사용성, 접근성을 리뷰합니다. "UX 점검", "사용성 점검", "디자인 리뷰" 요청에 code 분석과 실제 화면 탐색을 함께 합니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: review
+tools: [claude-code, codex]
+summary: code 분석과 실제 화면 탐색으로 UI/UX 를 리뷰합니다.
+outputs: [UI/UX 리뷰 보고]
+options:
+  - name: --format
+    format: "markdown|html"
+    default: markdown
+    when: 브라우저로 볼 단독 HTML 보고서가 필요하면 html 을 고릅니다.
+    tools: [claude-code, codex]
+  - name: "<target>"
+    format: 자유 문장
+    default: 실행 중에 물어봄
+    when: 리뷰할 page, route, 기능 흐름을 적습니다.
+    tools: [claude-code]
+  - name: "<scope>"
+    format: page·route·흐름과 실행 중인 URL
+    default: 없으면 물어봄
+    when: 리뷰할 범위와 실행 중인 URL 을 적습니다. URL 이 없으면 code 만 봅니다.
+    tools: [codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### Skill 색인 화면의 사용성 점검
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-ui-ux-review Skill 색인 page 의 분류 filter 와 표 http://localhost:4321/develop-with-llm-guide/skills/
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-ui-ux-review Skill 색인 page 의 분류 filter 와 표 http://localhost:4321/develop-with-llm-guide/skills/
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 정보 구조, 시각 디자인, 사용성, 접근성별 지적이 심각도와 함께 나옵니다. 실제 화면에서 확인한 지적에는 화면 근거가 붙습니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 화면이 평범하거나 AI 가 만든 것처럼 보여 새롭게 바꿀 때 → `ywc-design-renew`
+- backend 나 API 를 리뷰할 때 → `ywc-impl-review`
+- 제품 전략 관점의 리뷰가 필요할 때 → `ywc-product-review`
+- CSS 사용법 같은 단순 질문일 때 → skill 없이 질문
+
+<VerifiedStamp />

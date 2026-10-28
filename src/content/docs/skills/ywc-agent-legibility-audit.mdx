@@ -1,0 +1,74 @@
+---
+title: ywc-agent-legibility-audit
+description: code 와 문서가 agent 에게 읽기 쉬운지 점검합니다. "에이전트 가독성 audit", "agent legibility" 요청에 agent 가 고칠 곳을 찾기 어려운 부분과 개선 방향을 보고합니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: review
+tools: [claude-code, codex]
+summary: code 와 문서가 agent 에게 읽기 쉬운지 점검하고 개선점을 보고합니다.
+outputs: [심각도별 가독성 점검 보고]
+options:
+  - name: --scope
+    format: "<path>"
+    default: 저장소 root
+    when: 점검 범위를 한 경로로 좁힙니다.
+    tools: [claude-code, codex]
+  - name: --target
+    format: "code|docs|both"
+    default: both
+    when: code 만, 문서만, 또는 둘 다 점검할지 고릅니다.
+    tools: [claude-code, codex]
+  - name: --format
+    format: "markdown|html"
+    default: markdown
+    when: 브라우저로 볼 단독 HTML 보고서가 필요하면 html 을 고릅니다.
+    tools: [claude-code, codex]
+  - name: --output
+    format: "<path>"
+    default: 대화에만 출력
+    when: 보고서를 file 로 남깁니다. --scope 밖의 경로여도 됩니다.
+    tools: [claude-code, codex]
+  - name: --manifest
+    format: "<path>"
+    default: 저장소 root 의 architecture-invariants.yaml
+    when: architecture 경계 규약 file 이 다른 경로에 있을 때 줍니다.
+    tools: [claude-code]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### component 디렉터리 점검
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-agent-legibility-audit --scope src/components --target code
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-agent-legibility-audit --scope src/components --target code
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 읽기 전용 보고가 나옵니다. 지적마다 file 위치와 심각도, 개선 방향이 붙습니다. code 는 바꾸지 않습니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 처음 보는 저장소를 파악할 때 → `ywc-onboard-repo`
+- 쓰지 않는 code 를 지울 때 → `ywc-refactor-clean`
+- code 품질이나 보안을 리뷰할 때 → `ywc-impl-review`
+
+<VerifiedStamp />
