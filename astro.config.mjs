@@ -11,16 +11,15 @@ export default defineConfig({
 		starlight({
 			title: 'develop-with-llm guide',
 			plugins: [starlightLinksValidator()],
-			customCss: ['./src/styles/theme.css'],
+			customCss: ['./src/styles/pretendard.css', './src/styles/theme.css'],
 			components: {
 				Search: './src/components/overrides/Search.astro',
 				PageTitle: './src/components/overrides/PageTitle.astro',
 				Sidebar: './src/components/overrides/Sidebar.astro',
 				PageSidebar: './src/components/overrides/PageSidebar.astro',
 			},
-			// Pretendard ships as unicode-range subsets; the browser fetches only
-			// the subsets a page uses. Subset 91 holds Latin and a few Hangul
-			// syllables, so the preload helps UI text; other Hangul loads on demand.
+			// pretendard-site.woff2 holds every character the site uses
+			// (scripts/subset-font.mjs), so preloading it covers the body text.
 			head: [
 				// Restores the layout preferences saved by the Sidebar and PageSidebar
 				// overrides before first paint, so the page does not jump on load.
@@ -33,17 +32,10 @@ export default defineConfig({
 					tag: 'link',
 					attrs: {
 						rel: 'preload',
-						href: '/develop-with-llm-guide/fonts/pretendard/woff2-dynamic-subset/PretendardVariable.subset.91.woff2',
+						href: '/develop-with-llm-guide/fonts/pretendard/pretendard-site.woff2',
 						as: 'font',
 						type: 'font/woff2',
 						crossorigin: '',
-					},
-				},
-				{
-					tag: 'link',
-					attrs: {
-						rel: 'stylesheet',
-						href: '/develop-with-llm-guide/fonts/pretendard/pretendardvariable-dynamic-subset.css',
 					},
 				},
 			],

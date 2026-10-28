@@ -7,7 +7,7 @@
 
 ## 요약
 
-**판정: 첫 공개 gate 미충족.** Lighthouse Performance 가 3 page 모두 90 미만(80–83)이고, IME 조합 중 Enter 점검이 남아 있다. 나머지 측정 항목은 모두 통과했다.
+**판정: 첫 공개 gate 미충족 (대기 1건).** IME 조합 중 Enter 점검이 남아 있다. Lighthouse Performance 는 글꼴 개선 후 3 page 모두 90 이상(95–98)이다. 나머지 측정 항목은 모두 통과했다.
 
 | 조건 | 결과 |
 |---|---|
@@ -19,7 +19,7 @@
 | R-SEARCH IME 조합 중 Enter | **owner 수동 점검 — 대기** (3 환경) |
 | R-SEARCH 검색 상태 표시 | 통과 |
 | R-UX Lighthouse A11y·SEO | 통과 (3 page 모두 100) |
-| R-UX Lighthouse Performance | **미달** (80–83, 기준 90) |
+| R-UX Lighthouse Performance | 통과 (95–98, 글꼴 개선 후) |
 | R-UX 375px 가로 scroll | 통과 |
 | R-UX keyboard | 통과 |
 
@@ -110,9 +110,9 @@ Pagefind JS API(`search()` 결과 순위)로 측정했다. 사이트 검색 UI �
 
 | page | Accessibility | Best Practices | SEO | Performance |
 |---|---|---|---|---|
-| 홈 | 100 | 100 | 100 | 83 |
-| 흐름 10 (새 project 시작하기) | 100 | 100 | 100 | 82 |
-| `ywc-mission` | 100 | 100 | 100 | 80 |
+| 홈 | 100 | 100 | 100 | 98 |
+| 흐름 10 (새 project 시작하기) | 100 | 100 | 100 | 95 |
+| `ywc-mission` | 100 | 100 | 100 | 96 |
 
 - A11y·BP·SEO 는 Chrome DevTools (MCP) 의 Lighthouse 로 쟀다. 이 도구는 Performance category 를 내지 않으므로, Performance 는 Lighthouse CLI 12.6.1 (`--form-factor=mobile`, 기본 throttling, headless Chrome) 로 따로 쟀다 (2026-10-29).
 
@@ -129,7 +129,22 @@ Pagefind JS API(`search()` 결과 순위)로 측정했다. 사이트 검색 UI �
   - 흐름 10: DOM 1,091 요소.
   - 사용하지 않는 CSS 약 13 KB.
 - 로컬 preview 는 압축 없이 전송한다. 배포 환경에서는 CSS 가 압축되지만, 글꼴(woff2)은 이미 압축된 형식이라 크게 줄지 않는다.
-- 개선(글꼴 로딩 방식, render-blocking CSS)은 component·설정을 바꾸는 일이라 이 task 범위 밖이다. 별도 task 로 만든다.
+- 개선(글꼴 로딩 방식, render-blocking CSS)은 component·설정을 바꾸는 일이라 이 task 범위 밖이다. 별도 작업(`perf/font-loading` branch)으로 했다.
+
+#### 글꼴 개선 후 재측정 (2026-10-29)
+
+원인 확인: Pretendard 를 빼고 재면 3 page 모두 99 였다. 감점은 글꼴 전송량에서 왔다.
+
+| 시도 | 홈 | 흐름 10 | `ywc-mission` | page 당 글꼴 |
+|---|---|---|---|---|
+| 개선 전 | 83 | 82 | 80 | 14–20 file, 360–476 KB |
+| 글꼴 CSS 를 공통 CSS 에 합침 | 87 | 81 | 78 | 변화 없음 |
+| 사이트 subset 1 file + dynamic subset fallback | 98 | 95 | 96 | 2–3 file, 153–168 KB |
+
+- 사이트 subset `pretendard-site.woff2` (약 134 KB) 는 원본과 build 결과에 쓰인 글자 655 개만 담는다 (`scripts/subset-font.mjs`). 굵기 축(variable)은 그대로다.
+- 재측정에서 dynamic subset 은 하나도 받지 않았다. 모든 글자가 사이트 subset 에 들어 있다는 뜻이다.
+- 개선 후 LCP 는 2.3–2.6 s, FCP 는 1.6–2.0 s, TBT·CLS 는 0 이다.
+- 화면 확인: 흐름 10 에서 제목 weight 800, 본문, mono 표기가 정상으로 표시된다.
 - 이전 trace (CPU 4배 감속, Slow 4G) 의 LCP 는 약 1.6 s 였다. Lighthouse 기본 throttling 은 그보다 느린 조건을 시뮬레이션하므로 값이 다르다.
 
 ### 375px 가로 scroll
@@ -152,6 +167,6 @@ Pagefind JS API(`search()` 결과 순위)로 측정했다. 사이트 검색 UI �
 ## 남은 일 (owner)
 
 1. IME 조합 중 Enter 점검 3 환경 (위 방법). 손실이 있으면 기록하고 검색 UI override task 를 만든다
-2. Lighthouse Performance 개선 task 작성과 실행 (현재 80–83). 개선 후 3 page 를 다시 재서 90 이상인지 확인한다
+2. ~~Lighthouse Performance 개선~~ 완료 (95–98)
 3. 위 두 항목 통과 후 `content/initial` → main 병합 승인, deploy run 성공 확인
 4. 배포 URL 에서 Lighthouse 1회 재측정 후 이 문서에 추가

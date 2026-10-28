@@ -37,14 +37,16 @@ develop-with-llm-guide/
 │   │   ├── VerifiedStamp.astro        # page 하단 확인일·bundle version 표시
 │   │   └── TitleBlock.astro           # 표제란 4칸 (PageTitle 에서 사용)
 │   ├── styles/
-│   │   └── theme.css                  # design token (light/dark) → --sl-* 매핑 + 모눈 배경, sidebar, TOC, § counter, @font-face
+│   │   ├── theme.css                  # design token (light/dark) → --sl-* 매핑 + 모눈 배경, sidebar, TOC, § counter, @font-face
+│   │   └── pretendard.css             # Pretendard @font-face (site subset + dynamic subset fallback)
 │   └── assets/                        # 빌드 시 최적화되는 이미지 (필요할 때만)
 ├── public/
 │   ├── favicon.svg
 │   └── fonts/                         # self-host font (Pretendard Variable subset woff2, DM Mono)
 ├── scripts/                           # Node script (owner 로컬 + CI)
 │   ├── guard.mjs                      # 공개 가드 (R-GUARD). dist/ 와 원본 tree 검사
-│   └── fresh-check.mjs                # 최신성 점검 (R-FRESH). 로컬 전용
+│   ├── fresh-check.mjs                # 최신성 점검 (R-FRESH). 로컬 전용
+│   └── subset-font.mjs                # 사이트에서 쓰는 글자만 담은 Pretendard subset 생성. 로컬 전용
 ├── .github/
 │   └── workflows/
 │       ├── deploy.yml                 # main push → build + guard → GitHub Pages (R-DEPLOY)
@@ -115,7 +117,8 @@ develop-with-llm-guide/
 
 ### `public/fonts/`
 
-- **역할**: self-host 하는 font file 을 둔다. Pretendard Variable 은 dynamic subset 또는 subset woff2, DM Mono 는 woff2 로 둔다. `font-display: swap` 과 본문 font preload 는 `docs/design/design-system.md` Typography 를 따른다.
+- **역할**: self-host 하는 font file 을 둔다. Pretendard Variable 은 사이트 subset woff2 (`pretendard-site.woff2`) 를 먼저 쓰고, 그 file 에 없는 글자만 dynamic subset 에서 받는다. DM Mono 는 woff2 로 둔다. `font-display: swap` 과 본문 font preload 는 `docs/design/design-system.md` Typography 를 따른다.
+- **갱신**: 글자가 많이 늘면 `pnpm run build && pnpm run subset-font` 후 다시 build 한다. 갱신하지 않아도 새 글자는 dynamic subset 으로 표시된다.
 
 ### `scripts/`
 
