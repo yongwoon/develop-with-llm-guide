@@ -8,13 +8,17 @@
       "id": 1,
       "name": "local absolute path",
       "patterns": ["/Users/"],
+      "flags": "g",
       "htmlOnly": false,
       "allow": []
     },
     {
       "id": 2,
       "name": "email address",
-      "patterns": ["[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)*\\.[A-Za-z]{2,}"],
+      "patterns": [
+        "(?<![A-Za-z0-9._%+-])[A-Za-z0-9._%+-]{1,64}@[A-Za-z][A-Za-z0-9-]*(?:\\.[A-Za-z0-9-]+)*\\.[A-Za-z]{2,}(?![A-Za-z0-9-])(?<!\\.(?:png|jpe?g|gif|svg|webp|avif|ico|css|js))"
+      ],
+      "flags": "g",
       "htmlOnly": true,
       "allow": ["noreply@anthropic.com"]
     },
@@ -23,8 +27,9 @@
       "name": "private repository path",
       "patterns": [
         "develop-with-llm(?:/|\\.git(?![\\w-]))",
-        "github\\.com[/:][^/\\s\"']+/develop-with-llm(?![\\w-])"
+        "github\\.com[/:][^/\\s\"'<>]+/develop-with-llm(?![\\w-])"
       ],
+      "flags": "gi",
       "htmlOnly": false,
       "allow": []
     }

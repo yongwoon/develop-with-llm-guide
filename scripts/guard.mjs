@@ -10,16 +10,23 @@ const CONFIG_FILE = 'guard.config.json';
 const LOCAL_WORDS_FILE = 'guard-words.local.txt';
 const WORDS_ENV = 'GUARD_SENSITIVE_WORDS';
 const BINARY_SNIFF_BYTES = 8000;
+const SENSITIVE_WORD_NAME = 'sensitive word';
+// Shown instead of a path that itself contains a sensitive word, so the
+// public CI log never carries the word.
+const WITHHELD_PATH = '(path withheld: contains a sensitive word)';
+const HTML_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
 
 const root = process.cwd();
 const isCi = process.env.GITHUB_ACTIONS === 'true';
 
 const toPosix = (path) => path.split(sep).join('/');
-const normalize = (text) => text.normalize('NFC').toLowerCase();
+const normalize = (text) => text.normalize('NFC').toLowerCase().replace(/\s+/g, ' ');
 
-function fail(message, code) {
-	process.stderr.write(`guard: ${message}\n`);
-	process.exit(code);
+class GuardExit extends Error {
+	constructor(message, code) {
+		super(message);
+		this.exitCode = code;
+	}
 }
 
 function parseWords(text) {
@@ -36,14 +43,14 @@ function loadWords() {
 	const fromEnv = process.env[WORDS_ENV] ?? '';
 	if (isCi) {
 		const words = parseWords(fromEnv);
-		if (words.length === 0) fail(`${WORDS_ENV} is missing or has no words (fail-closed in CI)`, 1);
+		if (words.length === 0) throw new GuardExit(`${WORDS_ENV} is missing or has no words (fail-closed in CI)`, 1);
 		return words;
 	}
-	if (fromEnv.trim() !== '') return parseWords(fromEnv);
 	const localPath = join(root, LOCAL_WORDS_FILE);
-	const words = existsSync(localPath) ? parseWords(readFileSync(localPath, 'utf8')) : [];
+	const source = fromEnv.trim() !== '' ? fromEnv : existsSync(localPath) ? readFileSync(localPath, 'utf8') : '';
+	const words = parseWords(source);
 	if (words.length === 0) {
-		process.stderr.write(`guard: warning: no sensitive words loaded (${LOCAL_WORDS_FILE}); checking general patterns only\n`);
+		process.stderr.write(`guard: warning: no sensitive words loaded (${LOCAL_WORDS_FILE} or ${WORDS_ENV}); checking general patterns only\n`);
 	}
 	return words;
 }
@@ -52,7 +59,8 @@ function loadConfig() {
 	const config = JSON.parse(readFileSync(join(root, CONFIG_FILE), 'utf8'));
 	const rules = config.rules.map((rule) => ({
 		...rule,
-		regexes: rule.patterns.map((pattern) => new RegExp(pattern, 'g')),
+		allow: rule.allow.map((entry) => entry.toLowerCase()),
+		regexes: rule.patterns.map((pattern) => new RegExp(pattern, rule.flags ?? 'g')),
 	}));
 	return { ...config, rules };
 }
@@ -70,9 +78,25 @@ function listTrackedFiles() {
 	return output.split('\0').filter((path) => path !== '' && existsSync(join(root, path)) && statSync(join(root, path)).isFile());
 }
 
-function readText(path) {
+// Binary-looking files (a NUL early on) skip the general patterns, but are
+// still checked for sensitive words as UTF-8 and UTF-16 text.
+function readFile(path) {
 	const buffer = readFileSync(join(root, path));
-	return buffer.subarray(0, BINARY_SNIFF_BYTES).includes(0) ? null : buffer.toString('utf8');
+	const isBinary = buffer.subarray(0, BINARY_SNIFF_BYTES).includes(0);
+	const utf8 = buffer.toString('utf8');
+	return { isBinary, views: isBinary ? [utf8, buffer.toString('utf16le')] : [utf8] };
+}
+
+// Tags and entities can split or encode a string in built HTML, so HTML is
+// also checked as plain decoded text.
+function htmlTextView(html) {
+	return html
+		.replace(/<[^>]*>/g, '')
+		.replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(Number.parseInt(hex, 16)))
+		.replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(Number(dec)))
+		.replace(/&([a-z]+);/gi, (entity, name) => HTML_ENTITIES[name.toLowerCase()] ?? entity)
+		.replace(/%2f/gi, '/')
+		.replace(/%40/g, '@');
 }
 
 function matchesRule(rule, text) {
@@ -82,21 +106,31 @@ function matchesRule(rule, text) {
 }
 
 function checkFile(path, { generalRules, words, sensitiveWordRule }) {
-	const text = readText(path);
-	if (text === null) return [];
+	const { isBinary, views } = readFile(path);
 	const isHtml = path.endsWith('.html');
-	const hits = generalRules.filter((rule) => (isHtml || !rule.htmlOnly) && matchesRule(rule, text)).map((rule) => rule.id);
-	if (words.length > 0) {
-		const normalized = normalize(text);
-		if (words.some((word) => normalized.includes(word))) hits.push(sensitiveWordRule);
+	const texts = isHtml ? [...views, htmlTextView(views[0])] : views;
+	const hits = isBinary
+		? []
+		: generalRules
+				.filter((rule) => (isHtml || !rule.htmlOnly) && texts.some((text) => matchesRule(rule, text)))
+				.map((rule) => rule.id);
+	const pathHasWord = words.some((word) => normalize(path).includes(word));
+	if (pathHasWord || texts.some((text) => words.some((word) => normalize(text).includes(word)))) {
+		hits.push(sensitiveWordRule);
 	}
-	return hits.map((rule) => `${path} ${rule}`);
+	const shownPath = pathHasWord ? WITHHELD_PATH : path;
+	return hits.map((rule) => `${shownPath} ${rule}`);
 }
 
-function main() {
+function ruleLegend(config) {
+	const names = [...config.rules.map((rule) => `${rule.id} ${rule.name}`), `${config.sensitiveWordRule} ${SENSITIVE_WORD_NAME}`];
+	return `rules: ${names.join(', ')}`;
+}
+
+function run() {
 	const config = loadConfig();
 	const words = loadWords();
-	if (!existsSync(join(root, config.distDir))) fail(`${config.distDir}/ not found; run "npm run build" first`, 2);
+	if (!existsSync(join(root, config.distDir))) throw new GuardExit(`${config.distDir}/ not found; run "npm run build" first`, 2);
 
 	const distFiles = listFiles(join(root, config.distDir)).filter(
 		(path) => !config.distExclude.some((prefix) => path.startsWith(prefix)),
@@ -114,9 +148,19 @@ function main() {
 	);
 	if (findings.size > 0) {
 		process.stdout.write([...findings].sort().join('\n') + '\n');
-		fail(`${findings.size} finding(s); see "<path> <rule>" lines above and rules in ${CONFIG_FILE}`, 1);
+		throw new GuardExit(`${findings.size} finding(s) above as "<path> <rule>"; ${ruleLegend(config)}`, 1);
 	}
 	process.stderr.write(`guard: passed (${checks.length} files checked)\n`);
 }
 
-main();
+// Errors print only their name/code: messages may quote file content.
+try {
+	run();
+} catch (error) {
+	if (error instanceof GuardExit) {
+		process.stderr.write(`guard: ${error.message}\n`);
+		process.exit(error.exitCode);
+	}
+	process.stderr.write(`guard: error: could not complete the check (${error.code ?? error.name}); see ${CONFIG_FILE} and git status\n`);
+	process.exit(2);
+}
