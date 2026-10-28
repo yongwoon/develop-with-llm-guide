@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: git
 tools: [claude-code, codex]
 summary: 열린 PR 의 리뷰 코멘트에 대응하고 병합 가능한 상태로 만듭니다.
+next: [ywc-receive-review]
 outputs: [수정 commit, 리뷰 thread 답변]
 argsNote: Codex 에서는 PR 번호를 숫자로 적습니다. 생략하면 현재 branch 의 PR 을 대상으로 하고, --worktree 를 쓰면 반드시 적습니다.
 options:
@@ -31,6 +32,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -79,9 +81,13 @@ $ywc-handle-pr-reviews 15 --worktree
 
 ## 쓰지 말아야 할 때
 
-- 새 PR 을 만들 때 → `ywc-create-pr`
-- 직접 리뷰를 할 때 → `ywc-impl-review`
-- PR 없이 받은 지적만 검증할 때 → `ywc-receive-review`
-- local merge 나 rebase 의 충돌을 풀 때 → `ywc-resolve-conflict`
+- 새 PR 을 만들 때 → <SkillLink name="ywc-create-pr" />
+- 직접 리뷰를 할 때 → <SkillLink name="ywc-impl-review" />
+- PR 없이 받은 지적만 검증할 때 → <SkillLink name="ywc-receive-review" />
+- local merge 나 rebase 의 충돌을 풀 때 → <SkillLink name="ywc-resolve-conflict" />
+
+## 관련 흐름
+
+- [16 PR review 대응과 merge](/develop-with-llm-guide/flows/pr-review-merge/)
 
 <VerifiedStamp />

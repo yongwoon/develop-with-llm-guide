@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: git
 tools: [claude-code, codex]
 summary: 바뀐 file 을 골라 project 규칙에 맞게 커밋합니다.
+next: [ywc-create-pr]
 outputs: [commit]
 argsNote: option 이 없습니다. push 까지 원하면 요청 문장에 push 라고 적습니다.
 options: []
@@ -15,6 +16,7 @@ excludedOptions: { claude-code: [--skip-ubiquitous-update], codex: [--skip-ubiqu
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -44,8 +46,12 @@ $ywc-commit 지금까지 한 작업 커밋하고 push 해줘
 
 ## 쓰지 말아야 할 때
 
-- PR 까지 만들 때 → `ywc-create-pr`
-- 끝난 branch 를 병합까지 할 때 → `ywc-finish-branch`
-- code 를 리뷰할 때 → `ywc-impl-review`
+- PR 까지 만들 때 → <SkillLink name="ywc-create-pr" />
+- 끝난 branch 를 병합까지 할 때 → <SkillLink name="ywc-finish-branch" />
+- code 를 리뷰할 때 → <SkillLink name="ywc-impl-review" />
+
+## 관련 흐름
+
+- [12 작은 변경](/develop-with-llm-guide/flows/small-change/)
 
 <VerifiedStamp />

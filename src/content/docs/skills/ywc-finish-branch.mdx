@@ -48,6 +48,7 @@ excludedOptions: { claude-code: [--defer-push, --keep-branch, --worktree-path], 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -80,8 +81,13 @@ $ywc-finish-branch --mode local-merge --branch feature/000004-010-ui-flow-pages-
 ## 쓰지 말아야 할 때
 
 - branch 를 새로 만들 때 → git 명령이나 executor
-- PR 만 만들고 병합하지 않을 때 → `ywc-create-pr`
-- 커밋만 할 때 → `ywc-commit`
-- 열린 PR 의 리뷰 코멘트를 처리할 때 → `ywc-handle-pr-reviews`
+- PR 만 만들고 병합하지 않을 때 → <SkillLink name="ywc-create-pr" />
+- 커밋만 할 때 → <SkillLink name="ywc-commit" />
+- 열린 PR 의 리뷰 코멘트를 처리할 때 → <SkillLink name="ywc-handle-pr-reviews" />
+
+## 관련 흐름
+
+- [13 중·대형 기능](/develop-with-llm-guide/flows/large-feature/)
+- [16 PR review 대응과 merge](/develop-with-llm-guide/flows/pr-review-merge/)
 
 <VerifiedStamp />

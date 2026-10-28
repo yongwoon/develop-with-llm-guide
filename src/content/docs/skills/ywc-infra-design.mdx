@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: infra
 tools: [claude-code, codex]
 summary: 요구사항을 받아 cloud 인프라 설계 문서 묶음을 만듭니다.
+next: [ywc-iac-author]
 outputs: [docs/infrastructure/]
 argsNote: Codex 에서는 option 없이 인프라 요구사항과 provider·region 조건을 문장으로 적습니다.
 options:
@@ -28,6 +29,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -51,7 +53,7 @@ $ywc-infra-design GCP 에 작은 API 서비스와 PostgreSQL 을 둔다. region 
 </TabItem>
 </Tabs>
 
-**결과물**: 요구사항 질문에 답하면 서비스 구성과 그 이유가 정리됩니다. 결과는 `docs/infrastructure/` 의 설계 문서 묶음으로 남고, `ywc-iac-author` 의 입력이 됩니다.
+**결과물**: 요구사항 질문에 답하면 서비스 구성과 그 이유가 정리됩니다. 결과는 `docs/infrastructure/` 의 설계 문서 묶음으로 남고, <SkillLink name="ywc-iac-author" /> 의 입력이 됩니다.
 
 ## Options
 
@@ -59,8 +61,12 @@ $ywc-infra-design GCP 에 작은 API 서비스와 PostgreSQL 을 둔다. region 
 
 ## 쓰지 말아야 할 때
 
-- 설계를 Terraform code 로 만들 때 → `ywc-iac-author`
-- 기존 Terraform 을 리뷰할 때 → `ywc-infra-review`
-- 로컬 Docker 개발 환경을 만들 때 → `ywc-docker-compose`
+- 설계를 Terraform code 로 만들 때 → <SkillLink name="ywc-iac-author" />
+- 기존 Terraform 을 리뷰할 때 → <SkillLink name="ywc-infra-review" />
+- 로컬 Docker 개발 환경을 만들 때 → <SkillLink name="ywc-docker-compose" />
+
+## 관련 흐름
+
+- [20 인프라·클라우드](/develop-with-llm-guide/flows/infra-cloud/)
 
 <VerifiedStamp />

@@ -37,6 +37,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -66,8 +67,12 @@ $ywc-incident-postmortem --client 어제 14시부터 40분간 API gateway 가 5x
 
 ## 쓰지 말아야 할 때
 
-- 장애가 진행 중이고 원인을 찾아야 할 때 → `ywc-debug-rootcause`
-- 배포 전 보안 점검일 때 → `ywc-security-audit`
-- 리뷰 지적을 정리할 때 → `ywc-review-learnings`
+- 장애가 진행 중이고 원인을 찾아야 할 때 → <SkillLink name="ywc-debug-rootcause" />
+- 배포 전 보안 점검일 때 → <SkillLink name="ywc-security-audit" />
+- 리뷰 지적을 정리할 때 → <SkillLink name="ywc-review-learnings" />
+
+## 관련 흐름
+
+- [17 디버깅과 장애 회고](/develop-with-llm-guide/flows/debug-postmortem/)
 
 <VerifiedStamp />

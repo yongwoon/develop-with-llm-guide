@@ -26,6 +26,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -53,7 +54,11 @@ Codex 에는 이 skill 이 없습니다. gh CLI 로 issue 목록을 보며 label
 
 ## 쓰지 말아야 할 때
 
-- 열린 PR 의 리뷰 코멘트를 처리할 때 → `ywc-handle-pr-reviews`
-- bug 원인을 찾을 때 → `ywc-debug-rootcause`
+- 열린 PR 의 리뷰 코멘트를 처리할 때 → <SkillLink name="ywc-handle-pr-reviews" />
+- bug 원인을 찾을 때 → <SkillLink name="ywc-debug-rootcause" />
+
+## 관련 흐름
+
+- [23 릴리스와 저장소 운영](/develop-with-llm-guide/flows/release-repo-ops/)
 
 <VerifiedStamp />

@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: docs
 tools: [claude-code, codex]
 summary: 처음 보는 저장소의 onboarding guide 와 시작용 agent 지침 file 을 만듭니다.
+next: [ywc-ubiquitous-language]
 outputs: [Onboarding Guide, CLAUDE.md 또는 AGENTS.md]
 options:
   - name: --scope
@@ -34,6 +35,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -63,8 +65,12 @@ $ywc-onboard-repo --scope apps/web/
 
 ## 쓰지 말아야 할 때
 
-- agent 가 읽기 쉬운 정도를 점검할 때 → `ywc-agent-legibility-audit`
-- 새 project 의 폴더 구조를 설계할 때 → `ywc-project-scaffold`
-- 도메인 용어를 정리할 때 → `ywc-ubiquitous-language`
+- agent 가 읽기 쉬운 정도를 점검할 때 → <SkillLink name="ywc-agent-legibility-audit" />
+- 새 project 의 폴더 구조를 설계할 때 → <SkillLink name="ywc-project-scaffold" />
+- 도메인 용어를 정리할 때 → <SkillLink name="ywc-ubiquitous-language" />
+
+## 관련 흐름
+
+- [11 기존 repo 진입하기](/develop-with-llm-guide/flows/onboarding-existing-repo/)
 
 <VerifiedStamp />

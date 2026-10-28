@@ -20,6 +20,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -51,7 +52,11 @@ $ywc-handoff
 
 ## 쓰지 말아야 할 때
 
-- session 을 돌아보고 개선점을 찾을 때 → `ywc-retro`
-- project 의 목적을 오래 남길 때 → `ywc-mission`
+- session 을 돌아보고 개선점을 찾을 때 → <SkillLink name="ywc-retro" />
+- project 의 목적을 오래 남길 때 → <SkillLink name="ywc-mission" />
+
+## 관련 흐름
+
+- [25 세션 운영과 skill 관리](/develop-with-llm-guide/flows/session-skill-management/)
 
 <VerifiedStamp />

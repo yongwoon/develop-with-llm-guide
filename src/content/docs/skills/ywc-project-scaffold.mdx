@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: docs
 tools: [claude-code, codex]
 summary: 기술 stack 에 맞는 project 폴더 구조를 계획으로 제안합니다.
+next: [ywc-ubiquitous-language]
 outputs: [폴더 구조 계획]
 options:
   - name: "<description>"
@@ -17,6 +18,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -46,8 +48,12 @@ $ywc-project-scaffold TypeScript, Astro Starlight, 정적 문서 사이트, GitH
 
 ## 쓰지 말아야 할 때
 
-- 실제 file 과 code 를 만들 때 → `ywc-code-gen`
-- task 로 나눌 때 → `ywc-task-generator`
-- 이미 있는 저장소를 파악할 때 → `ywc-onboard-repo`
+- 실제 file 과 code 를 만들 때 → <SkillLink name="ywc-code-gen" />
+- task 로 나눌 때 → <SkillLink name="ywc-task-generator" />
+- 이미 있는 저장소를 파악할 때 → <SkillLink name="ywc-onboard-repo" />
+
+## 관련 흐름
+
+- [10 새 project 시작하기](/develop-with-llm-guide/flows/new-project/)
 
 <VerifiedStamp />

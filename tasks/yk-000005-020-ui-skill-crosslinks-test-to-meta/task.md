@@ -39,3 +39,11 @@ Covers: F-NAV (본문 skill 이름 link → `#options`), SC005 (1 클릭 option 
 - [ ] lint / typecheck: N/A — spec·tech-stack 이 정의한 script 가 없다
 
 ## Implementation Notes (optional)
+
+- 방법: `yk-000005-010-ui-skill-crosslinks-plan-to-review` 와 같은 규칙으로 기계적으로 채웠다 (흐름 page 의 FlowStep `skill`·`alt` prop 기준, 변환 script 는 저장소에 두지 않음).
+  - `next`: 필수 단계가 있는 흐름에서 바로 다음 단계, 최대 3개. `,` 로 이어진 독립 선택 단계는 "다음"이 아니므로 제외했다 (`ywc-finish-branch`, `ywc-changelog-release-notes`, `ywc-merge-dependabot` 은 `next` 없음). 그 밖에 다음 단계가 없는 skill: ywc-gen-testcase, ywc-e2e-test-strategy, ywc-verification-map, ywc-create-pr, ywc-issue-triage, ywc-infra-optimize, ywc-incident-postmortem, ywc-setup, ywc-retro, ywc-handoff, ywc-skill-author.
+  - 본문: code block 밖의 `` `ywc-<name>` `` inline code → `<SkillLink />` (자기 자신 제외).
+  - 관련 흐름: 이 skill 이 FlowStep 으로 등장하는 흐름, 흐름 번호 순, `<VerifiedStamp />` 앞.
+- 관련 흐름 검사: 대상 27 page 모두 link 1개 이상 (최소 1, 최대 2). 누락 0건. 63 page 전체로도 `## 관련 흐름` 없는 page 0건, link 안 된 본문 skill 이름 0건.
+- 내용 수정 필요 사항: 없음.
+- 확인: `pnpm run build` 성공, `pnpm run guard` 통과.
