@@ -1,0 +1,208 @@
+---
+title: 새 project 시작하기
+description: 새 프로젝트를 아이디어에서 시작해 mission, 기술 조사, 폴더 구조, 사양서, task 분해를 거쳐 구현 실행까지 가는 흐름입니다.
+kind: flow
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+titleBlock:
+  number: 10
+  steps: 11
+  required: 9
+  optional: 2
+  outputs: [docs/mission.md, docs/specification/, tasks/]
+sidebar:
+  order: 10
+  label: 10 새 project 시작하기
+---
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+import Flow from '../../../components/Flow.astro';
+import FlowStep from '../../../components/FlowStep.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+빈 저장소에서 새 프로젝트를 시작할 때, 무엇을 만들지 정하는 일부터 첫 task 실행까지 skill 을 이 순서로 씁니다.
+
+<Aside title="언제 쓰나">
+- 아이디어만 있고 저장소에는 아직 code 가 없을 때
+- 사양서와 task 목록을 먼저 만들고 그 위에서 구현을 진행하고 싶을 때
+</Aside>
+
+## 새 프로젝트 흐름
+
+<Flow>
+<FlowStep skill="ywc-brainstorm" desc="막연한 아이디어를 질문으로 좁혀 무엇을 만들지 합의합니다." />
+<FlowStep skill="ywc-mission" desc="존재 이유, 성공 기준, non-goal 을 mission 문서로 남깁니다." />
+<FlowStep skill="ywc-tech-research" desc="framework·library 후보를 비교해 기술 stack 을 고릅니다." optional />
+<FlowStep skill="ywc-project-scaffold" desc="고른 stack 에 맞는 폴더 구조를 계획으로 받습니다." />
+<FlowStep skill="ywc-ubiquitous-language" desc="도메인 용어집을 만들어 이후 문서와 code 의 용어를 맞춥니다." optional />
+<FlowStep skill="ywc-spec-writer" kind="loop" desc="사양서를 씁니다. 검토에서 지적이 나오면 고쳐 씁니다." />
+<FlowStep skill="ywc-spec-validate" kind="loop" desc="사양서를 검토합니다. 판정이 통과할 때까지 앞 단계와 왕복합니다." />
+<FlowStep skill="ywc-project-docs" desc="architecture·운영 문서를 docs/ 에 씁니다." />
+<FlowStep skill="ywc-task-generator" desc="검토를 통과한 사양서를 task 디렉터리와 의존 그래프로 나눕니다." />
+<FlowStep skill="ywc-confidence-gate" desc="구현에 들어가기 직전에 준비 상태를 판정합니다." />
+<FlowStep skill="ywc-task-executor" desc="task 의존 관계에 맞는 실행 방식으로 구현을 시작합니다." />
+</Flow>
+
+## 새 프로젝트 실행 예시
+
+### 1. ywc-brainstorm
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-brainstorm skill 사용법을 웹에서 찾아보는 guide 사이트를 만들고 싶다
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-brainstorm skill 사용법을 웹에서 찾아보는 guide 사이트를 만들고 싶다
+```
+</TabItem>
+</Tabs>
+
+### 2. ywc-mission
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-mission 사용자는 owner 한 명이고 한국어 guide 만 둔다. 다국어 지원은 하지 않는다
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-mission 사용자는 owner 한 명이고 한국어 guide 만 둔다. 다국어 지원은 하지 않는다
+```
+</TabItem>
+</Tabs>
+
+### 3. ywc-tech-research
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-tech-research 한국어 검색이 되는 정적 문서 사이트 --compare "Astro Starlight,VitePress" --output docs/research/static-site-framework.md
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-tech-research 한국어 검색이 되는 정적 문서 사이트 --compare "Astro Starlight,VitePress" --output docs/research/static-site-framework.md
+```
+</TabItem>
+</Tabs>
+
+### 4. ywc-project-scaffold
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-project-scaffold TypeScript, Astro Starlight, 정적 문서 사이트, GitHub Pages 배포
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-project-scaffold TypeScript, Astro Starlight, 정적 문서 사이트, GitHub Pages 배포
+```
+</TabItem>
+</Tabs>
+
+### 5. ywc-ubiquitous-language
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-ubiquitous-language --dry-run
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-ubiquitous-language --dry-run
+```
+</TabItem>
+</Tabs>
+
+### 6–7. ywc-spec-writer ↔ ywc-spec-validate
+
+사양서를 쓰고 검토한 뒤, 지적이 남으면 다시 고쳐 쓰고 검토합니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-spec-writer --full
+/ywc-spec-validate --spec docs/specification/02-features.md
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-spec-writer --full
+$ywc-spec-validate --spec docs/specification/02-features.md
+```
+</TabItem>
+</Tabs>
+
+### 8. ywc-project-docs
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-project-docs GitHub Pages 배포와 공개 가드 실패 시 대처를 담은 운영 guide --lang ko
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-project-docs GitHub Pages 배포와 공개 가드 실패 시 대처를 담은 운영 guide --lang ko
+```
+</TabItem>
+</Tabs>
+
+### 9. ywc-task-generator
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-task-generator docs/specification/ --mode llm --lang ko
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-task-generator docs/specification/ --mode llm --lang ko
+```
+</TabItem>
+</Tabs>
+
+### 10. ywc-confidence-gate
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-confidence-gate Phase 1 scaffold task 실행
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-confidence-gate Phase 1 scaffold task 실행
+```
+</TabItem>
+</Tabs>
+
+### 11. ywc-task-executor
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-task-executor 000001-010..000001-040 --local-merge --review
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-task-executor 000001-010..000001-040 --delivery local-merge --review
+```
+</TabItem>
+</Tabs>
+
+## 건너뛸 수 있는 조건
+
+- **3단계 <SkillLink name="ywc-tech-research" />**: 기술 stack 이 이미 정해져 있으면 건너뜁니다.
+- **5단계 <SkillLink name="ywc-ubiquitous-language" />**: 도메인 용어가 적어 용어집이 필요 없으면 건너뜁니다. 나중에 용어가 늘면 그때 만듭니다.
+- 이미 code 가 있는 저장소라면 이 흐름 대신 [11 기존 repo 진입하기](/develop-with-llm-guide/flows/onboarding-existing-repo/) 흐름으로 시작합니다.
+
+<VerifiedStamp />
