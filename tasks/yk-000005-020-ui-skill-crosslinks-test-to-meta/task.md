@@ -47,3 +47,4 @@ Covers: F-NAV (본문 skill 이름 link → `#options`), SC005 (1 클릭 option 
 - 관련 흐름 검사: 대상 27 page 모두 link 1개 이상 (최소 1, 최대 2). 누락 0건. 63 page 전체로도 `## 관련 흐름` 없는 page 0건, link 안 된 본문 skill 이름 0건.
 - 내용 수정 필요 사항: 없음.
 - 확인: `pnpm run build` 성공, `pnpm run guard` 통과.
+- review 반영: `ywc-handle-pr-reviews` 의 `next` 를 `ywc-finish-branch` 로 바꿨다 (`ywc-receive-review` 는 이 page 의 "쓰지 말아야 할 때" 대안이라 후속 단계로 읽히지 않음).
