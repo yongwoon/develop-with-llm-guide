@@ -27,6 +27,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -56,8 +57,12 @@ $ywc-infra-optimize cost-report.json 기준으로 과하게 잡힌 자원의 크
 
 ## 쓰지 말아야 할 때
 
-- 새 인프라를 설계할 때 → `ywc-infra-design`
-- 변경 전 리뷰만 할 때 → `ywc-infra-review`
-- application code 의 성능을 볼 때 → `ywc-impl-review`
+- 새 인프라를 설계할 때 → <SkillLink name="ywc-infra-design" />
+- 변경 전 리뷰만 할 때 → <SkillLink name="ywc-infra-review" />
+- application code 의 성능을 볼 때 → <SkillLink name="ywc-impl-review" />
+
+## 관련 흐름
+
+- [20 인프라·클라우드](/develop-with-llm-guide/flows/infra-cloud/)
 
 <VerifiedStamp />

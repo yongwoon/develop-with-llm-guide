@@ -90,6 +90,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -136,7 +137,11 @@ $ywc-gen-testcase --range v1.2..v1.3 --audience qa --include-regression
 
 ## 쓰지 말아야 할 때
 
-- 자동 unit·integration test 를 쓸 때 → `ywc-tdd-ritual`
-- 자동 E2E test 전략이나 Playwright test 가 필요할 때 → `ywc-e2e-test-strategy`
+- 자동 unit·integration test 를 쓸 때 → <SkillLink name="ywc-tdd-ritual" />
+- 자동 E2E test 전략이나 Playwright test 가 필요할 때 → <SkillLink name="ywc-e2e-test-strategy" />
+
+## 관련 흐름
+
+- [18 테스트와 완료 검증](/develop-with-llm-guide/flows/testing-verification/)
 
 <VerifiedStamp />

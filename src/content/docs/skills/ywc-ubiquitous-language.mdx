@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: docs
 tools: [claude-code, codex]
 summary: 도메인 용어집 docs/ubiquitous-language.md 를 만들고 갱신합니다.
+next: [ywc-spec-writer, ywc-architecture-invariants]
 outputs: [docs/ubiquitous-language.md]
 options:
   - name: --mode
@@ -36,6 +37,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -65,8 +67,13 @@ $ywc-ubiquitous-language --mode extract --dry-run
 
 ## 쓰지 말아야 할 때
 
-- 일반 project 문서를 쓸 때 → `ywc-project-docs`
-- 처음 보는 저장소를 파악할 때 → `ywc-onboard-repo`
-- 리뷰 선호를 쌓을 때 → `ywc-review-learnings`
+- 일반 project 문서를 쓸 때 → <SkillLink name="ywc-project-docs" />
+- 처음 보는 저장소를 파악할 때 → <SkillLink name="ywc-onboard-repo" />
+- 리뷰 선호를 쌓을 때 → <SkillLink name="ywc-review-learnings" />
+
+## 관련 흐름
+
+- [10 새 project 시작하기](/develop-with-llm-guide/flows/new-project/)
+- [11 기존 repo 진입하기](/develop-with-llm-guide/flows/onboarding-existing-repo/)
 
 <VerifiedStamp />

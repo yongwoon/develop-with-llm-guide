@@ -51,6 +51,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -80,7 +81,11 @@ $ywc-changelog-release-notes --both --from v1.2.0 --version 1.3.0
 
 ## 쓰지 말아야 할 때
 
-- 병합된 PR 표만 필요할 때 → `ywc-release-pr-list`
-- 커밋만 할 때 → `ywc-commit`
+- 병합된 PR 표만 필요할 때 → <SkillLink name="ywc-release-pr-list" />
+- 커밋만 할 때 → <SkillLink name="ywc-commit" />
+
+## 관련 흐름
+
+- [23 릴리스와 저장소 운영](/develop-with-llm-guide/flows/release-repo-ops/)
 
 <VerifiedStamp />

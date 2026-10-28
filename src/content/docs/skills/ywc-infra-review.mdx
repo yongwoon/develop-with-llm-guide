@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: infra
 tools: [claude-code, codex]
 summary: terraform plan 이나 기존 IaC 의 보안·비용·신뢰성 문제를 apply 전에 리뷰합니다.
+next: [ywc-infra-optimize]
 outputs: [심각도별 인프라 리뷰 보고]
 argsNote: Codex 에서는 option 없이 리뷰할 plan, diff, file 범위를 적습니다.
 options:
@@ -27,6 +28,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -56,8 +58,12 @@ $ywc-infra-review terraform-plan.txt 의 plan 결과
 
 ## 쓰지 말아야 할 때
 
-- application code 의 보안을 볼 때 → `ywc-security-audit`
-- Terraform 을 새로 쓸 때 → `ywc-iac-author`
-- 이미 운영 중인 인프라를 줄이거나 정리할 때 → `ywc-infra-optimize`
+- application code 의 보안을 볼 때 → <SkillLink name="ywc-security-audit" />
+- Terraform 을 새로 쓸 때 → <SkillLink name="ywc-iac-author" />
+- 이미 운영 중인 인프라를 줄이거나 정리할 때 → <SkillLink name="ywc-infra-optimize" />
+
+## 관련 흐름
+
+- [20 인프라·클라우드](/develop-with-llm-guide/flows/infra-cloud/)
 
 <VerifiedStamp />

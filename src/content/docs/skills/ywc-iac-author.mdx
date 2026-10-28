@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: infra
 tools: [claude-code, codex]
 summary: 설계 문서를 plan 으로 검증한 Terraform module 로 만듭니다.
+next: [ywc-infra-review]
 outputs: [Terraform module, 영향 요약]
 argsNote: Codex 에서는 option 없이 provider, 환경, module 용도, 변경 범위를 문장으로 적습니다.
 options:
@@ -28,6 +29,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -59,8 +61,12 @@ $ywc-iac-author docs/infrastructure 설계의 compute module 을 GCP staging 환
 
 ## 쓰지 말아야 할 때
 
-- 아직 설계 문서가 없을 때 → `ywc-infra-design`
-- 작성된 Terraform 을 리뷰할 때 → `ywc-infra-review`
-- 이미 운영 중인 인프라의 비용을 줄일 때 → `ywc-infra-optimize`
+- 아직 설계 문서가 없을 때 → <SkillLink name="ywc-infra-design" />
+- 작성된 Terraform 을 리뷰할 때 → <SkillLink name="ywc-infra-review" />
+- 이미 운영 중인 인프라의 비용을 줄일 때 → <SkillLink name="ywc-infra-optimize" />
+
+## 관련 흐름
+
+- [20 인프라·클라우드](/develop-with-llm-guide/flows/infra-cloud/)
 
 <VerifiedStamp />

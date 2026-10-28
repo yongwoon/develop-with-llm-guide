@@ -75,6 +75,7 @@ excludedOptions: { claude-code: [--skip-post-ci-check, --skip-ubiquitous-update]
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -106,8 +107,12 @@ $ywc-create-pr --lang ko --plan-doc docs/ywc-plans/20261028-option-table.md
 
 ## 쓰지 말아야 할 때
 
-- 커밋만 할 때 → `ywc-commit`
-- 이미 끝난 branch 를 병합까지 전달할 때 → `ywc-finish-branch`
-- 열린 PR 의 리뷰 코멘트를 처리할 때 → `ywc-handle-pr-reviews`
+- 커밋만 할 때 → <SkillLink name="ywc-commit" />
+- 이미 끝난 branch 를 병합까지 전달할 때 → <SkillLink name="ywc-finish-branch" />
+- 열린 PR 의 리뷰 코멘트를 처리할 때 → <SkillLink name="ywc-handle-pr-reviews" />
+
+## 관련 흐름
+
+- [12 작은 변경](/develop-with-llm-guide/flows/small-change/)
 
 <VerifiedStamp />

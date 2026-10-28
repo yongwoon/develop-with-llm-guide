@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: docs
 tools: [claude-code, codex]
 summary: architecture·product·운영 문서를 docs/ 에 씁니다.
+next: [ywc-task-generator]
 outputs: [docs/]
 argsNote: Claude Code 에서는 만들 문서를 요청 문장으로 적습니다.
 options:
@@ -27,6 +28,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -56,8 +58,12 @@ $ywc-project-docs GitHub Pages 배포와 공개 가드 실패 시 대처를 담�
 
 ## 쓰지 말아야 할 때
 
-- 사양서를 쓸 때 → `ywc-spec-writer`
-- 도메인 용어집을 만들 때 → `ywc-ubiquitous-language`
+- 사양서를 쓸 때 → <SkillLink name="ywc-spec-writer" />
+- 도메인 용어집을 만들 때 → <SkillLink name="ywc-ubiquitous-language" />
 - code 주석이나 README 한 줄을 고칠 때 → 직접 수정
+
+## 관련 흐름
+
+- [10 새 project 시작하기](/develop-with-llm-guide/flows/new-project/)
 
 <VerifiedStamp />

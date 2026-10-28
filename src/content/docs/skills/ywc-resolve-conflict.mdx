@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0 }
 category: git
 tools: [claude-code]
 summary: local merge·rebase 충돌을 hunk 하나씩 해결합니다.
+next: [ywc-finish-branch]
 outputs: [충돌이 해결된 file]
 argsNote: option 이 없습니다. 지금 진행 중인 merge 나 rebase 의 충돌을 대상으로 합니다.
 options: []
@@ -14,6 +15,7 @@ options: []
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -43,8 +45,12 @@ Codex 에는 이 skill 이 없습니다. 충돌 file 을 보여 주고 hunk 마�
 
 ## 쓰지 말아야 할 때
 
-- 열린 PR 이 base branch 와 충돌할 때 → `ywc-handle-pr-reviews`
-- 내 branch 로 push 가 거부될 때 → `ywc-handle-pr-reviews`
+- 열린 PR 이 base branch 와 충돌할 때 → <SkillLink name="ywc-handle-pr-reviews" />
+- 내 branch 로 push 가 거부될 때 → <SkillLink name="ywc-handle-pr-reviews" />
 - 충돌과 상관없는 code 를 쓸 때 → 구현 요청을 직접
+
+## 관련 흐름
+
+- [16 PR review 대응과 merge](/develop-with-llm-guide/flows/pr-review-merge/)
 
 <VerifiedStamp />

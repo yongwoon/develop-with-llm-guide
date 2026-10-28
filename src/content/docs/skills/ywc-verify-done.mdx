@@ -7,12 +7,14 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: test
 tools: [claude-code, codex]
 summary: 완료를 주장하기 전에 명령 실행 결과로 확인합니다.
+next: [ywc-commit]
 argsNote: option 이 없습니다. 지금 대화에서 하려는 완료 주장을 대상으로 확인합니다.
 options: []
 ---
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -45,7 +47,12 @@ $ywc-verify-done
 ## 쓰지 말아야 할 때
 
 - 아직 구현 중일 때 → 구현을 먼저 마치기
-- spec 과 대조하는 리뷰가 필요할 때 → `ywc-impl-review`
-- 구현 착수 전에 준비 상태를 볼 때 → `ywc-confidence-gate`
+- spec 과 대조하는 리뷰가 필요할 때 → <SkillLink name="ywc-impl-review" />
+- 구현 착수 전에 준비 상태를 볼 때 → <SkillLink name="ywc-confidence-gate" />
+
+## 관련 흐름
+
+- [12 작은 변경](/develop-with-llm-guide/flows/small-change/)
+- [18 테스트와 완료 검증](/develop-with-llm-guide/flows/testing-verification/)
 
 <VerifiedStamp />

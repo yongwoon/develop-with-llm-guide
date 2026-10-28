@@ -28,6 +28,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -59,7 +60,11 @@ $ywc-merge-dependabot security
 
 ## 쓰지 말아야 할 때
 
-- Dependabot 이 아닌 PR 을 병합할 때 → `ywc-finish-branch`
-- docker image 를 직접 최신화할 때 → `ywc-docker-compose`
+- Dependabot 이 아닌 PR 을 병합할 때 → <SkillLink name="ywc-finish-branch" />
+- docker image 를 직접 최신화할 때 → <SkillLink name="ywc-docker-compose" />
+
+## 관련 흐름
+
+- [23 릴리스와 저장소 운영](/develop-with-llm-guide/flows/release-repo-ops/)
 
 <VerifiedStamp />

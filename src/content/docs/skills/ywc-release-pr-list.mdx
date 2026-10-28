@@ -7,6 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: git
 tools: [claude-code, codex]
 summary: release PR 에 병합된 PR 목록을 작성자별로 정리합니다.
+next: [ywc-changelog-release-notes]
 outputs: [release PR 설명의 PR LIST 절]
 options:
   - name: "<PR#>"
@@ -26,6 +27,7 @@ options:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
 import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
 import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <SkillCard />
@@ -57,7 +59,11 @@ $ywc-release-pr-list 30
 
 ## 쓰지 말아야 할 때
 
-- release PR 자체를 만들 때 → `ywc-create-pr`
-- CHANGELOG 나 사용자용 release note 를 쓸 때 → `ywc-changelog-release-notes`
+- release PR 자체를 만들 때 → <SkillLink name="ywc-create-pr" />
+- CHANGELOG 나 사용자용 release note 를 쓸 때 → <SkillLink name="ywc-changelog-release-notes" />
+
+## 관련 흐름
+
+- [23 릴리스와 저장소 운영](/develop-with-llm-guide/flows/release-repo-ops/)
 
 <VerifiedStamp />
