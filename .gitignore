@@ -3,3 +3,11 @@
 
 # Public-guard sensitive words (R-GUARD); never commit
 guard-words.local.txt
+
+# Astro build output, generated types, dependencies
+dist/
+.astro/
+node_modules/
+
+# Fact memos for skill pages (local only, never commit)
+.fact-memos/
