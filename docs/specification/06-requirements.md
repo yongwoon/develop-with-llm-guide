@@ -148,7 +148,7 @@ Pagefind 의 한국어 품질을 실측한 근거가 없으므로 (`docs/researc
 | 항목 | 목표 |
 |---|---|
 | 대비 | WCAG 2.2 AA. 본문과 라벨 4.5:1 이상 (design-system 의 token 대비표) |
-| 반응형 | 375px 에서 page 가로 scroll 0. 긴 mono 토큰과 코드 블록은 해당 요소 내부의 가로 scroll 을 허용한다. Skill 색인은 카드 목록으로 바뀐다. 820px 이하에서 sidebar drawer, 1100px 이상에서 TOC 표시 |
+| 반응형 | 375px 에서 page 가로 scroll 0. 긴 mono 토큰과 코드 블록은 해당 요소 내부의 가로 scroll 을 허용한다. Skill 색인은 카드 목록으로 바뀐다. 800px(50rem) 미만에서 sidebar drawer, 1152px(72rem) 이상에서 TOC 표시 (Starlight 기본값, 2026-10-28 owner 결정) |
 | Lighthouse (mobile, 대표 페이지 3개: 홈, 흐름 10, `ywc-mission`) | Accessibility 95 이상, Performance 90 이상, SEO 90 이상. 첫 공개 gate 는 build 후 preview 에서 mobile preset 으로 측정한다. 공개 후 배포 URL 에서 한 번 더 측정한다. 결과는 `docs/` 에 기록한다 |
 | 검색 엔진 색인 | 허용한다. 사이트는 공개 guidebook 이며, NG001 이 금지하는 것은 develop-with-llm 의 다른 자료 공개다 (OQ-14 결정) |
 | keyboard | 검색, tab 전환, theme 전환, copy, sidebar drawer(열기/닫기, Escape 로 닫기, 닫은 뒤 여는 버튼으로 focus 반환)를 keyboard 만으로 수행 가능 |
@@ -176,7 +176,7 @@ Pagefind 의 한국어 품질을 실측한 근거가 없으므로 (`docs/researc
 |---|---|---|
 | `docs/mission.md` | SC001–SC005, NG001–NG003, CN001–CN004, RA001–RA003 | 전 section 의 판단 기준 |
 | `docs/research/2026-10-28-static-site-framework.md` | Starlight 0.42.7, Pagefind open issue #1211 / #1283 | R-DEPLOY, R-SEARCH |
-| `docs/design/design-system.md` | color token, contrast 값, breakpoint 820 / 1100 px | R-UX |
+| `docs/design/design-system.md` | color token, contrast 값, breakpoint 800 / 1152 px | R-UX |
 | `docs/tech-stack.md` | directory 구조, base path | 04-interfaces |
 | npm registry `astro` engines (2026-10-28 조회) | Node 22.23.4 이상 | R-DEPLOY |
 | develop-with-llm `tools/claude-code/VERSION`, `tools/codex-skill/VERSION` (2026-10-28) | 1.0.0 / 0.16.164-candidate.4 | 03-data 의 `sourceVersion` 초기값 |

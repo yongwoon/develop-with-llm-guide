@@ -143,6 +143,6 @@ develop-with-llm-guide/
 - **버전 고정**: Starlight 가 0.x 이므로 `package.json` 의 `@astrojs/starlight` 는 exact version 으로 고정한다. 업그레이드는 별도 작업으로 다룬다.
 - **package manager**: npm. `package-lock.json` 을 commit 하고 CI 는 lockfile 기반으로 install 한다.
 - **Node 고정**: `.nvmrc` 와 `package.json` 의 engines 로 고정한다 (spec R-DEPLOY).
-- **Mobile-first**: 375px 기준으로 작성하고, 820px(sidebar drawer)·1100px(TOC 표시)에서 확장한다.
+- **Mobile-first**: 375px 기준으로 작성하고, 800px(sidebar 고정)·1152px(TOC 표시)에서 확장한다. 둘 다 Starlight 기본 breakpoint 다.
 - **Spec 반영**: 배포 workflow (R-DEPLOY), 한국어 검색 실측 (R-SEARCH), 공개 가드 (R-GUARD), 최신성 점검 (R-FRESH) 는 `docs/specification/06-requirements.md` 가 기준이다.
 - **Architecture invariants**: layer 간 금지 의존이 `overrides → components` 단방향 하나뿐이다. manifest 를 따로 두지 않는다.

@@ -8,7 +8,7 @@
 - `public/fonts/`: Pretendard Variable subset woff2, DM Mono woff2 (file 로 self-host, npm package 추가 없음)
 - `@font-face` (`font-display: swap`) 와 본문 font preload (`head` 설정)
 - Expressive Code theme (navy 배경, copy 버튼, 3px offset 그림자)
-- breakpoint 정합: Starlight 기본(50rem / 72rem)과 design 820px / 1100px 의 차이 해소
+- breakpoint 정합: Starlight 기본(50rem / 72rem)과 design 820px / 1100px 의 차이 해소 → owner 결정으로 Starlight 기본 800 / 1152px 채택 (2026-10-28)
 
 ## Spec Reference
 
@@ -47,7 +47,7 @@ CSS custom property 만으로 design system 을 구현하고 Tailwind 는 쓰지
 
 ## Notes
 - **Base branch: `content/initial`** (R-RELEASE). task branch 는 `content/initial` 에서 만들고 `content/initial` 로 병합한다. main 에 직접 병합하지 않는다.
-- **Mobile-first** (mobile-first-ui.md): base 스타일은 375px 기준, `min-width` breakpoint 로 820px·1100px 를 더한다. `max-width` 로 되돌리는 규칙을 쓰지 않는다.
+- **Mobile-first** (mobile-first-ui.md): base 스타일은 375px 기준, `min-width` breakpoint 로 800px·1152px(Starlight 기본, owner 결정)를 더한다. `max-width` 로 되돌리는 규칙을 쓰지 않는다.
 - font 를 npm package(`@fontsource` 등)로 들이면 library 도입이므로 별도 task 가 필요하다. 이 task 는 woff2 file 을 `public/fonts/` 에 직접 둔다. font license(OFL) 파일을 함께 둔다.
 - font file 은 base path 를 포함한 URL 로 참조한다.
 
