@@ -39,3 +39,17 @@ Covers: F-FLOW (흐름 10–17), F-NAV (흐름 → skill 2 클릭), SC003, R-SEA
 - [ ] lint / typecheck: N/A — spec·tech-stack 이 정의한 script 가 없다
 
 ## Implementation Notes (optional)
+
+- slug: 10 `new-project`, 11 `onboarding-existing-repo`, 12 `small-change`, 13 `large-feature`, 14 `autonomous-goal`, 15 `uncertain-initiative`, 16 `pr-review-merge`, 17 `debug-postmortem`.
+- 필수/선택 예외 (범례 기본 규칙에서 바꾼 단계, 각 page "건너뛸 수 있는 조건"에 근거 기재):
+  - 10: `ywc-tech-research`, `ywc-ubiquitous-language` 선택 → 9/2
+  - 11: `ywc-agent-legibility-audit` 선택 → 3/1
+  - 12: `ywc-tdd-ritual` 선택 (test 로 확인할 동작이 없는 변경) → 4/1
+  - 13: `ywc-impl-review` (executor `--review` 로 이미 리뷰한 경우), `ywc-security-audit`, `ywc-finish-branch` (executor 가 병합까지 끝내는 경우) 선택 → 5/3. 실행 단계는 alt 1개 (task-executor / sequential / parallel / code-gen)
+  - 16: `ywc-resolve-conflict` 선택 (local 충돌이 있을 때만), `ywc-review-learnings` 는 `,` 기본 규칙으로 선택 → 3/2
+  - 17: `ywc-incident-postmortem` 선택 (운영 장애가 아닌 bug) → 1/1
+  - 14, 15 는 예외 없음.
+- 한쪽 도구 전용 단계: 15 `ywc-adr`, 16 `ywc-resolve-conflict` (Claude Code 전용). Codex tab 에 대체 방법을 적었다.
+- 실행 예시의 호출 형태는 이미 공개된 skill page 의 사례·option 표에서 가져왔다 (option 이름 SC002 일치).
+- 확인: `pnpm run build` 성공, `pnpm run guard` 통과, preview 375px 에서 8 page 모두 scrollWidth = clientWidth, FlowStep 수 = titleBlock.steps.
+- 미반영 (Ownership 밖): design-system 의 "sidebar 흐름 번호를 mono 로" 는 CSS 작업이다. 이 task 는 `sidebar.label` 앞에 번호만 붙였다.

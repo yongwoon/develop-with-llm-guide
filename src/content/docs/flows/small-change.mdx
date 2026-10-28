@@ -1,0 +1,122 @@
+---
+title: 작은 변경
+description: 버그 수정이나 작은 기능 추가처럼 작은 변경을 계획, test 우선 구현, 완료 확인, 커밋, PR 생성 순서로 끝내는 흐름입니다.
+kind: flow
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+titleBlock:
+  number: 12
+  steps: 5
+  required: 4
+  optional: 1
+  outputs: ["docs/ywc-plans/YYYYMMDD-small_<slug>.md", commit, PR]
+sidebar:
+  order: 12
+  label: 12 작은 변경
+---
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+import Flow from '../../../components/Flow.astro';
+import FlowStep from '../../../components/FlowStep.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+file 몇 개로 끝나는 작은 변경은 task 분해 없이 계획 한 장에서 바로 구현하고 PR 까지 만듭니다.
+
+<Aside title="언제 쓰나">
+- 버그 하나를 고치거나 작은 기능 하나를 더할 때
+- 사양서와 task 목록까지 만들 규모가 아닐 때
+</Aside>
+
+## 작은 변경 흐름
+
+<Flow>
+<FlowStep skill="ywc-plan" desc="small path 로 짧은 실행 계획을 만듭니다. 규모는 요청을 보고 정해집니다." />
+<FlowStep skill="ywc-tdd-ritual" desc="실패하는 test 를 먼저 쓰고 그 test 를 통과시키도록 구현합니다." optional />
+<FlowStep skill="ywc-verify-done" desc="완료라고 말하기 전에 test·build 명령 결과로 확인합니다." />
+<FlowStep skill="ywc-commit" desc="바뀐 file 을 골라 project 규칙에 맞게 커밋합니다." />
+<FlowStep skill="ywc-create-pr" desc="점검과 push 를 거쳐 PR 을 만듭니다." />
+</Flow>
+
+## 작은 변경 실행 예시
+
+### 1. ywc-plan
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-plan 사이트 footer 에 GitHub 저장소 link 를 추가하고 싶다
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-plan 사이트 footer 에 GitHub 저장소 link 를 추가하고 싶다
+```
+</TabItem>
+</Tabs>
+
+### 2. ywc-tdd-ritual
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-tdd-ritual Skill 색인에서 분류를 바꾸면 skill 개수 표시가 갱신되지 않는다
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-tdd-ritual Skill 색인에서 분류를 바꾸면 skill 개수 표시가 갱신되지 않는다
+```
+</TabItem>
+</Tabs>
+
+### 3. ywc-verify-done
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-verify-done
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-verify-done
+```
+</TabItem>
+</Tabs>
+
+### 4. ywc-commit
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-commit 지금까지 한 작업 커밋해줘
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-commit 지금까지 한 작업 커밋해줘
+```
+</TabItem>
+</Tabs>
+
+### 5. ywc-create-pr
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-create-pr --lang ko --plan-doc docs/ywc-plans/<plan-file>.md
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-create-pr --lang ko --plan-doc docs/ywc-plans/<plan-file>.md
+```
+</TabItem>
+</Tabs>
+
+## 건너뛸 수 있는 조건
+
+- **2단계 <SkillLink name="ywc-tdd-ritual" />**: 문서·설정 값만 바꾸어 test 로 확인할 동작이 없으면 건너뛰고 직접 고칩니다.
+- <SkillLink name="ywc-plan" /> 이 small path 가 아닌 spec 을 만들었다면 [13 중·대형 기능](/develop-with-llm-guide/flows/large-feature/) 흐름으로 옮깁니다.
+
+<VerifiedStamp />
