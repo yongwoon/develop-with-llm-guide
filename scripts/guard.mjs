@@ -11,6 +11,7 @@ const LOCAL_WORDS_FILE = 'guard-words.local.txt';
 const WORDS_ENV = 'GUARD_SENSITIVE_WORDS';
 const BINARY_SNIFF_BYTES = 8000;
 const SENSITIVE_WORD_NAME = 'sensitive word';
+const WHOLE_WORD_PREFIX = '=';
 const WITHHELD_PREFIX = 'withheld-path-';
 const withheldIds = new Map();
 const HTML_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
@@ -28,12 +29,26 @@ class GuardExit extends Error {
 	}
 }
 
+// A line starting with WHOLE_WORD_PREFIX matches only as a whole word, so a
+// short word does not hit inside longer common words. Other lines match as
+// substrings.
 function parseWords(text) {
 	return text
 		.split('\n')
 		.map((line) => line.replace(/\r$/, '').trim())
 		.filter((line) => line !== '' && !line.startsWith('#'))
-		.map(normalize);
+		.map(toMatcher)
+		.filter(Boolean);
+}
+
+function toMatcher(line) {
+	const isWholeWord = line.startsWith(WHOLE_WORD_PREFIX);
+	const word = normalize(isWholeWord ? line.slice(WHOLE_WORD_PREFIX.length).trim() : line);
+	if (word === '') return null;
+	if (!isWholeWord) return (text) => text.includes(word);
+	const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	const regex = new RegExp(`(?<![a-z0-9])${escaped}(?![a-z0-9])`);
+	return (text) => regex.test(text);
 }
 
 // CI reads only the secret env so a developer's local file can never mask a
@@ -118,8 +133,8 @@ function checkFile(path, { generalRules, words, sensitiveWordRule }) {
 		: generalRules
 				.filter((rule) => (isHtml || !rule.htmlOnly) && texts.some((text) => matchesRule(rule, text)))
 				.map((rule) => rule.id);
-	const pathHasWord = words.some((word) => normalize(path).includes(word));
-	if (pathHasWord || texts.some((text) => words.some((word) => normalize(text).includes(word)))) {
+	const pathHasWord = words.some((matches) => matches(normalize(path)));
+	if (pathHasWord || texts.some((text) => words.some((matches) => matches(normalize(text))))) {
 		hits.push(sensitiveWordRule);
 	}
 	const shownPath = pathHasWord && isCi ? withheldPath(path) : path;

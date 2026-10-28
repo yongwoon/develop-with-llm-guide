@@ -224,3 +224,22 @@ test('fails when dist is missing', () => {
 		assert.notEqual(runGuard(dir, { GUARD_SENSITIVE_WORDS: VIRTUAL_WORD }).code, 0);
 	});
 });
+
+test('matches a "=" prefixed word only as a whole word', () => {
+	withRepo('clean', (dir) => {
+		writeFileSync(join(dir, 'src', 'inside.mdx'), 'the alphabet and alphanumeric text\n');
+		writeFileSync(join(dir, 'src', 'whole.mdx'), 'project Alpha-test and 알파alpha의 이름\n');
+		execFileSync('git', ['add', '-A'], { cwd: dir });
+		const { code, stdout } = runGuard(dir, { GUARD_SENSITIVE_WORDS: '= alpha\n' });
+		assert.notEqual(code, 0);
+		assert.equal(stdout.trim(), 'src/whole.mdx 4');
+	});
+});
+
+test('ignores a "=" line with no word', () => {
+	withRepo('clean', (dir) => {
+		const { code, stderr } = runGuard(dir, { GUARD_SENSITIVE_WORDS: '=\n' });
+		assert.equal(code, 0);
+		assert.match(stderr, /warning: no sensitive words/);
+	});
+});
