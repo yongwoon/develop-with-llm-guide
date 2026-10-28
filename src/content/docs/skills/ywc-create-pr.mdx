@@ -1,6 +1,6 @@
 ---
 title: ywc-create-pr
-description: 현재 branch 의 작업으로 pull request 를 만듭니다. "PR 만들어줘", "풀리퀘 작성" 요청에 보안 점검과 local CI 를 거쳐 push 하고, 제목과 설명을 작성해 PR 을 엽니다.
+description: 현재 branch 의 작업으로 pull request 를 만듭니다. "PR 만들어줘", "풀리퀘 작성" 요청에 점검과 push 를 거쳐 제목과 설명을 갖춘 PR 을 엽니다.
 kind: skill
 verifiedAt: "2026-10-28"
 sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
@@ -38,7 +38,7 @@ options:
     format: flag
     when: push 전 local CI 확인을 건너뜁니다.
     tools: [claude-code, codex]
-    note: Claude Code 는 PR 뒤 원격 CI 대기도 건너뜁니다.
+    note: Claude Code 는 PR 뒤 원격 CI 대기도 건너뜁니다. Codex 는 병합 가능 여부를 계속 확인합니다.
   - name: --plan-doc
     format: "<path>"
     default: 자동으로 찾음
@@ -83,7 +83,7 @@ import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 ### 기능 branch 를 마무리하며 PR
 
-option 표 기능 branch 의 작업이 끝났습니다. 한국어로 PR 을 만듭니다.
+option 표 기능을 만든 branch 의 작업이 끝났습니다. 한국어로 PR 을 만듭니다.
 
 <Tabs syncKey="tool">
 <TabItem label="Claude Code">

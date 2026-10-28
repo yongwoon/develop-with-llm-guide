@@ -11,8 +11,7 @@ outputs: [CHANGELOG.md, release note]
 options:
   - name: --changelog
     format: flag
-    default: 사용 (기본 동작)
-    when: Keep a Changelog 형식의 CHANGELOG.md 항목을 만듭니다.
+    when: Keep a Changelog 형식의 CHANGELOG.md 항목을 만듭니다. 아무 것도 고르지 않으면 이 동작을 합니다.
     tools: [claude-code, codex]
   - name: --release
     format: flag
@@ -39,7 +38,11 @@ options:
   - name: --pr-list
     format: "<file>"
     when: git log 대신 ywc-release-pr-list 가 만든 PR 목록을 근거로 씁니다.
-    tools: [claude-code, codex]
+    tools: [claude-code]
+  - name: --pr-list
+    format: "<file>"
+    when: 평소대로 변경을 모은 뒤, 주어진 PR 목록을 출처 정보로 덧붙입니다.
+    tools: [codex]
   - name: --dry-run
     format: flag
     when: 결과만 출력하고 CHANGELOG.md 는 고치지 않습니다.

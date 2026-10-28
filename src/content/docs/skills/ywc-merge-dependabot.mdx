@@ -1,6 +1,6 @@
 ---
 title: ywc-merge-dependabot
-description: 쌓인 Dependabot PR 을 의존성 종류별로 묶어 한꺼번에 병합합니다. "dependabot PR 정리" 요청에 major 버전 올림은 따로 확인하고 나머지를 병합합니다.
+description: 쌓인 Dependabot PR 을 의존성 종류별로 묶어 한꺼번에 병합합니다. "dependabot PR 정리" 요청에 씁니다. major 버전 올림은 병합하지 않고 따로 보고합니다.
 kind: skill
 verifiedAt: "2026-10-28"
 sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
@@ -36,7 +36,7 @@ import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 ### 보안 관련 PR 만 먼저
 
-이 skill 은 사용자가 직접 호출할 때만 실행됩니다(Codex 는 권고). Dependabot 보안 경고 PR 만 먼저 병합합니다.
+이 skill 은 사용자가 직접 호출해야 실행됩니다. Codex 에서는 이 제한이 권고 수준입니다. Dependabot 보안 경고 PR 만 먼저 병합합니다.
 
 <Tabs syncKey="tool">
 <TabItem label="Claude Code">

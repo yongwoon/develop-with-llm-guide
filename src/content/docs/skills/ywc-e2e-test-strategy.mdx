@@ -13,14 +13,17 @@ options:
     format: flag
     when: Playwright 가 없는 project 에 처음부터 설정합니다.
     tools: [claude-code, codex]
+    note: --init, --audit, --flow 중 하나만 줍니다.
   - name: --audit
     format: flag
     when: 기존 E2E test 가 놓친 흐름을 찾습니다.
     tools: [claude-code, codex]
+    note: --init, --audit, --flow 중 하나만 줍니다.
   - name: --flow
     format: "<name>"
     when: 특정 사용자 흐름 하나의 test 를 만듭니다.
     tools: [claude-code, codex]
+    note: --init, --audit, --flow 중 하나만 줍니다.
   - name: --ci
     format: flag
     when: GitHub Actions 의 E2E workflow 를 추가하거나 고칩니다.

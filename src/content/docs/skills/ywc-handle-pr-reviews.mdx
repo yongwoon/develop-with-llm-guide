@@ -1,6 +1,6 @@
 ---
 title: ywc-handle-pr-reviews
-description: 열린 PR 의 리뷰 코멘트에 대응하고 PR 을 병합 가능한 상태로 만듭니다. "리뷰 대응", "PR 코멘트 처리" 요청에 지적을 고치고 답하며, CI 실패와 base branch 충돌도 정리합니다.
+description: 열린 PR 의 리뷰 코멘트에 대응하고 PR 을 병합 가능한 상태로 만듭니다. "리뷰 대응", "PR 코멘트 처리" 요청에 씁니다.
 kind: skill
 verifiedAt: "2026-10-28"
 sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
@@ -15,6 +15,7 @@ options:
     default: 현재 branch 의 PR
     when: 대응할 PR 을 정합니다.
     tools: [claude-code]
+    note: --worktree 를 쓰면 반드시 줍니다.
   - name: PR#
     format: 양의 정수
     default: 현재 branch 의 PR
@@ -23,8 +24,9 @@ options:
     note: --worktree 를 쓰면 반드시 줍니다.
   - name: --worktree
     format: flag
-    when: 지금 checkout 을 건드리지 않고 별도 worktree 에서 PR 의 branch 를 다룹니다.
+    when: PR 의 branch 를 별도 worktree 에서 다룹니다.
     tools: [claude-code, codex]
+    note: fork 에서 온 PR 은 지원하지 않습니다.
 ---
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
@@ -69,7 +71,7 @@ $ywc-handle-pr-reviews 15 --worktree
 </TabItem>
 </Tabs>
 
-**결과물**: 지금 checkout 의 작업은 그대로 둡니다. 별도 worktree 에서 PR 15 의 branch 를 꺼내 같은 대응을 합니다.
+**결과물**: 별도 worktree 에서 PR 15 의 branch 를 꺼내 같은 대응을 합니다.
 
 ## Options
 

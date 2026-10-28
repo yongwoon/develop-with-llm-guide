@@ -15,8 +15,7 @@ options:
     tools: [claude-code, codex]
   - name: --non-interactive
     format: flag
-    default: PR 별 요약을 넣을지 한 번 물어봄
-    when: 질문 없이 실행합니다.
+    when: 질문 없이 실행합니다. 이 option 이 없으면 PR 별 요약을 넣을지 한 번 묻습니다.
     tools: [codex]
     note: --summary 를 함께 줘야 합니다.
   - name: --summary
