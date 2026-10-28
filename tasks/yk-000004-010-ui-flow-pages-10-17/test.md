@@ -1,7 +1,7 @@
 # yk-000004-010-ui-flow-pages-10-17 — Manual Test Plan
 
 ## Preconditions
-- [ ] `npm run build && npm run preview`
+- [ ] `pnpm run build && pnpm run preview`
 
 ## Test Scenarios
 

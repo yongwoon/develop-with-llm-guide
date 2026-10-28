@@ -1,7 +1,7 @@
 # yk-000003-040-ui-skill-pages-test-git — Manual Test Plan
 
 ## Preconditions
-- [ ] `npm run build && npm run preview`
+- [ ] `pnpm run build && pnpm run preview`
 
 ## Test Scenarios
 

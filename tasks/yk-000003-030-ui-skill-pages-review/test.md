@@ -1,7 +1,7 @@
 # yk-000003-030-ui-skill-pages-review — Manual Test Plan
 
 ## Preconditions
-- [ ] `npm run build && npm run preview`
+- [ ] `pnpm run build && pnpm run preview`
 
 ## Test Scenarios
 

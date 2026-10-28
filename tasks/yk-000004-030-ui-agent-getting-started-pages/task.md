@@ -24,22 +24,22 @@
 - [ ] 홈
   - [ ] 이 guide 사용법, 흐름 16개 진입 목록(번호 순, base prefix 절대 경로), Skill 색인 link, `<VerifiedStamp />`
 - [ ] 점검
-  - [ ] `npm run fresh-check` agent 항목 차이 0건
-  - [ ] `npm run build && npm run guard`
+  - [ ] `pnpm run fresh-check` agent 항목 차이 0건
+  - [ ] `pnpm run build && pnpm run guard`
 
 ## Acceptance Coverage
 Covers: F-AGENT (3 page, 17행, CN004 경계), F-START (3 page, setup link, 설치 page 금지 사항), F-NAV (홈 → 흐름 1 클릭, sidebar 시작하기), R-CONTENT (agent page), R-FRESH (agent 일치)
 
 <!-- Write portable commands: see references/execution-convention.md#task-verify-portability -->
 ## Task Verify
-- [ ] `npm run build`
-- [ ] `npm run guard`
-- [ ] `npm run fresh-check`
+- [ ] `pnpm run build`
+- [ ] `pnpm run guard`
+- [ ] `pnpm run fresh-check`
 - [ ] `test -z "$(git ls-files .fact-memos)"`
 
 ## Verification
-- [ ] build 성공 (`npm run build`)
-- [ ] 공개 가드 통과 (`npm run guard`)
-- [ ] lint / typecheck: N/A — spec·tech-stack 이 정의한 npm script 가 없다
+- [ ] build 성공 (`pnpm run build`)
+- [ ] 공개 가드 통과 (`pnpm run guard`)
+- [ ] lint / typecheck: N/A — spec·tech-stack 이 정의한 script 가 없다
 
 ## Implementation Notes (optional)

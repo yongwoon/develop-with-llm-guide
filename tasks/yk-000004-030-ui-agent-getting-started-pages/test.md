@@ -1,7 +1,7 @@
 # yk-000004-030-ui-agent-getting-started-pages — Manual Test Plan
 
 ## Preconditions
-- [ ] `npm run build && npm run preview`
+- [ ] `pnpm run build && pnpm run preview`
 
 ## Test Scenarios
 

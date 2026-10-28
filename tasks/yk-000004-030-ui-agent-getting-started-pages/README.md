@@ -83,9 +83,9 @@ agent 표는 이름, 사용 가능 도구, 권한(read-only/write-enabled), 역�
 - yk-000004-020-ui-flow-pages-18-25
 
 ### Task Verify
-- `npm run build`
-- `npm run guard`
-- `npm run fresh-check`
+- `pnpm run build`
+- `pnpm run guard`
+- `pnpm run fresh-check`
 - `test -z "$(git ls-files .fact-memos)"`
 
 ## Out of Scope

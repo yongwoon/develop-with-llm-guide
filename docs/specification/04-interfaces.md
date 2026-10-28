@@ -57,7 +57,7 @@ MDX 본문에서 쓰는 component 와 그 입력이다. 모양은 `docs/design/d
 
 ## 로컬 명령 (owner 용)
 
-| 목적 | npm script | 명령의 역할 |
+| 목적 | package.json script (`pnpm run <script>`) | 명령의 역할 |
 |---|---|---|
 | 개발 서버 | `dev` | 로컬 미리보기. Pagefind 검색은 동작하지 않는다 |
 | build | `build` | 정적 산출물을 생성하고 Pagefind index 를 만든다 |

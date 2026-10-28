@@ -1,7 +1,7 @@
 # yk-000005-030-test-first-release-gate — Manual Test Plan
 
 ## Preconditions
-- [ ] `npm run build && npm run preview`
+- [ ] `pnpm run build && pnpm run preview`
 - [ ] macOS Chrome·Safari 최신, iOS Safari 준비
 
 ## Test Scenarios
