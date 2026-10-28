@@ -1,0 +1,37 @@
+---
+// Lists the skills whose option table has `name`, built from frontmatter so the
+// common-options guide never drifts from the skill pages. Fails the build when
+// no skill has the option, which catches a renamed or removed option.
+import { getCollection } from 'astro:content';
+import SkillLink from './SkillLink.astro';
+
+interface Props {
+	name: string;
+}
+
+const { name } = Astro.props;
+const entries = await getCollection('docs', (entry) => entry.data.kind === 'skill');
+const users = entries
+	.filter(({ data }) => data.kind === 'skill' && data.options.some((option) => option.name === name))
+	.map(({ id }) => id.split('/').pop() ?? id)
+	.sort((a, b) => a.localeCompare(b, 'en'));
+if (users.length === 0) {
+	throw new Error(`OptionUsers: no skill page lists the option "${name}"`);
+}
+---
+
+<p class="option-users">
+	쓰는 skill ({users.length}): {users.map((user, index) => (
+		<>
+			{index > 0 && ', '}
+			<SkillLink name={user} />
+		</>
+	))}
+</p>
+
+<style>
+	.option-users {
+		font-size: var(--sl-text-sm);
+		color: var(--muted);
+	}
+</style>

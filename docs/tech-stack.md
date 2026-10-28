@@ -17,6 +17,7 @@ develop-with-llm-guide/
 │   │   └── docs/                      # 공개되는 guidebook 본문 (Korean, .mdx). sidebar 는 시작하기만 항목 명시, 나머지는 directory autogenerate
 │   │       ├── index.mdx              # 홈: 이 guide 사용법 + 상황별 진입점 (SC003). getting-started group 의 첫 항목
 │   │       ├── getting-started/       # 설치, 두 도구의 차이
+│   │       ├── guides/                # 사용 안내 (자주 쓰는 명령, skill 비교, 설정, 공통 option, 산출물 지도, 문제 해결, 실제 case 등)
 │   │       ├── flows/                 # 상황별 흐름 (new-project.mdx, onboarding-existing-repo.mdx …)
 │   │       ├── skills/                # skill reference. skill 1개 = 1 page (<skill-name>.mdx), SC001 의 단위
 │   │       │   └── index.mdx          # Skill 색인 (SkillIndex). sidebar 의 Skill reference 첫 항목
@@ -34,6 +35,8 @@ develop-with-llm-guide/
 │   │   ├── SkillLink.astro            # 본문의 skill 이름 → <skill>/#options. collection 에 없는 skill 이면 build 실패
 │   │   ├── OptionTable.astro          # frontmatter options/argsNote → 전체 option 표 ("Options" heading 아래, #options)
 │   │   ├── SkillIndex.astro           # 전 skill frontmatter → Skill 색인 표 + 분류 필터
+│   │   ├── OptionUsers.astro          # option 이름 → 그 option 이 있는 skill 목록 (공통 option page)
+│   │   ├── OutputsMap.astro           # 전 skill frontmatter outputs 의 file 경로 → 만드는 skill 표 (산출물 지도)
 │   │   ├── VerifiedStamp.astro        # page 하단 확인일·bundle version 표시
 │   │   └── TitleBlock.astro           # 표제란 4칸 (PageTitle 에서 사용)
 │   ├── styles/

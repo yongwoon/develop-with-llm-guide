@@ -1,0 +1,50 @@
+---
+title: 산출물 지도
+description: ywc skill 이 만드는 file 과 디렉터리를 경로별로 모았습니다. 저장소에서 처음 보는 file 이 어느 skill 에서 왔는지 찾을 때 봅니다.
+kind: guide
+verifiedAt: "2026-10-29"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+sidebar:
+  order: 6
+  label: 산출물 지도
+---
+import { Aside } from '@astrojs/starlight/components';
+import SkillLink from '../../../components/SkillLink.astro';
+import OutputsMap from '../../../components/OutputsMap.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+저장소에 생긴 file 이 어느 skill 에서 왔는지, 반대로 어떤 skill 이 무엇을 남기는지 경로로 찾는 page 입니다.
+
+## 경로별 목록
+
+아래 표는 각 skill page 의 결과물 중 file·디렉터리 경로만 모은 것입니다. 괄호는 그 skill 에서의 보충 설명입니다.
+
+<OutputsMap />
+
+<Aside>
+리뷰 보고, 점검 보고처럼 file 이 아니라 대화에 나오는 결과물은 이 표에 없습니다. 각 skill page 의 결과물 항목에서 봅니다.
+</Aside>
+
+## 자주 보는 file
+
+| file·디렉터리 | 만드는 skill | 읽거나 쓰는 skill | commit |
+|---|---|---|---|
+| `docs/mission.md` | <SkillLink name="ywc-mission" /> | session 시작 때 읽어 방향을 맞춥니다. <SkillLink name="ywc-product-review" /> 에 넘기면 판단 기준으로 씁니다 | 합니다 |
+| `docs/specification/` | <SkillLink name="ywc-spec-writer" /> | <SkillLink name="ywc-spec-validate" /> 가 검토하고, <SkillLink name="ywc-task-generator" /> 가 task 로 나눕니다 | 합니다 |
+| `tasks/<task>/`, `tasks/dependency-graph.md` | <SkillLink name="ywc-task-generator" /> | <SkillLink name="ywc-task-executor" />, <SkillLink name="ywc-sequential-executor" />, <SkillLink name="ywc-parallel-executor" /> 가 실행합니다 | 합니다 |
+| `tasks/completed/<task>/` | <SkillLink name="ywc-sequential-executor" />, <SkillLink name="ywc-parallel-executor" />, <SkillLink name="ywc-finish-branch" /> | 끝난 task 의 기록으로 남습니다 | 합니다 (완료 commit 이 함께 생깁니다) |
+| `docs/ywc-plans/` | <SkillLink name="ywc-plan" />, <SkillLink name="ywc-spec-ready" />, <SkillLink name="ywc-wayfinder" />, <SkillLink name="ywc-agentic" />, <SkillLink name="ywc-brainstorm" /> (필요할 때만) | <SkillLink name="ywc-spec-ready" />, <SkillLink name="ywc-task-generator" />, <SkillLink name="ywc-code-gen" />·<SkillLink name="ywc-impl-review" /> (`--spec`), <SkillLink name="ywc-create-pr" /> (`--plan-doc`) | 보통 합니다. 계획을 PR 과 함께 남기고 싶지 않으면 빼도 됩니다 |
+| `docs/review-learnings.md` | <SkillLink name="ywc-review-learnings" /> (<SkillLink name="ywc-mine-review-history" /> 는 넣을 후보를 냅니다) | <SkillLink name="ywc-impl-review" /> 가 리뷰할 때 읽습니다 | 합니다 |
+| `docs/ubiquitous-language.md` | <SkillLink name="ywc-ubiquitous-language" /> | 문서와 code 의 용어를 맞출 때 사람이 봅니다 | 합니다 |
+| `CLAUDE.md`, `AGENTS.md` | <SkillLink name="ywc-onboard-repo" /> (시작용) | 적어 둔 언어 정책은 설정 file 이 없을 때 언어 기본값으로 쓰입니다 ([설정](/develop-with-llm-guide/guides/configuration/)) | 합니다 |
+| `claudedocs/`, `codexdocs/` | `--format html` 을 준 보고 skill (<SkillLink name="ywc-spec-validate" />, <SkillLink name="ywc-impl-review" />, <SkillLink name="ywc-security-audit" />, <SkillLink name="ywc-tech-research" />, <SkillLink name="ywc-incident-postmortem" />, <SkillLink name="ywc-product-review" /> 등) | 브라우저로 여는 단독 HTML 보고서입니다. Claude Code 는 `claudedocs/`, Codex 는 `codexdocs/` 에 생깁니다 | 보통 하지 않습니다. 남길 보고서만 골라 둡니다 |
+
+- commit 열은 이 사이트의 권장입니다. skill 이 commit 여부를 정하지는 않습니다. 단, <SkillLink name="ywc-finish-branch" /> 는 task 를 `tasks/completed/` 로 옮기면서 완료 commit 을 남깁니다.
+- 각 file 의 정확한 이름과 경로를 바꾸는 option 은 해당 skill page 의 option 표에 있습니다.
+
+## 관련 page
+
+- [실제 case: 이 사이트](/develop-with-llm-guide/guides/case-this-site/) — 이 저장소에 실제로 남은 산출물을 단계별로 봅니다.
+- [10 새 project 시작하기](/develop-with-llm-guide/flows/new-project/)
+
+<VerifiedStamp />

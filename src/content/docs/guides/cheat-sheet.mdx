@@ -1,0 +1,69 @@
+---
+title: 자주 쓰는 명령
+description: 자주 쓰는 skill 호출을 상황별로 한 page 에 모았습니다. Claude Code 와 Codex 의 명령을 나란히 보여 주고, 자세한 흐름 page 로 연결합니다.
+kind: guide
+verifiedAt: "2026-10-29"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+sidebar:
+  order: 1
+  label: 자주 쓰는 명령
+---
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+흐름 page 의 실행 예시에서 자주 쓰는 명령을 골랐습니다. `<...>` 부분은 내 상황에 맞게 바꿉니다. option 은 흐름 page 와 같습니다. 두 도구의 명령이 다른 곳은 Codex 열에 따로 적었습니다.
+
+skill 이름을 누르면 skill page 의 option 표로 갈 수 있습니다. 한쪽 도구에만 있는 skill 은 [두 도구의 차이](/develop-with-llm-guide/getting-started/tool-differences/) 를 봅니다.
+
+## 시작·계획
+
+| 하고 싶은 일 | Claude Code | Codex | 흐름 |
+|---|---|---|---|
+| 막연한 아이디어를 정리 (<SkillLink name="ywc-brainstorm" />) | `/ywc-brainstorm <아이디어>` | `$ywc-brainstorm <아이디어>` | [새 project](/develop-with-llm-guide/flows/new-project/) |
+| 작은 변경의 계획 (<SkillLink name="ywc-plan" />) | `/ywc-plan <하고 싶은 일>` | `$ywc-plan <하고 싶은 일>` | [작은 변경](/develop-with-llm-guide/flows/small-change/) |
+| 기술 후보를 비교해 저장 (<SkillLink name="ywc-tech-research" />) | `/ywc-tech-research <주제> --compare "A,B" --output docs/research/<file>.md` | `$ywc-tech-research <주제> --compare "A,B" --output docs/research/<file>.md` | [새 project](/develop-with-llm-guide/flows/new-project/) |
+| spec 이 준비될 때까지 다듬기 (<SkillLink name="ywc-spec-ready" />) | `/ywc-spec-ready --spec docs/ywc-plans/<plan-file>.md` | `$ywc-spec-ready --spec docs/ywc-plans/<plan-file>.md` | [중·대형 기능](/develop-with-llm-guide/flows/large-feature/) |
+| spec 을 task 로 나누기 (<SkillLink name="ywc-task-generator" />) | `/ywc-task-generator docs/specification/ --mode llm --lang ko` | `$ywc-task-generator docs/specification/ --mode llm --lang ko` | [새 project](/develop-with-llm-guide/flows/new-project/) |
+| 구현 전에 준비 상태 점검 (<SkillLink name="ywc-confidence-gate" />) | `/ywc-confidence-gate <할 작업>` | `$ywc-confidence-gate <할 작업>` | [새 project](/develop-with-llm-guide/flows/new-project/) |
+
+## 구현·실행
+
+| 하고 싶은 일 | Claude Code | Codex | 흐름 |
+|---|---|---|---|
+| task 범위를 실행하고 직접 병합 (<SkillLink name="ywc-task-executor" />) | `/ywc-task-executor <start>..<end> --local-merge --review` | `$ywc-task-executor <start>..<end> --delivery local-merge --review` | [중·대형 기능](/develop-with-llm-guide/flows/large-feature/) |
+| task 를 병렬로 실행해 PR 하나로 (<SkillLink name="ywc-parallel-executor" />) | `/ywc-parallel-executor <start>..<end> --aggregate-pr --review` | `$ywc-parallel-executor <start>..<end> --aggregate-pr --review` | [로컬 환경과 병렬 작업](/develop-with-llm-guide/flows/local-parallel/) |
+| task 없이 spec 에서 바로 구현 (<SkillLink name="ywc-code-gen" />) | `/ywc-code-gen --spec docs/ywc-plans/<plan-file>.md --tdd --review` | `$ywc-code-gen --spec docs/ywc-plans/<plan-file>.md --tdd --review` | [중·대형 기능](/develop-with-llm-guide/flows/large-feature/) |
+| 목표 하나만 주고 PR 까지 (<SkillLink name="ywc-agentic" />) | `/ywc-agentic <목표> --mode llm --finish pr` | `$ywc-agentic <목표> --mode llm --finish pr` | [목표 하나로 자율 실행](/develop-with-llm-guide/flows/autonomous-goal/) |
+| 실패하는 test 부터 써서 고치기 (<SkillLink name="ywc-tdd-ritual" />) | `/ywc-tdd-ritual <증상>` | `$ywc-tdd-ritual <증상>` | [테스트와 완료 검증](/develop-with-llm-guide/flows/testing-verification/) |
+
+## 리뷰·PR
+
+| 하고 싶은 일 | Claude Code | Codex | 흐름 |
+|---|---|---|---|
+| spec 과 대조해 구현 리뷰 (<SkillLink name="ywc-impl-review" />) | `/ywc-impl-review --spec docs/ywc-plans/<plan-file>.md --git-range main..HEAD` | `$ywc-impl-review --spec docs/ywc-plans/<plan-file>.md --git-range main..HEAD` | [중·대형 기능](/develop-with-llm-guide/flows/large-feature/) |
+| 작업을 커밋 (<SkillLink name="ywc-commit" />) | `/ywc-commit 지금까지 한 작업 커밋해줘` | `$ywc-commit 지금까지 한 작업 커밋해줘` | [작은 변경](/develop-with-llm-guide/flows/small-change/) |
+| PR 만들기 (<SkillLink name="ywc-create-pr" />) | `/ywc-create-pr --lang ko --plan-doc docs/ywc-plans/<plan-file>.md` | `$ywc-create-pr --lang ko --plan-doc docs/ywc-plans/<plan-file>.md` | [작은 변경](/develop-with-llm-guide/flows/small-change/) |
+| PR 에 달린 리뷰에 대응 (<SkillLink name="ywc-handle-pr-reviews" />) | `/ywc-handle-pr-reviews <PR#>` | `$ywc-handle-pr-reviews <PR#>` | [PR review 대응과 merge](/develop-with-llm-guide/flows/pr-review-merge/) |
+| local merge·rebase 충돌 해결 (<SkillLink name="ywc-resolve-conflict" />) | `/ywc-resolve-conflict` | Claude Code 전용 | [PR review 대응과 merge](/develop-with-llm-guide/flows/pr-review-merge/) |
+| PR 을 거쳐 branch 병합 (<SkillLink name="ywc-finish-branch" />) | `/ywc-finish-branch --mode normal-pr --branch feature/<task-name> --base-branch main --task-name <task-name>` | `$ywc-finish-branch --mode normal-pr --branch feature/<task-name> --base-branch main --task-name <task-name>` | [PR review 대응과 merge](/develop-with-llm-guide/flows/pr-review-merge/) |
+
+## 테스트
+
+| 하고 싶은 일 | Claude Code | Codex | 흐름 |
+|---|---|---|---|
+| 끝났다고 말하기 전에 검증 (<SkillLink name="ywc-verify-done" />) | `/ywc-verify-done` | `$ywc-verify-done` | [테스트와 완료 검증](/develop-with-llm-guide/flows/testing-verification/) |
+| PR 의 수기 테스트시트 (<SkillLink name="ywc-gen-testcase" />) | `/ywc-gen-testcase <PR#> --lang ko` | `$ywc-gen-testcase <PR#> --lang ko` | [테스트와 완료 검증](/develop-with-llm-guide/flows/testing-verification/) |
+| E2E test 를 CI 까지 준비 (<SkillLink name="ywc-e2e-test-strategy" />) | `/ywc-e2e-test-strategy --init --ci` | `$ywc-e2e-test-strategy --init --ci` | [테스트와 완료 검증](/develop-with-llm-guide/flows/testing-verification/) |
+
+## 정리·기타
+
+| 하고 싶은 일 | Claude Code | Codex | 흐름 |
+|---|---|---|---|
+| 버그의 근본 원인 찾기 (<SkillLink name="ywc-debug-rootcause" />) | `/ywc-debug-rootcause <증상>` | `$ywc-debug-rootcause <증상>` | [디버깅과 장애 회고](/develop-with-llm-guide/flows/debug-postmortem/) |
+| 처음 보는 저장소 파악 (<SkillLink name="ywc-onboard-repo" />) | `/ywc-onboard-repo` | `$ywc-onboard-repo` | [기존 repo 진입하기](/develop-with-llm-guide/flows/onboarding-existing-repo/) |
+| 안전한 dead code 만 지우기 (<SkillLink name="ywc-refactor-clean" />) | `/ywc-refactor-clean --scope src/ --tier safe` | `$ywc-refactor-clean --scope src/ --tier safe` | [코드 구조 개선](/develop-with-llm-guide/flows/code-structure/) |
+| 바꾸기 전에 영향 범위 확인 (<SkillLink name="ywc-blast-radius" />) | Codex 전용 | `$ywc-blast-radius --paths <file> --scope "<알고 싶은 것>"` | [코드 구조 개선](/develop-with-llm-guide/flows/code-structure/) |
+| project 기본값 저장 (<SkillLink name="ywc-setup" />) | `/ywc-setup --scope project --lang ko --base-branch develop` | `$ywc-setup --scope project --lang ko --base-branch develop` | [세션 운영과 skill 관리](/develop-with-llm-guide/flows/session-skill-management/) |
+| release PR 의 PR 목록 (<SkillLink name="ywc-release-pr-list" />) | `/ywc-release-pr-list <PR#>` | `$ywc-release-pr-list <PR#>` | [릴리스와 저장소 운영](/develop-with-llm-guide/flows/release-repo-ops/) |
+
+<VerifiedStamp />

@@ -1,0 +1,62 @@
+---
+// File and directory outputs of every skill, grouped by path (spec F-SKILL
+// `outputs`). Only entries that look like a path are listed; prose outputs
+// such as "점검 보고" stay on the skill pages.
+import { getCollection } from 'astro:content';
+import SkillLink from './SkillLink.astro';
+
+// A path token ends in "/" (directory) or in a file extension, or is a known
+// extensionless file name. "UI/UX 리뷰 보고" has a slash but is not a path.
+const PATH = /^(?:[\w.<>-]+\/)*(?:[\w<>.-]*\.\w+|[\w.<>-]+\/|Dockerfile)$/;
+
+const entries = await getCollection('docs', (entry) => entry.data.kind === 'skill');
+const byPath = new Map<string, { skill: string; note: string }[]>();
+for (const { id, data } of entries) {
+	if (data.kind !== 'skill') continue;
+	const skill = id.split('/').pop() ?? id;
+	// "A 또는 B" names two files; "X 에 넣을 후보" is input for X, not X itself.
+	for (const output of (data.outputs ?? []).flatMap((entry) => entry.split(' 또는 '))) {
+		const [path, ...rest] = output.split(' ');
+		const note = rest.join(' ');
+		if (!PATH.test(path) || note.startsWith('에 ')) continue;
+		byPath.set(path, [...(byPath.get(path) ?? []), { skill, note }]);
+	}
+}
+const rows = [...byPath.entries()].sort(([a], [b]) => a.localeCompare(b, 'en'));
+---
+
+<table class="outputs-map">
+	<thead>
+		<tr>
+			<th scope="col">file·directory</th>
+			<th scope="col">만드는 skill</th>
+		</tr>
+	</thead>
+	<tbody>
+		{
+			rows.map(([path, skills]) => (
+				<tr>
+					<td>
+						<code>{path}</code>
+					</td>
+					<td>
+						{skills.map(({ skill, note }, index) => (
+							<>
+								{index > 0 && ', '}
+								<SkillLink name={skill} />
+								{note && <span class="note"> ({note})</span>}
+							</>
+						))}
+					</td>
+				</tr>
+			))
+		}
+	</tbody>
+</table>
+
+<style>
+	.outputs-map .note {
+		color: var(--muted);
+		font-size: var(--sl-text-sm);
+	}
+</style>

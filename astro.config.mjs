@@ -9,7 +9,7 @@ export default defineConfig({
 	base: '/develop-with-llm-guide',
 	integrations: [
 		starlight({
-			title: 'develop-with-llm guide',
+			title: 'ywc skills',
 			plugins: [starlightLinksValidator()],
 			customCss: ['./src/styles/pretendard.css', './src/styles/theme.css'],
 			components: {
@@ -67,6 +67,10 @@ export default defineConfig({
 						{ label: '설치', slug: 'getting-started/install' },
 						{ label: '두 도구의 차이', slug: 'getting-started/tool-differences' },
 					],
+				},
+				{
+					label: '사용 안내',
+					items: [{ autogenerate: { directory: 'guides' } }],
 				},
 				{
 					label: '상황별 흐름',

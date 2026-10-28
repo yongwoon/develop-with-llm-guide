@@ -1,0 +1,131 @@
+---
+title: "실제 case: 이 사이트"
+description: 이 guide 사이트를 ywc skill 로 만든 과정입니다. 흐름 10 새 project 시작하기를 따라 mission 부터 첫 공개까지 어떤 skill 을 쓰고 무엇이 남았는지 정리합니다.
+kind: guide
+verifiedAt: "2026-10-29"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+sidebar:
+  order: 8
+  label: "실제 case: 이 사이트"
+---
+import { Aside } from '@astrojs/starlight/components';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+이 사이트는 [10 새 project 시작하기](/develop-with-llm-guide/flows/new-project/) 흐름을 그대로 따라 만들었습니다. 아래 내용은 이 저장소의 commit 기록, `docs/`, `tasks/` 에 남은 것을 근거로 씁니다. 명령은 owner 가 실제로 실행했고 확인된 것만 적고, 쓴 skill 이 기록으로 확인되지 않는 단계는 "기록 없음" 으로 둡니다.
+
+## 한눈에
+
+| 단계 | 쓴 skill + 대표 명령 | 남은 결과물 (repo path) |
+|---|---|---|
+| mission | 기록 없음 (file 형식은 <SkillLink name="ywc-mission" /> 의 결과물과 같음) | `docs/mission.md` |
+| 기술 조사 | <SkillLink name="ywc-tech-research" /> `--compare` | `docs/research/2026-10-28-static-site-framework.md` |
+| 디자인 | 기록 없음 (시안 비교 후 owner 결정) | `docs/design/design-system.md`, `docs/design/drafts/index.html` |
+| 폴더 구조 | 기록 없음 (흐름 10 에서는 <SkillLink name="ywc-project-scaffold" /> 단계) | `docs/tech-stack.md` |
+| 사양서 | <SkillLink name="ywc-spec-writer" /> `--full` ↔ <SkillLink name="ywc-spec-validate" /> | `docs/specification/` |
+| task 분해 | <SkillLink name="ywc-task-generator" /> (granularity llm, 한국어) | `tasks/dependency-graph.md`, task 20개 |
+| 기반 구현 (Phase 1) | executor, main 에 병합 | `tasks/completed/yk-000001-*` |
+| 콘텐츠 작성 (Phase 2–5) | <SkillLink name="ywc-sequential-executor" /> `--review --local-merge --base-branch content/initial` (Phase 4–5 실행 명령 확인) | `src/content/docs/`, `tasks/completed/` |
+| 첫 공개 gate | release gate task + 측정 후 수정 | `docs/measurements/first-release.md` |
+
+## mission
+
+존재 이유, 성공 기준 SC001–SC005, non-goal, 제약, 기각한 접근을 먼저 정했습니다. 결과는 `docs/mission.md` 입니다. 이 file 은 session 을 시작할 때마다 읽히도록 `CLAUDE.md` 에서 불러옵니다.
+
+- 정한 것: 한국어만 둔다, 내부 logic 은 쓰지 않는다(CN004), private 저장소에서 가져오는 sync script 는 쓰지 않는다(RA002).
+- 교훈: 기각한 접근을 이유와 함께 남겨 두면, 같은 제안이 나왔을 때 다시 논의하지 않아도 됩니다.
+
+## 기술 조사
+
+<SkillLink name="ywc-tech-research" /> 를 `--compare` 로 실행해 Astro Starlight, VitePress, Next.js static export 를 비교했습니다. 결과 file 에 "Astro Starlight 채택 (owner 확정)" 이 남아 있습니다.
+
+- 정한 것: Astro Starlight. 한국어 검색(Pagefind)은 실제 content 로 재야 한다는 위험도 함께 기록했습니다.
+- 공개 가드를 만들기 전에는 기존 도구(gitleaks, secretlint)와 자체 script 를 따로 비교해 `docs/research/2026-10-28-public-guard-tooling.md` 로 남겼습니다.
+- 교훈: 조사 결과에 남긴 "실측 필요" 항목이 나중에 첫 공개 gate 의 측정 항목이 됐습니다.
+
+## 디자인
+
+시안 A, B, C, C+ 를 한 HTML 에 두고 비교해 "도면 (Blueprint)" C+ 를 골랐습니다. 이 단계에 쓴 skill 은 기록에 없습니다.
+
+- 결과: `docs/design/design-system.md` (token, typography, component 대응표). 이후 모든 UI task 는 이 문서를 기준으로 했습니다.
+- 교훈: 시안 원본을 저장소에 같이 두면, 나중에 "왜 이 모양인가" 를 문서만으로 확인할 수 있습니다.
+
+## 폴더 구조
+
+고른 stack 으로 폴더 구조 계획을 받아 `docs/tech-stack.md` 에 두었습니다. 이 문서가 directory 구조의 기준입니다.
+
+- 교훈: 구조 문서를 먼저 정해 두면 task 마다 "어디에 file 을 만들까" 를 다시 정하지 않습니다.
+
+## 사양서
+
+<SkillLink name="ywc-spec-writer" /> `--full` 로 전체 사양을 쓰고, <SkillLink name="ywc-spec-validate" /> 로 검토했습니다. `docs/specification/README.md` 의 변경 이력에 이 왕복이 남아 있습니다.
+
+- 검토에서 Critical 4건이 나왔고, 고친 뒤 미결 질문 OQ-09–OQ-16 의 결정을 기록했습니다.
+- 결정된 질문은 `06-requirements.md` 의 Open Questions 에 취소선과 결정 내용으로 남깁니다. 예: OQ-16 은 통합 branch 에서 쓰고 첫 공개 때 main 에 병합하기로 정했습니다.
+- 교훈: 사양서 단계에서 배포 방식(통합 branch)까지 정해 두면, task 분해와 실행에서 base branch 를 고민하지 않습니다.
+
+## task 분해
+
+<SkillLink name="ywc-task-generator" /> 로 사양서를 5 Phase, 20개 task 로 나눴습니다. `tasks/dependency-graph.md` 에 granularity llm, 언어 ko 로 기록되어 있습니다.
+
+- branch 정책도 이 file 에 있습니다. Phase yk-000001 은 main, Phase yk-000002–000005 는 `content/initial` 이 base 입니다.
+- 각 task 의 `task.md` 맨 앞에는 Prerequisites(선행 task 병합 완료 등)가 있어, 실행 전에 조건을 확인할 수 있습니다.
+- 교훈: task 마다 수정 범위(Ownership)와 멈춤 조건을 적어 두면, executor 가 범위 밖 수정으로 번지지 않습니다.
+
+<Aside title="confidence check">
+흐름 10 의 <SkillLink name="ywc-confidence-gate" /> 단계는 저장소에 실행 기록이 남지 않습니다. 이 case 에서 썼는지는 이 page 에서 다루지 않습니다.
+</Aside>
+
+## 기반 구현 (Phase 1, main)
+
+scaffold, link 검증, 공개 가드, GitHub Pages 배포 workflow 를 main 에 먼저 넣었습니다. 첫 공개 전의 main 에는 이것만 두고, 사이트는 최소 홈만 가졌습니다.
+
+- task 마다 `feature/yk-…` branch 에서 구현하고, 병합 뒤 `chore: mark … as completed` commit 으로 `tasks/completed/` 에 옮겨졌습니다.
+- 교훈: 공개 가드와 배포를 콘텐츠보다 먼저 두면, 콘텐츠를 쓰는 동안 매 build 가 가드를 통과하는지 확인됩니다.
+
+## 콘텐츠 작성 (Phase 2–5, content/initial)
+
+콘텐츠 Phase 는 <SkillLink name="ywc-sequential-executor" /> 로 범위를 지정해 실행했습니다. 아래는 Phase 4–5 (yk-000004-010 ~ yk-000005-030) 를 Claude Code 에서 실행한 명령입니다. 저장소에는 명령 자체가 남지 않고, 그 결과인 review 반영 commit 과 local 병합 commit 이 남습니다.
+
+```text
+/ywc-sequential-executor yk-000004-010..yk-000005-030 --review --local-merge --base-branch content/initial
+```
+
+| option | 이 case 에서 한 일 |
+|---|---|
+| `yk-000004-010..yk-000005-030` | 흐름 page 부터 첫 공개 gate 까지 task 를 순서대로 실행 |
+| `--review` | task 마다 리뷰. commit 기록에 "Address review findings on …" 가 남습니다 |
+| `--local-merge` | PR 없이 local 에서 병합 |
+| `--base-branch content/initial` | main 대신 통합 branch 에 병합 |
+
+- 통합 branch 전략(R-RELEASE): task branch 는 `content/initial` 에 병합하고, 86 page 와 측정이 끝난 뒤에만 main 에 병합합니다. main 병합이 곧 배포이기 때문입니다.
+- skill page 1차 작성에서는 아직 없는 page 로 가는 link 를 넣지 않고, 63개가 모두 생긴 뒤 crosslink task(yk-000005-010, 020)에서 채웠습니다. 그래서 작성 중에도 build 가 깨지지 않았습니다.
+- task 밖의 수정(pnpm 전환, layout 조절, 문체 통일 등)은 `fix/…`, `feat/…` branch 로 따로 만들어 `content/initial` 에 병합했습니다.
+- 교훈: base branch 를 option 으로 고정하면, 공개 전 작업이 main 에 섞여 배포되는 일이 없습니다.
+
+## 첫 공개 gate
+
+마지막 task(`yk-000005-030-test-first-release-gate`)는 측정과 기록만 했고, 결과는 `docs/measurements/first-release.md` 에 있습니다. 미달 항목은 별도 branch 로 고친 뒤 다시 쟀습니다.
+
+| 항목 | 처음 | 조치 | 결과 |
+|---|---|---|---|
+| 검색 적중 | 11/12 (`--local-merge` 미적중) | <SkillLink name="ywc-sequential-executor" /> page 의 description·소제목 보강 | 12/12 |
+| Lighthouse Performance (preview) | 80–83 | 사이트 전체 글꼴 subset 1 file 로 변경 (`perf/font-loading`, 이후 DWLG Sans 로 이름 변경) | 95–98 |
+| 검색 UI 문구 | 기본(영어) | 한국어 문구와 index 로딩 실패 안내 추가 (`fix/search-messages`) | 통과 |
+| 한국어 입력 조합 중 Enter | 자동화로는 재현 불가 | owner 가 macOS Chrome·Safari, iOS Safari 에서 직접 확인 | 3 환경 통과 |
+
+- 조건을 채운 뒤 owner 승인으로 `content/initial` 을 main 에 병합했습니다 (`Merge branch 'content/initial' for first release`). deploy run 이 성공했습니다.
+- 배포 URL 에서 다시 잰 Performance 는 홈 96, 흐름 10 98, `ywc-mission` 98 입니다. Accessibility·Best Practices·SEO 는 모두 100 입니다.
+- 교훈: 자동 측정으로 확인할 수 없는 항목(IME 입력)은 처음부터 owner 수동 점검으로 나눠 두면, task 가 그 항목 때문에 멈추지 않습니다.
+
+## 공개 뒤
+
+- 공개 뒤에는 사이트 제목을 "ywc skills" 로 바꿨습니다. URL 은 그대로입니다.
+- 공개 뒤 변경은 feature branch → main 으로 합니다(R-RELEASE). 이 사용 안내 page 들도 `content/usage-guides` branch 에서 추가하고 있습니다.
+
+## 관련 page
+
+- [10 새 project 시작하기](/develop-with-llm-guide/flows/new-project/)
+- [산출물 지도](/develop-with-llm-guide/guides/outputs-map/)
+
+<VerifiedStamp />
