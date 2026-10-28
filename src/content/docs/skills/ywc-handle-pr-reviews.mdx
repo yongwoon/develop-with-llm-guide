@@ -1,0 +1,85 @@
+---
+title: ywc-handle-pr-reviews
+description: 열린 PR 의 리뷰 코멘트에 대응하고 PR 을 병합 가능한 상태로 만듭니다. "리뷰 대응", "PR 코멘트 처리" 요청에 지적을 고치고 답하며, CI 실패와 base branch 충돌도 정리합니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: git
+tools: [claude-code, codex]
+summary: 열린 PR 의 리뷰 코멘트에 대응하고 병합 가능한 상태로 만듭니다.
+outputs: [수정 commit, 리뷰 thread 답변]
+argsNote: Codex 에서는 PR 번호를 숫자로 적습니다. 생략하면 현재 branch 의 PR 을 대상으로 하고, --worktree 를 쓰면 반드시 적습니다.
+options:
+  - name: "<pr-number>"
+    format: 숫자
+    default: 현재 branch 의 PR
+    when: 대응할 PR 을 정합니다.
+    tools: [claude-code]
+  - name: PR#
+    format: 양의 정수
+    default: 현재 branch 의 PR
+    when: 대응할 PR 을 정합니다.
+    tools: [codex]
+    note: --worktree 를 쓰면 반드시 줍니다.
+  - name: --worktree
+    format: flag
+    when: 지금 checkout 을 건드리지 않고 별도 worktree 에서 PR 의 branch 를 다룹니다.
+    tools: [claude-code, codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### bot 리뷰가 달린 PR 정리
+
+PR 15 에 CodeRabbit 코멘트가 여러 개 달렸고 CI 도 하나 실패했습니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-handle-pr-reviews 15
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-handle-pr-reviews 15
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 코멘트마다 지적이 맞는지 확인하고, 맞는 것은 고쳐서 commit 합니다. 각 thread 에 답변을 남기고 CI 실패도 고칩니다. 끝나면 PR 의 병합 가능 여부를 보고합니다.
+
+### 다른 작업 중에 PR 만 따로
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-handle-pr-reviews 15 --worktree
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-handle-pr-reviews 15 --worktree
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 지금 checkout 의 작업은 그대로 둡니다. 별도 worktree 에서 PR 15 의 branch 를 꺼내 같은 대응을 합니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 새 PR 을 만들 때 → `ywc-create-pr`
+- 직접 리뷰를 할 때 → `ywc-impl-review`
+- PR 없이 받은 지적만 검증할 때 → `ywc-receive-review`
+- local merge 나 rebase 의 충돌을 풀 때 → `ywc-resolve-conflict`
+
+<VerifiedStamp />

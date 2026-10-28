@@ -1,0 +1,86 @@
+---
+title: ywc-verification-map
+description: project 의 주 사용자 화면(web, CLI, API, desktop)을 어떻게 실제로 확인하는지 project 안에 검증 계약으로 남기고 감사합니다. "검증 맵 초기화", "검증 맵 감사" 요청에 씁니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: test
+tools: [claude-code, codex]
+summary: 주 사용자 화면을 실제로 확인하는 방법을 검증 계약으로 남기고 감사합니다.
+outputs: [project 안의 검증 계약 file]
+options:
+  - name: --init
+    format: flag
+    when: 주 사용자 화면을 찾아 검증 계약 초안을 제안합니다. 쓰기 전에 확인을 받습니다.
+    tools: [claude-code, codex]
+    note: --audit 와 함께 쓸 수 없습니다.
+  - name: --audit
+    format: flag
+    when: 승인된 검증 계약을 읽고, 적힌 기능을 하나씩 실제로 확인합니다.
+    tools: [claude-code, codex]
+    note: --init 과 함께 쓸 수 없습니다.
+  - name: --surface
+    format: "<name>"
+    default: 찾은 화면이 하나면 그 화면
+    when: 주 사용자 화면이 여러 개일 때 대상을 고릅니다.
+    tools: [claude-code]
+    note: 화면이 여러 개인데 지정하지 않으면 되묻습니다.
+  - name: --surface
+    format: "<name>"
+    when: 주 사용자 화면이 여러 개일 때 대상을 고릅니다.
+    tools: [codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### 이 사이트의 검증 방법 정하기
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-verification-map --init
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-verification-map --init
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 주 사용자 화면(이 사이트라면 web)을 찾고, 띄우는 방법과 확인할 기능 3~5개를 담은 검증 계약을 제안합니다. 승인하면 project 안에 file 로 남습니다.
+
+### 계약대로 동작하는지 감사
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-verification-map --audit
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-verification-map --audit
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 계약에 적힌 기능을 실제로 띄워 확인한 결과와 증거가 나옵니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 지금 작업이 끝났는지 확인할 때 → `ywc-verify-done`
+- 자동 E2E test 를 만들 때 → `ywc-e2e-test-strategy`
+- 수동 테스트시트를 만들 때 → `ywc-gen-testcase`
+
+<VerifiedStamp />
