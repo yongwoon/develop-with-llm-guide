@@ -1,0 +1,56 @@
+---
+title: ywc-team-assemble
+description: 복잡한 작업을 전문 역할별 agent 팀에 나눠 맡깁니다. "팀 구성", "subagent 에 위임", "swarm" 처럼 사용자가 팀이나 병렬 위임을 분명히 요청할 때만 씁니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: implement
+tools: [claude-code, codex]
+summary: 사용자가 요청할 때 작업을 전문 역할별 agent 팀에 나눠 맡깁니다.
+argsNote: Claude Code 에서는 option 없이 팀에 맡길 일을 문장으로 적습니다. 팀이나 병렬 위임을 원한다는 말이 들어가야 합니다.
+options:
+  - name: "<task>"
+    format: 자유 문장
+    when: 팀에 나눠 맡길 작업을 적습니다. subagent 나 병렬 실행을 허락한다는 말이 들어가야 합니다.
+    tools: [codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### 보안·성능·문서 관점을 나눠 맡기기
+
+새 검색 기능을 보안, 성능, 문서 관점에서 동시에 살피고 싶습니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-team-assemble 검색 기능을 보안, 성능, 문서 담당 agent 팀으로 나눠 병렬로 점검해 줘
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-team-assemble 검색 기능을 보안, 성능, 문서 담당 agent 팀으로 나눠 병렬로 점검해 줘
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 작업이 역할별로 나뉘어 각 agent 에 맡겨집니다. 결과는 역할별로 모아 하나의 보고로 나옵니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 간단한 질문이나 file 하나 수정일 때 → skill 없이 요청
+- tasks/ 의 의존 그래프를 실행할 때 → `ywc-parallel-executor`
+- spec 에서 여러 층 code 를 만들 때 → `ywc-code-gen`
+- 목표 하나로 계획부터 구현까지 맡길 때 → `ywc-agentic`
+
+<VerifiedStamp />

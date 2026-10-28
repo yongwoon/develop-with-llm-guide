@@ -1,0 +1,64 @@
+---
+title: ywc-auth-implement
+description: email·password 로그인, OAuth, MFA, 단순 역할 구분 같은 인증 기능을 정책 결정부터 구현까지 진행합니다. "인증 구현해줘", "로그인 기능 만들어줘" 요청에 씁니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: implement
+tools: [claude-code, codex]
+summary: 인증 정책을 정하고 그에 맞춰 인증 기능을 구현합니다.
+outputs: [인증 정책 요약, 추천 library, 인증 code, 보안 검토 결과]
+argsNote: Codex 에서는 option 없이 만들 인증 방식을 문장으로 적습니다.
+options:
+  - name: --target-dir
+    format: "<path>"
+    default: 현재 project root
+    when: 인증을 넣을 project 가 다른 디렉터리에 있을 때 씁니다.
+    tools: [claude-code]
+  - name: --lang
+    format: "<code>"
+    default: 문서 언어 설정값
+    when: 정책 질문과 화면 문구의 언어를 정합니다.
+    tools: [claude-code]
+  - name: "<request>"
+    format: 자유 문장
+    when: 추가할 로그인 방식 같은 인증 요구를 문장으로 적습니다.
+    tools: [codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### email 로그인과 Google 로그인 추가
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-auth-implement --lang ko
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-auth-implement email·password 로그인과 Google OAuth 를 추가한다
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 먼저 session, 탈퇴, password 정책 같은 인증 정책을 묻습니다. 답에 맞는 library 를 추천하고 인증 code 를 만듭니다. 보안 검토와 E2E 확인 결과도 함께 나옵니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- spec 이 정해진 인증 bug 하나를 고칠 때 → 직접 수정
+- 인증 계획이나 spec 만 필요할 때 → `ywc-plan` 또는 `ywc-spec-writer`
+- 권한 표 전체를 다루는 RBAC engine 이 필요할 때 → 이 skill 의 범위 밖
+
+<VerifiedStamp />

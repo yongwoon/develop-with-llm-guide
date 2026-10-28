@@ -1,0 +1,77 @@
+---
+title: ywc-code-gen
+description: spec 하나에서 backend, frontend, test code 를 한 번에 생성합니다. "코드 생성", "풀스택 생성", "CRUD 생성" 요청에 씁니다. task 디렉터리가 없을 때의 구현 방법입니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: implement
+tools: [claude-code, codex]
+summary: spec 에서 backend·frontend·test code 를 한 번에 생성합니다.
+outputs: [각 층의 code 와 test]
+options:
+  - name: --spec
+    format: "<path>"
+    when: 구현할 spec file 을 지정합니다. 반드시 줍니다.
+    tools: [claude-code, codex]
+  - name: --feature
+    format: '"desc"'
+    when: 이번에 만들 기능을 한 문장으로 적습니다. 반드시 줍니다.
+    tools: [claude-code, codex]
+  - name: --skip-reuse-check
+    format: flag
+    when: 기존 code 재사용 확인을 건너뛰고 바로 생성합니다. 재사용할 code 가 없다고 이미 알 때 씁니다.
+    tools: [claude-code, codex]
+  - name: --tdd
+    format: flag
+    when: test 를 먼저 쓰는 방식으로 진행하고, RED·GREEN·REFACTOR 마다 commit 을 남깁니다.
+    tools: [claude-code, codex]
+  - name: --review
+    format: flag
+    when: 생성과 검증이 끝난 뒤 구현 리뷰(ywc-impl-review)를 이어서 실행합니다.
+    tools: [claude-code, codex]
+    note: Claude Code 는 중요도가 critical 인 작업이면 이 option 이 없어도 리뷰를 실행합니다.
+  - name: --manifest
+    format: "<repository-relative-path>"
+    when: architecture 규약 file 이 있으면 경로를 줍니다. 생성할 code 가 규약을 따르게 합니다.
+    tools: [codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### spec 이 있는 기능을 층별로 한 번에
+
+option 표 자동 생성 기능의 spec 이 있습니다. task 로 나누지 않고 바로 code 를 만듭니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-code-gen --spec docs/ywc-plans/20261028-option-table.md --feature "frontmatter 에서 option 표를 그린다" --tdd --review
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-code-gen --spec docs/ywc-plans/20261028-option-table.md --feature "frontmatter 에서 option 표를 그린다" --tdd --review
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 필요한 층의 code 와 test 가 생깁니다. test 를 먼저 쓰는 단계마다 commit 이 남고, 마지막에 구현 리뷰 결과가 나옵니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 이미 task 디렉터리로 나눠 둔 작업일 때 → `ywc-sequential-executor` 또는 `ywc-parallel-executor`
+- test 를 먼저 쓰는 것만 필요할 때 → `ywc-tdd-ritual`
+- 아직 spec 이 없을 때 → `ywc-plan`
+- file 하나 수정, refactor, debug 일 때 → skill 없이 직접 요청
+
+<VerifiedStamp />

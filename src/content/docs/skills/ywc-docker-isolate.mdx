@@ -1,0 +1,134 @@
+---
+title: ywc-docker-isolate
+description: 여러 git worktree 의 Docker stack 이 host port 를 두고 충돌할 때 port 를 나눕니다. "port is already allocated", "docker port 격리" 상황에 stack 준비, 정리, 남은 stack 점검을 합니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: implement
+tools: [claude-code, codex]
+summary: worktree 마다 Docker port 를 나눠 stack 충돌을 막고 정리합니다.
+outputs: [worktree 의 .env 와 port 기록 file]
+options:
+  - name: "<mode>"
+    format: "setup|teardown|audit"
+    when: 할 일을 고릅니다. setup 은 port 준비, teardown 은 stack 정리, audit 는 남은 stack 점검입니다.
+    tools: [claude-code]
+  - name: --mode
+    format: "setup|teardown|audit"
+    when: 할 일을 고릅니다. setup 은 port 준비, teardown 은 stack 정리, audit 는 남은 stack 점검입니다.
+    tools: [codex]
+  - name: --task-name
+    format: "<task>"
+    when: setup 에서 task 이름을 줍니다. 이 이름으로 compose project 이름을 만듭니다.
+    tools: [claude-code]
+    note: setup 에 필요합니다. teardown 은 이것이나 --project-name 이 필요합니다.
+  - name: --isolation-key / --task-name
+    format: "<key>"
+    when: setup·teardown 에서 격리 단위를 정하는 이름을 줍니다. 이 이름으로 compose project 이름과 port 묶음을 정합니다.
+    tools: [codex]
+    note: --task-name 은 예전 이름입니다. 같은 뜻으로 받습니다.
+  - name: --worktree-path
+    format: "<dir>"
+    when: 대상 worktree 디렉터리를 줍니다.
+    tools: [claude-code]
+    note: setup, teardown 에 필요합니다.
+  - name: --execution-root / --worktree-path
+    format: "<dir>"
+    when: setup·teardown 에서 .env 와 port 기록을 둘 디렉터리를 줍니다.
+    tools: [codex]
+    note: --worktree-path 는 예전 이름입니다. 같은 뜻으로 받습니다.
+  - name: --compose-file
+    format: "<file>"
+    default: 자동 탐지
+    when: setup 에서 격리할 compose file 을 직접 정합니다.
+    tools: [claude-code, codex]
+  - name: --port-vars
+    format: "VAR1,VAR2"
+    default: 자동 탐지
+    when: setup 에서 격리할 port 변수(*_PORT)를 직접 정합니다.
+    tools: [claude-code]
+  - name: --port-vars
+    format: "VAR 또는 VAR=PORT 목록"
+    default: 자동 탐지
+    when: setup 에서 격리할 port 변수를 쉼표로 정합니다. 값을 붙여도 받지만 port 는 이름 기준으로 정합니다.
+    tools: [codex]
+  - name: --project-name
+    format: "<proj>"
+    when: teardown 에서 task 이름 대신 compose project 이름으로 대상을 정합니다.
+    tools: [claude-code, codex]
+  - name: --keep-volumes
+    format: flag
+    default: volume 도 지움
+    when: teardown 에서 volume 과 data 를 남깁니다.
+    tools: [claude-code, codex]
+  - name: --expect
+    format: "<task1,task2,...>"
+    default: 비어 있으면 점검하지 않음
+    when: audit 에서 정리됐어야 할 task 를 나열합니다.
+    tools: [claude-code]
+  - name: --expect-keys / --expect
+    format: "<keys>"
+    when: audit 에서 남아 있으면 안 되는 격리 이름을 쉼표로 나열합니다.
+    tools: [codex]
+    note: --expect 는 예전 이름입니다. 같은 뜻으로 받습니다.
+  - name: --prune
+    format: flag
+    when: audit 에서 찾은 남은 stack 을 보고만 하지 않고 정리합니다.
+    tools: [claude-code, codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### worktree 두 개가 같은 port 를 쓸 때
+
+병렬 실행 중 두 worktree 가 모두 DB port 5432 를 쓰려고 해서 "port is already allocated" 가 납니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-docker-isolate setup --task-name 000004-020-ui-flow-pages-18-25 --worktree-path .worktrees/000004-020-ui-flow-pages-18-25
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-docker-isolate --mode setup --isolation-key 000004-020-ui-flow-pages-18-25 --execution-root .worktrees/000004-020-ui-flow-pages-18-25
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 그 worktree 전용 port 묶음과 compose project 이름이 정해집니다. 값은 worktree 의 `.env` 와 port 기록 file 에 쓰입니다. 다른 worktree 의 stack 과 충돌하지 않습니다.
+
+### 끝난 뒤 남은 stack 정리
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-docker-isolate audit --expect 000004-010-ui-flow-pages-10-17,000004-020-ui-flow-pages-18-25 --prune
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-docker-isolate --mode audit --expect-keys 000004-010-ui-flow-pages-10-17,000004-020-ui-flow-pages-18-25 --prune
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 해당 task 의 stack 이 남아 있으면 보고하고 정리합니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- Docker 를 쓰지 않는 project 일 때 → 필요 없음
+- git worktree 자체를 만들거나 지울 때 → `ywc-worktrees`
+- compose file 이나 Dockerfile 을 새로 만들 때 → `ywc-docker-compose`
+
+<VerifiedStamp />

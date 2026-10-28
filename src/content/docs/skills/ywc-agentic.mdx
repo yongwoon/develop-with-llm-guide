@@ -1,0 +1,142 @@
+---
+title: ywc-agentic
+description: 목표 문장 하나로 계획, 실행, 평가를 반복해 구현까지 자율로 진행합니다. "자율 실행", "goal to code" 요청에 다른 ywc skill 을 차례로 써서 결과를 냅니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: implement
+tools: [claude-code, codex]
+summary: 목표 문장 하나로 계획부터 구현·평가까지 자율로 진행합니다.
+outputs: [docs/ywc-plans/, tasks/, tasks/agentic-log.md]
+options:
+  - name: "<goal>"
+    format: 자유 문장
+    when: 이루려는 목표를 문장으로 적습니다. --spec 을 쓰지 않으면 필요합니다.
+    tools: [claude-code, codex]
+  - name: --goal
+    format: '"<text>"'
+    when: 목표를 option 으로 줄 때 씁니다. <goal> 과 둘 다 있으면 <goal> 을 씁니다.
+    tools: [claude-code, codex]
+  - name: --spec
+    format: "<path>"
+    when: 이미 다듬은 계획이나 spec 에서 시작합니다. 처음 계획 단계만 건너뜁니다.
+    tools: [claude-code, codex]
+  - name: --max-iterations
+    format: "<n>"
+    default: "3"
+    when: 계획·실행·평가를 되풀이할 최대 횟수를 정합니다.
+    tools: [claude-code, codex]
+  - name: --executor
+    format: "sequential|parallel|auto"
+    default: auto
+    when: task 실행 방식을 고정합니다.
+    tools: [claude-code, codex]
+  - name: --tasks-dir
+    format: "<path>"
+    default: tasks/
+    when: task 와 진행 기록을 둘 디렉터리를 바꿉니다.
+    tools: [claude-code, codex]
+  - name: --resume
+    format: flag
+    when: 계획 단계를 건너뛰고 이미 있는 tasks/ 에서 이어 갑니다.
+    tools: [claude-code, codex]
+  - name: --mode
+    format: "human|llm"
+    when: task 크기를 정해 ywc-task-generator 에 넘깁니다. 생략하면 그쪽에서 정합니다.
+    tools: [claude-code, codex]
+  - name: --base-branch
+    format: "<name>|auto|none"
+    default: auto
+    when: 이번 계획의 task 를 모을 base branch 를 정합니다. auto 는 trunk 에서 새로 만들거나 현재 branch 를 씁니다. none 은 branch 관리를 하지 않습니다.
+    tools: [claude-code, codex]
+  - name: --base-from
+    format: "<branch>"
+    default: trunk
+    when: base branch 를 새로 만들 때 갈라질 지점을 정합니다.
+    tools: [claude-code, codex]
+  - name: --delivery
+    format: "local-merge|per-task-pr"
+    default: local-merge
+    when: task 하나하나를 base branch 에 넣는 방식을 고릅니다.
+    tools: [claude-code, codex]
+  - name: --finish
+    format: "none|pr|merge"
+    default: pr
+    when: 끝난 base branch 를 trunk 로 보내는 방식을 고릅니다. merge 는 직접 고를 때만 병합합니다.
+    tools: [claude-code, codex]
+  - name: --pr-lang
+    format: "<lang>"
+    default: auto
+    when: PR 제목과 설명의 언어를 정합니다.
+    tools: [claude-code, codex]
+  - name: --dry-run
+    format: flag
+    when: 실행할 단계 순서만 보여 주고 아무것도 바꾸지 않습니다.
+    tools: [claude-code, codex]
+  - name: --terse
+    format: flag
+    when: 단계 제목과 최종 보고만 짧게 받습니다.
+    tools: [claude-code, codex]
+  - name: --non-interactive
+    format: flag
+    when: 질문 없이 실행합니다. 필요한 값이 빠지면 시작 전에 되묻습니다.
+    tools: [codex]
+  - name: --suggestions
+    format: "apply|defer"
+    when: --non-interactive 에서 spec 다듬기 뒤 남은 개선 제안의 처리 방식을 정합니다.
+    tools: [codex]
+    note: --non-interactive 와 함께만 씁니다.
+  - name: --resume-disposition
+    format: "resume|stop"
+    when: --non-interactive 에서 이전 실행 기록을 이어 갈지(resume) 멈출지(stop) 정합니다.
+    tools: [codex]
+    note: --non-interactive 와 함께만 씁니다.
+  - name: --lang
+    format: "<code>"
+    when: --non-interactive 에서 task 문서 언어를 정합니다. 언어 설정값이 없을 때 필요합니다.
+    tools: [codex]
+    note: --non-interactive 와 함께만 씁니다.
+  - name: --pr-list-summary
+    format: "include|omit"
+    when: --non-interactive 의 per-task-pr 전달에서 마지막 PR 에 병합된 PR 목록을 넣을지 정합니다.
+    tools: [codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### 목표만 주고 구현까지
+
+skill 색인에 분류 filter 를 넣고 싶습니다. 계획부터 구현과 PR 까지 맡깁니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-agentic skill 색인에 분류 filter 를 추가한다 --mode llm --finish pr
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-agentic skill 색인에 분류 filter 를 추가한다 --mode llm --finish pr
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 계획 문서와 task 가 생기고 구현이 진행됩니다. 진행 기록은 `tasks/agentic-log.md` 에 남습니다. 끝나면 base branch 를 trunk 로 보내는 PR 이 하나 생깁니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 단계마다 직접 확인하며 진행할 때 → `ywc-plan` 부터 하나씩
+- 이미 나눠 둔 task 를 실행할 때 → `ywc-sequential-executor` 또는 `ywc-parallel-executor`
+- skill 하나만 쓰면 될 때 → 그 skill 을 직접 호출
+
+<VerifiedStamp />
