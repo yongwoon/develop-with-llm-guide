@@ -79,6 +79,7 @@
   - `ywc-create-pr`: `--skip-ubiquitous-update`, `--skip-post-ci-check` 제외 (Claude Code·Codex). Codex 의 `--base` 는 포함하며 `--base / --base-branch` 한 행으로 쓴다
   - `ywc-finish-branch`: `--worktree-path` 제외 (Claude Code)
   - 사실 메모 작성 중 새 후보가 나오면 해당 skill 을 보류하고 owner 판정을 받는다.
+- **문체·template (owner 결정, 2026-10-28)**: 사이트 문장은 `docs/specification/06-requirements.md` 의 "사이트 문체"(합니다체)를 따른다. 구성·분량·사례 값 수준은 owner 가 확인한 `src/content/docs/skills/ywc-plan.mdx` 를 기준으로 삼는다. "쓰지 말아야 할 때" 항목은 "~할 때 → `ywc-…`" 형식으로 쓴다.
 
 ## Parallel Execution Metadata
 
