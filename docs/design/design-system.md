@@ -65,7 +65,7 @@
 
 | 요소 | 구현 | 내용 |
 |---|---|---|
-| Header | `Header` override 또는 CSS | brand + `ywc skills · N`, Pagefind 검색, theme 전환 |
+| Header | Starlight 기본 Header + CSS | brand, Pagefind 검색, theme 전환. skill 수 표시는 두지 않는다 (OQ-T1 결정, 2026-10-28). 초안의 `ywc skills · 63` 표기는 반영하지 않는다 |
 | Sidebar | CSS | 그룹 라벨(Pretendard). 흐름 항목 앞에 흐름 번호(10–25)를 mono 로 붙인다. Skill reference 는 색인 아래 skill 이름순 평면 목록이며 분류 기호는 붙이지 않는다. 현재 항목은 accent 테두리 box 로 표시한다 |
 | TOC | CSS | 왼쪽 2px 선, 현재 섹션은 accent |
 | 표제란 `TitleBlock` | custom component (`PageTitle` override) | frontmatter 값(번호·단계 수·필수/선택·산출물)을 4칸으로 표시하며, 모바일에서는 2×2 로 바꾼다. 흐름 페이지에서만 쓴다 |

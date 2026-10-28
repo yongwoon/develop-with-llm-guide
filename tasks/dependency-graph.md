@@ -47,7 +47,7 @@
 - Phase yk-000005: 010 and 020 run in parallel (disjoint skill files); 030 runs after both and ends with the main merge (owner approval).
 
 ## Open Questions (No-AC, not emitted as tasks)
-- **OQ-T1**: `docs/design/design-system.md` Components 표의 Header `ywc skills · N` (collection 에서 계산한 skill 수 표시)에는 spec Acceptance Criterion 이 없다. 이를 구현하려면 tech-stack 에 없는 `Header` override 가 필요하다. 구현할지, design-system 에서 삭제할지 owner 결정이 필요하다.
+- ~~**OQ-T1**: Header 의 `ywc skills · N` 표시~~ → 결정 (2026-10-28, owner): 넣지 않는다. Header 는 Starlight 기본 + CSS 로 두며 `Header` override task 는 만들지 않는다 (design-system Components 표 반영).
 
 ## Visual Dependency Graph (Optional)
 
