@@ -1,0 +1,62 @@
+---
+title: ywc-retro
+description: coding session 을 돌아보고 agent 작업 환경의 개선안을 순위대로 냅니다. "세션 회고", "retro" 요청에 탐색, 자동 점검, 규칙, 지침 file, 도구, 정보 접근 면에서 고칠 점을 찾습니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: meta
+tools: [claude-code, codex]
+summary: coding session 을 회고해 agent 작업 환경의 개선안을 냅니다.
+outputs: [순위가 붙은 개선안]
+userInvoked: { claude-code: true, codex: true }
+options:
+  - name: "<session>"
+    format: 자유 문장
+    default: 현재 session
+    when: 회고할 session 을 정합니다. 지난 session 은 이 기기의 session 기록에서 찾습니다.
+    tools: [claude-code]
+  - name: "<session artifact>"
+    format: 붙여 넣거나 첨부한 내용
+    default: 현재 대화
+    when: 현재 대화와 함께 볼 session 기록을 붙여 넣습니다. 경로만 적으면 읽지 않습니다.
+    tools: [codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### 오래 걸린 session 돌아보기
+
+이 skill 은 사용자가 직접 호출해야 실행됩니다. Codex 에서는 이 제한이 권고 수준입니다. 이번 session 에서 같은 실수가 반복됐습니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-retro
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-retro
+```
+</TabItem>
+</Tabs>
+
+**결과물**: session 에서 시간이 낭비된 지점과 그 원인이 정리됩니다. 개선안은 효과가 큰 순서로 나오고, 지침 file 이나 자동 점검에 넣을 구체적인 문장도 함께 나옵니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 다음 session 에 넘길 요약이 필요할 때 → `ywc-handoff`
+- 운영 장애를 회고할 때 → `ywc-incident-postmortem`
+- 리뷰 지적을 선호로 남길 때 → `ywc-review-learnings`
+
+<VerifiedStamp />

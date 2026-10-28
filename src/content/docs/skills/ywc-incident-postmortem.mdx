@@ -1,0 +1,73 @@
+---
+title: ywc-incident-postmortem
+description: 운영 장애가 끝난 뒤 사후 보고서(postmortem)를 씁니다. "장애 회고", "postmortem" 요청에 timeline, 근본 원인, 영향, 재발 방지 조치를 정리하고, 고객용 요약도 만들 수 있습니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: docs
+tools: [claude-code, codex]
+summary: 장애의 timeline·원인·영향·재발 방지를 사후 보고서로 정리합니다.
+outputs: ["docs/postmortems/<yyyymmdd>-<slug>.md"]
+options:
+  - name: --draft
+    format: flag
+    default: 사용 (기본 동작)
+    when: 질문에 답하며 보고서를 단계적으로 씁니다.
+    tools: [claude-code, codex]
+  - name: --template
+    format: flag
+    when: 질문 없이 빈 보고서 template 만 받습니다.
+    tools: [claude-code, codex]
+  - name: --client
+    format: flag
+    when: 내부 정보를 뺀 고객용 장애 요약을 덧붙입니다.
+    tools: [claude-code, codex]
+  - name: --format
+    format: "markdown|html"
+    default: markdown
+    when: 브라우저로 볼 단독 HTML 보고서가 필요하면 html 을 고릅니다.
+    tools: [claude-code, codex]
+    note: HTML 보고서가 생기는 디렉터리는 도구마다 다릅니다. Claude Code 는 claudedocs/, Codex 는 codexdocs/ 입니다.
+  - name: --lang
+    format: "<code>"
+    default: 문서 언어 설정값
+    when: 보고서 언어를 정합니다.
+    tools: [claude-code, codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### API 5xx 장애 회고와 고객 안내
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-incident-postmortem --client 어제 14시부터 40분간 API gateway 가 5xx 를 냈다
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-incident-postmortem --client 어제 14시부터 40분간 API gateway 가 5xx 를 냈다
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 질문에 답하면 `docs/postmortems/` 에 보고서가 생깁니다. 보고서에는 timeline, 근본 원인, 영향, 재발 방지 조치가 들어갑니다. 내부 정보를 뺀 고객용 요약 file 도 함께 생깁니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 장애가 진행 중이고 원인을 찾아야 할 때 → `ywc-debug-rootcause`
+- 배포 전 보안 점검일 때 → `ywc-security-audit`
+- 리뷰 지적을 정리할 때 → `ywc-review-learnings`
+
+<VerifiedStamp />

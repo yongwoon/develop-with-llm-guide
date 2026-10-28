@@ -1,0 +1,64 @@
+---
+title: ywc-iac-author
+description: 인프라 설계 문서를 Terraform module 로 만듭니다. "Terraform 작성해줘", "IaC 작성" 요청에 module 마다 terraform plan 으로 확인하고, 바뀌는 자원의 영향 요약을 냅니다. apply 는 하지 않습니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: infra
+tools: [claude-code, codex]
+summary: 설계 문서를 plan 으로 검증한 Terraform module 로 만듭니다.
+outputs: [Terraform module, 영향 요약]
+argsNote: Codex 에서는 option 없이 provider, 환경, module 용도, 변경 범위를 문장으로 적습니다.
+options:
+  - name: --design-dir
+    format: "<path>"
+    default: docs/infrastructure/
+    when: ywc-infra-design 의 설계 문서가 다른 경로에 있을 때 씁니다.
+    tools: [claude-code]
+  - name: --module
+    format: "<name>"
+    default: 설계에 있는 모든 module
+    when: module 하나만 만들 때 이름을 줍니다.
+    tools: [claude-code]
+  - name: "<request>"
+    format: 자유 문장
+    when: provider, 환경, module 용도, 변경 범위를 적습니다.
+    tools: [codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### 설계 문서에서 compute module 만
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-iac-author --module compute
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-iac-author docs/infrastructure 설계의 compute module 을 GCP staging 환경용으로 작성한다
+```
+</TabItem>
+</Tabs>
+
+**결과물**: compute module 의 Terraform code 가 생기고 `terraform plan` 으로 확인한 결과가 나옵니다. 어떤 자원이 생기거나 바뀌는지 영향 요약도 함께 나옵니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 아직 설계 문서가 없을 때 → `ywc-infra-design`
+- 작성된 Terraform 을 리뷰할 때 → `ywc-infra-review`
+- 이미 운영 중인 인프라의 비용을 줄일 때 → `ywc-infra-optimize`
+
+<VerifiedStamp />

@@ -1,0 +1,63 @@
+---
+title: ywc-infra-optimize
+description: 운영 중인 인프라의 drift, 비용 절감 후보, 안 쓰는 자원, 신뢰성 보강 지점을 찾습니다. "인프라 최적화", "비용 절감" 요청에 안전한 항목만 하나씩 plan 으로 확인하며 적용합니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: infra
+tools: [claude-code, codex]
+summary: 운영 중인 인프라의 비용·drift·신뢰성 개선 후보를 찾고 안전한 것만 적용합니다.
+outputs: [개선 후보 목록, 항목별 Terraform 변경 commit]
+argsNote: Codex 에서는 option 없이 drift, 비용 조정, 안 쓰는 자원, 신뢰성 보강 중 보고 싶은 대상을 문장으로 적습니다.
+options:
+  - name: --plan-file
+    format: "<path>"
+    default: 현재 module 디렉터리에서 plan 실행
+    when: 저장해 둔 terraform plan 출력에서 후보를 찾습니다.
+    tools: [claude-code]
+  - name: --usage-data
+    format: "<path>"
+    when: 비용·사용량 보고서 file 을 주어 자원 크기 조정 후보를 찾습니다. skill 이 청구 data 를 직접 가져오지는 않습니다.
+    tools: [claude-code]
+  - name: "<target>"
+    format: 자유 문장
+    when: drift, 크기 조정, 안 쓰는 자원, 신뢰성 보강 중 대상을 적습니다.
+    tools: [codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### 비용 보고서로 과한 자원 찾기
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-infra-optimize --usage-data cost-report.json
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-infra-optimize cost-report.json 기준으로 과하게 잡힌 자원의 크기 조정
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 크기 조정과 정리 후보가 위험 등급과 함께 나옵니다. 안전한 항목만 하나씩 plan 으로 확인한 뒤 적용하고 commit 을 남깁니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 새 인프라를 설계할 때 → `ywc-infra-design`
+- 변경 전 리뷰만 할 때 → `ywc-infra-review`
+- application code 의 성능을 볼 때 → `ywc-impl-review`
+
+<VerifiedStamp />
