@@ -1,0 +1,141 @@
+---
+title: ywc-spec-ready
+description: 목표 문장이나 초안 spec 을 검토 통과 상태까지 자동으로 다듬는 skill. "spec 수렴", "사양 준비" 요청에 계획 수정과 재검토를 반복해 task 생성 직전 상태로 만든다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: plan
+tools: [claude-code, codex]
+summary: 초안 spec 을 검토 통과 상태까지 자동으로 다듬는다
+outputs: ["docs/ywc-plans/<slug>.md", "<slug>.spec-ready-log.md"]
+options:
+  - name: "<goal>"
+    format: 자유 문장
+    when: 아직 spec 이 없을 때 목표를 문장으로 주면 spec 초안부터 만든다.
+    tools: [claude-code, codex]
+    note: --spec 과 함께 쓸 수 없다.
+  - name: --spec
+    format: "<path>"
+    when: ywc-plan 이 만든 기존 spec 을 다듬을 때 경로를 준다.
+    tools: [claude-code, codex]
+    note: <goal> 과 함께 쓸 수 없다. 둘 다 없으면 무엇을 다듬을지 되묻는다.
+  - name: --output
+    format: "<path>"
+    default: docs/ywc-plans/<slug>.md
+    when: <goal> 로 시작할 때 새 spec 을 둘 경로를 바꾼다.
+    tools: [claude-code, codex]
+    note: --spec 을 쓰면 무시된다.
+  - name: --max-iterations
+    format: "<n>"
+    default: "5"
+    when: 검토와 수정을 되풀이할 최대 횟수를 정한다.
+    tools: [claude-code]
+  - name: --max-iterations
+    format: "<n>"
+    default: "4"
+    when: 검토와 수정을 되풀이할 최대 횟수를 정한다. 1 이상이어야 한다.
+    tools: [codex]
+  - name: --max-advisor-calls
+    format: "<n>"
+    default: "4"
+    when: 반복 전체에서 추가로 검토하는 횟수의 합계 상한을 정한다. 비용을 묶어 둘 때 쓴다.
+    tools: [claude-code, codex]
+  - name: --log
+    format: "<path>"
+    default: "<spec 디렉터리>/<slug>.spec-ready-log.md"
+    when: 반복 기록을 남길 file 경로를 바꾼다.
+    tools: [claude-code]
+  - name: --log
+    format: "<path>"
+    default: docs/ywc-plans/<slug>.spec-ready-log.md
+    when: 반복 기록을 남길 file 경로를 바꾼다.
+    tools: [codex]
+  - name: --dry-run
+    format: flag
+    when: 실제로 돌리기 전에 실행될 명령 순서만 확인한다. 아무 file 도 쓰지 않는다.
+    tools: [claude-code, codex]
+  - name: --lang
+    format: "<lang>"
+    default: auto (문서 언어 설정값)
+    when: 보고와 안내 문구의 언어를 이번만 바꾼다.
+    tools: [claude-code, codex]
+  - name: --focus
+    format: "requirements|architecture|testing|compliance"
+    when: 검토를 한 관점에 맞추고 싶을 때 ywc-spec-validate 에 그대로 넘긴다.
+    tools: [claude-code, codex]
+  - name: --format
+    format: "markdown|html"
+    default: markdown
+    when: 검토 보고서를 HTML 로도 받고 싶을 때 ywc-spec-validate 에 넘긴다.
+    tools: [claude-code, codex]
+  - name: --terse
+    format: flag
+    when: 진행 중 출력을 줄이고 최종 보고만 보고 싶을 때 쓴다.
+    tools: [claude-code, codex]
+  - name: --non-interactive
+    format: flag
+    when: 질문 없이 끝까지 돌려야 할 때 쓴다. 남은 개선 제안이 있으면 --suggestions 가 필요하다.
+    tools: [codex]
+  - name: --suggestions
+    format: "apply|defer"
+    when: --non-interactive 에서 남은 개선 제안을 한 번 더 반영할지(apply) 미룰지(defer) 정한다.
+    tools: [codex]
+    note: --non-interactive 와 함께, 개선 제안이 남았을 때만 필요하다.
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### ywc-plan 이 만든 spec 을 통과 상태로
+
+`ywc-plan` 이 쓴 spec 에 지적이 남아 있어 task 로 나누기 전에 정리한다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-spec-ready --spec docs/ywc-plans/20261028-option-table.md
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-spec-ready --spec docs/ywc-plans/20261028-option-table.md
+```
+</TabItem>
+</Tabs>
+
+**결과물**: spec 파일이 그 자리에서 고쳐지고, 반복 기록이 `docs/ywc-plans/20261028-option-table.spec-ready-log.md` 에 쌓인다. 끝나면 `ywc-task-generator` 로 넘어가라는 안내가 나온다.
+
+### 목표 문장에서 바로 시작
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-spec-ready skill 색인에 분류 filter 를 추가한다 --max-iterations 3
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-spec-ready skill 색인에 분류 filter 를 추가한다 --max-iterations 3
+```
+</TabItem>
+</Tabs>
+
+**결과물**: `docs/ywc-plans/<slug>.md` 에 spec 이 새로 생기고, 최대 3번까지 검토와 수정을 되풀이한다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 고치지 않고 한 번 검토만 받고 싶다 → `ywc-spec-validate`
+- 수렴까지 갈 필요 없이 계획만 세우면 된다 → `ywc-plan`
+- spec 이 이미 통과했다 → `ywc-task-generator`
+- 목표에서 구현까지 한 번에 맡기고 싶다 → `ywc-agentic`
+
+<VerifiedStamp />

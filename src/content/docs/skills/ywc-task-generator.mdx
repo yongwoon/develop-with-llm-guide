@@ -1,0 +1,100 @@
+---
+title: ywc-task-generator
+description: 완성된 spec 을 구현 task 디렉터리로 나누는 skill. "task 생성", "작업 분해" 요청에 task 별 README·체크리스트·테스트 계획과 의존 관계 그래프를 만든다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: plan
+tools: [claude-code, codex]
+summary: 완성된 spec 을 구현 task 디렉터리와 의존 그래프로 나눈다
+outputs: ["tasks/<task>/", tasks/dependency-graph.md]
+argsNote: 분해할 spec 은 요청 문장에서 경로로 가리킨다.
+options:
+  - name: --lang
+    format: "ko|ja|en|zh|es"
+    default: task 문서 언어 설정값
+    when: task 문서를 쓸 언어를 이번만 바꾼다.
+    tools: [claude-code, codex]
+  - name: --mode
+    format: "human|llm"
+    default: 설정값, 없으면 물어본다
+    when: task 크기를 사람이 손으로 할 단위(human)로 할지 LLM 이 한 번에 처리할 단위(llm)로 할지 정한다.
+    tools: [claude-code, codex]
+  - name: --tasks-dir
+    format: "<path>"
+    default: tasks/
+    when: 계획을 다시 짤 때 기존 task 와 섞이지 않게 다른 디렉터리에 만든다.
+    tools: [claude-code, codex]
+  - name: --approve-preview
+    format: flag
+    when: 질문 없이 돌리는 실행에서, 분해 미리보기를 이미 확인했다는 표시로 준다.
+    tools: [claude-code, codex]
+    note: Codex 에서는 --preview-path·--preview-digest 와 함께 쓰고, --preview-only 와 함께 쓸 수 없다.
+  - name: --manifest
+    format: "<repository-relative-path>"
+    when: architecture 규약 file 이 있으면 그 경로를 주어 task 에 반영한다.
+    tools: [codex]
+  - name: --initials
+    format: "<value>"
+    default: 설정값
+    when: 여러 사람이 같은 저장소에서 task 를 만들 때 번호가 겹치지 않게 2~4자 소문자·숫자 이니셜을 붙인다.
+    tools: [codex]
+  - name: --non-interactive
+    format: flag
+    when: 질문 없이 돌려야 할 때 쓴다. 필요한 값이 빠져 있으면 아무것도 쓰지 않고 되묻는다.
+    tools: [codex]
+    note: --mode 를 함께 줘야 한다. 언어 설정값이 없으면 --lang 도 필요하다.
+  - name: --preview-only
+    format: flag
+    when: task 를 만들지 않고 분해 미리보기만 file 로 남겨 먼저 확인한다.
+    tools: [codex]
+    note: --approve-preview 와 함께 쓸 수 없다.
+  - name: --preview-path
+    format: "<path>"
+    when: 저장해 둔 미리보기로 task 를 만들 때 반드시 그 file 경로(docs/ywc-plans/ 아래)를 준다.
+    tools: [codex]
+  - name: --preview-digest
+    format: "<sha256>"
+    when: 미리보기를 만들 때 받은 digest 를 주어, 확인한 미리보기 그대로 task 를 만든다.
+    tools: [codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### 통과한 spec 을 task 로 나누기
+
+`ywc-spec-ready` 를 통과한 spec 을 LLM 실행 단위의 task 로 나눈다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-task-generator docs/ywc-plans/20261028-option-table.md --mode llm --lang ko
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-task-generator docs/ywc-plans/20261028-option-table.md --mode llm --lang ko
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 분해 미리보기를 보여 준 뒤 `tasks/<task>/` 마다 README·구현 체크리스트·수동 테스트 계획이 생기고, 실행 순서를 담은 `tasks/dependency-graph.md` 가 만들어진다. task 실행은 하지 않는다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 만든 task 를 실행하고 싶다 → `ywc-sequential-executor` 또는 `ywc-parallel-executor`
+- spec 을 먼저 검토하고 싶다 → `ywc-spec-validate`
+- 아직 spec 이 없다 → `ywc-plan`
+- 바로 code 를 쓰고 싶다 → `ywc-code-gen`
+
+<VerifiedStamp />
