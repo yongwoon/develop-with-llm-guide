@@ -43,7 +43,7 @@ Covers: F-FLOW (흐름 18–25, 63개 skill 흐름 등장, 도구 한정 skill �
 - slug: 18 `testing-verification`, 19 `design-product-review`, 20 `infra-cloud`, 21 `auth-implementation`, 22 `code-structure`, 23 `release-repo-ops`, 24 `local-parallel`, 25 `session-skill-management`.
 - 필수/선택 (범례 기본 규칙 + 예외, 각 page "건너뛸 수 있는 조건"에 근거):
   - 18: 행 전체가 `,` → 5개 모두 선택 → 0/5
-  - 19: `ywc-design-renew` 필수(→), `ywc-product-review` 선택(`,`) → 2/1
+  - 19: 예외 `ywc-design-renew` 선택 (1단계 리뷰에서 디자인 문제가 없을 때), `ywc-product-review` 선택(`,`) → 1/2
   - 20: 예외 `ywc-infra-optimize` 선택 (운영 전·사용량 data 없음) → 3/1
   - 21: 1/0
   - 22: 예외 `ywc-blast-radius` 선택 (Codex 전용, Claude Code 는 대체 안내) → 3/1

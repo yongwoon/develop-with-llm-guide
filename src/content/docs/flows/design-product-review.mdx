@@ -7,8 +7,8 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 titleBlock:
   number: 19
   steps: 3
-  required: 2
-  optional: 1
+  required: 1
+  optional: 2
   outputs: [UI/UX 리뷰 보고, 수정된 화면 code, 사업 관점 리뷰 보고]
 sidebar:
   order: 19
@@ -31,7 +31,7 @@ import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 <Flow>
 <FlowStep skill="ywc-ui-ux-review" desc="code 분석과 실제 화면 탐색으로 UI/UX 를 리뷰합니다." />
-<FlowStep skill="ywc-design-renew" desc="리뷰에서 드러난 밋밋한 화면을 새롭게 바꾸거나 출시 전에 점검합니다." />
+<FlowStep skill="ywc-design-renew" desc="리뷰에서 드러난 밋밋한 화면을 새롭게 바꾸거나 출시 전에 점검합니다." optional />
 <FlowStep skill="ywc-product-review" desc="사용자 가치·성장·위험 관점에서 project 를 리뷰합니다." optional />
 </Flow>
 
