@@ -89,7 +89,11 @@
 	--sl-text-h4: 1.125rem;
 	--sl-line-height: 1.75;
 	--sl-sidebar-width: 16.875rem;
-	--sl-content-width: 46.25rem;
+	/* The content column fills the space between the sidebars; running text
+	 * keeps a readable measure through --prose-width (see Layout controls). */
+	--sl-content-width: 90rem;
+	--prose-width: 46.25rem;
+	--toc-width: 16.875rem;
 }
 
 /* 24px blueprint grid. */
@@ -205,5 +209,44 @@ starlight-theme-select select {
 		transition: none !important;
 		animation: none !important;
 		scroll-behavior: auto !important;
+	}
+}
+
+/* Layout controls. Tables and code use the full content column; running text
+ * keeps --prose-width. From 50rem the left sidebar can collapse to a rail; from
+ * 72rem the TOC column takes --toc-width, which the PageSidebar override lets
+ * the reader drag. Starlight sizes the TOC with --sl-sidebar-width, so it is
+ * redefined inside the TOC column only. */
+.sl-markdown-content > :is(p, ul, ol, blockquote) {
+	max-width: var(--prose-width);
+}
+
+@media (min-width: 50rem) {
+	:root[data-sidebar='collapsed'] {
+		--sl-sidebar-width: 3rem;
+	}
+
+	:root[data-sidebar='collapsed'] .sidebar-content {
+		padding-inline: 0.25rem;
+	}
+}
+
+@media (min-width: 72rem) {
+	:root[data-has-toc] {
+		--__toc-width: var(--toc-width);
+	}
+
+	.right-sidebar-container {
+		--sl-sidebar-width: var(--toc-width);
+		--sl-sidebar-pad-x: 1rem;
+		width: var(--toc-width);
+	}
+
+	.right-sidebar-container .sl-container {
+		max-width: none;
+	}
+
+	:root[data-has-sidebar][data-has-toc] .main-pane {
+		width: calc(100% - var(--toc-width));
 	}
 }

@@ -15,11 +15,20 @@ export default defineConfig({
 			components: {
 				Search: './src/components/overrides/Search.astro',
 				PageTitle: './src/components/overrides/PageTitle.astro',
+				Sidebar: './src/components/overrides/Sidebar.astro',
+				PageSidebar: './src/components/overrides/PageSidebar.astro',
 			},
 			// Pretendard ships as unicode-range subsets; the browser fetches only
 			// the subsets a page uses. Subset 91 holds Latin and a few Hangul
 			// syllables, so the preload helps UI text; other Hangul loads on demand.
 			head: [
+				// Restores the layout preferences saved by the Sidebar and PageSidebar
+				// overrides before first paint, so the page does not jump on load.
+				{
+					tag: 'script',
+					content:
+						"try{var s=localStorage,r=document.documentElement;if(s.getItem('dwlg:sidebar')==='collapsed')r.dataset.sidebar='collapsed';var w=parseInt(s.getItem('dwlg:toc-width'),10);if(w>=192&&w<=448)r.style.setProperty('--toc-width',w+'px')}catch(e){}",
+				},
 				{
 					tag: 'link',
 					attrs: {

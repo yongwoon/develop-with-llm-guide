@@ -1,0 +1,112 @@
+---
+// Starlight's table-of-contents column plus a drag handle on its left edge
+// (from 72rem up). The width lives in --toc-width on <html> and in
+// localStorage; the inline head script in astro.config.mjs restores it before
+// first paint. Keep MIN/MAX/DEFAULT in sync with that script and theme.css.
+import Default from '@astrojs/starlight/components/PageSidebar.astro';
+
+const hasToc = Boolean(Astro.locals.starlightRoute.toc);
+---
+
+<Default />
+{
+	hasToc && (
+		<div
+			class="toc-resizer"
+			role="separator"
+			aria-orientation="vertical"
+			aria-label="목차 열 폭"
+			aria-valuemin="192"
+			aria-valuemax="448"
+			aria-valuenow="270"
+			tabindex="0"
+			title="끌어서 폭 조절, double-click 으로 기본값"
+		/>
+	)
+}
+
+<script>
+	const STORAGE_KEY = 'dwlg:toc-width';
+	const MIN = 192;
+	const MAX = 448;
+	const DEFAULT = 270;
+	const STEP = 16;
+	const root = document.documentElement;
+	const handle = document.querySelector<HTMLElement>('.toc-resizer');
+
+	const currentWidth = () => parseFloat(root.style.getPropertyValue('--toc-width')) || DEFAULT;
+	const save = (value: string | null) => {
+		try {
+			if (value === null) localStorage.removeItem(STORAGE_KEY);
+			else localStorage.setItem(STORAGE_KEY, value);
+		} catch {
+			// Storage can be blocked; the width still applies to this page.
+		}
+	};
+	const apply = (width: number) => {
+		const clamped = Math.round(Math.min(MAX, Math.max(MIN, width)));
+		root.style.setProperty('--toc-width', `${clamped}px`);
+		handle?.setAttribute('aria-valuenow', String(clamped));
+		return clamped;
+	};
+
+	if (handle) {
+		handle.setAttribute('aria-valuenow', String(Math.round(currentWidth())));
+
+		handle.addEventListener('pointerdown', (event) => {
+			handle.setPointerCapture(event.pointerId);
+			handle.dataset.dragging = '';
+			document.body.style.userSelect = 'none';
+		});
+		handle.addEventListener('pointermove', (event) => {
+			if (handle.hasPointerCapture(event.pointerId)) apply(window.innerWidth - event.clientX);
+		});
+		const stop = (event: PointerEvent) => {
+			if (!handle.hasPointerCapture(event.pointerId)) return;
+			handle.releasePointerCapture(event.pointerId);
+			delete handle.dataset.dragging;
+			document.body.style.userSelect = '';
+			save(String(Math.round(currentWidth())));
+		};
+		handle.addEventListener('pointerup', stop);
+		handle.addEventListener('pointercancel', stop);
+
+		handle.addEventListener('keydown', (event) => {
+			const delta = { ArrowLeft: STEP, ArrowRight: -STEP }[event.key];
+			if (delta === undefined) return;
+			event.preventDefault();
+			save(String(apply(currentWidth() + delta)));
+		});
+		handle.addEventListener('dblclick', () => {
+			root.style.removeProperty('--toc-width');
+			handle.setAttribute('aria-valuenow', String(DEFAULT));
+			save(null);
+		});
+	}
+</script>
+
+<style>
+	.toc-resizer {
+		display: none;
+	}
+
+	@media (min-width: 72rem) {
+		.toc-resizer {
+			position: fixed;
+			top: var(--sl-nav-height);
+			bottom: 0;
+			inset-inline-end: calc(var(--toc-width) - 4px);
+			z-index: 1;
+			display: block;
+			width: 8px;
+			cursor: col-resize;
+			touch-action: none;
+		}
+
+		.toc-resizer:hover,
+		.toc-resizer:focus-visible,
+		.toc-resizer[data-dragging] {
+			background: linear-gradient(var(--accent), var(--accent)) center / 2px 100% no-repeat;
+		}
+	}
+</style>
