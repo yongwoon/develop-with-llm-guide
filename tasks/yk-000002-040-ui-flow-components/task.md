@@ -50,3 +50,5 @@ Covers: F-FLOW (표제란, 연결선, 점선 선택 단계, 도구 표시), 03-d
   - 유효 page build 성공. 표식 순서 step, loop, loop, alt, step.
   - `titleBlock.steps` 불일치, 짝이 안 맞는 loop, 대안 없는 alt, 대안이 있는 step 은 각각 원인을 담은 메시지로 build 실패.
   - 1280px: 표제란 4칸, 번호 원 1–5 와 연결선, "↔ 반복"·"또는"·"Codex 전용"·점선 "선택" 표시. 375px: 표제란 2×2, page 가로 scroll 0, skill link 는 `/develop-with-llm-guide/skills/ywc-a/#options`.
+- review 반영: 필수 단계의 숨김 텍스트가 `display:none` 인 `.meta` 안에 있어 읽히지 않던 문제를 고쳐, skill 이름 앞에 "필수 단계:"/"선택 단계:" 숨김 텍스트를 둔다. `<ol role="list">`. 선택 단계 수를 `titleBlock.optional` 과 비교. 연속 loop 는 짝수 길이면 허용(↔ 두 쌍). FlowStep 은 MDX 에서 타입 검사가 안 되므로 알 수 없는 `kind`·`tools` 를 page id 와 함께 오류로 알린다.
+- 재확인 (임시 page, 삭제): loop 4개 연속 page build 성공, "필수 단계:" 숨김 텍스트 출력, 표제란은 flow page 에만 있고 홈에는 없음. 선택 수 불일치, 홀수 loop, `kind="lop"`, `tools={['cursor']}` 는 각각 build 실패.

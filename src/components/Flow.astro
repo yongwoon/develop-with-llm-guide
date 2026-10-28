@@ -1,7 +1,8 @@
 ---
 // A flow on a flow page: numbered <FlowStep>s joined by a connector line.
-// Fails the build when the step count differs from titleBlock.steps or when
-// loop steps do not come in ↔ pairs (spec 03-data cross-checks).
+// Fails the build when the step or optional-step count differs from
+// titleBlock, or when loop steps do not come in ↔ pairs (spec 03-data). The
+// counts are read from the markers FlowStep puts on each rendered <li>.
 const { entry } = Astro.locals.starlightRoute;
 const { data } = entry;
 if (data.kind !== 'flow') {
@@ -15,13 +16,20 @@ if (kinds.length !== data.titleBlock.steps) {
 		`Flow: ${entry.id} has ${kinds.length} FlowStep(s) but titleBlock.steps is ${data.titleBlock.steps}`,
 	);
 }
+const optionalCount = [...html.matchAll(/data-flow-optional="true"/g)].length;
+if (optionalCount !== data.titleBlock.optional) {
+	throw new Error(
+		`Flow: ${entry.id} has ${optionalCount} optional FlowStep(s) but titleBlock.optional is ${data.titleBlock.optional}`,
+	);
+}
+// Each ↔ is two consecutive loop steps, so every run of loops has even length.
 const loopRuns = kinds.join(' ').match(/(?:loop ?)+/g) ?? [];
-if (loopRuns.some((run) => run.trim().split(' ').length !== 2)) {
+if (loopRuns.some((run) => run.trim().split(' ').length % 2 !== 0)) {
 	throw new Error(`Flow: ${entry.id} has kind="loop" steps that are not consecutive pairs`);
 }
 ---
 
-<ol class="flow not-content" set:html={html} />
+<ol class="flow not-content" role="list" set:html={html} />
 
 <style>
 	.flow {

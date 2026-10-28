@@ -1,11 +1,13 @@
 ---
 // One step of a flow (spec 02-features 흐름 표기 범례). kind: step = sequential,
 // loop = one half of a ↔ pair, alt = pick one of `skill` and `alt`. Optional
-// steps are dashed and also say "선택" in text. Numbering comes from <Flow>.
-import type { Tool } from '../content.config';
+// steps are dashed and also say "선택" in text. Numbering comes from <Flow>,
+// so a FlowStep must sit inside one. `desc` is plain text (no Markdown).
+import { TOOLS, type Tool } from '../content.config';
 import SkillLink from './SkillLink.astro';
 
-type StepKind = 'step' | 'loop' | 'alt';
+const STEP_KINDS = ['step', 'loop', 'alt'] as const;
+type StepKind = (typeof STEP_KINDS)[number];
 
 interface Props {
 	skill: string;
@@ -18,21 +20,30 @@ interface Props {
 
 // Tool display labels; keep in sync with SkillCard, OptionTable, SkillIndex, VerifiedStamp.
 const TOOL_LABELS: Record<Tool, string> = { 'claude-code': 'Claude Code', codex: 'Codex' };
-const ALL_TOOLS = Object.keys(TOOL_LABELS);
 
 const { skill, desc, optional = false, tools = [], kind = 'step', alt = [] } = Astro.props;
+const pageId = Astro.locals.starlightRoute.entry.id;
+// MDX props are not type-checked, so typos are caught here.
+if (!STEP_KINDS.includes(kind)) {
+	throw new Error(`FlowStep: ${skill} has unknown kind="${kind}"; use ${STEP_KINDS.join(' | ')} (${pageId})`);
+}
+const unknownTools = tools.filter((tool) => !(TOOLS as readonly string[]).includes(tool));
+if (unknownTools.length > 0) {
+	throw new Error(`FlowStep: ${skill} has unknown tools ${unknownTools.join(', ')}; use ${TOOLS.join(' | ')} (${pageId})`);
+}
 if (kind === 'alt' && alt.length === 0) {
-	throw new Error(`FlowStep: ${skill} has kind="alt" but no alt={[...]} alternatives`);
+	throw new Error(`FlowStep: ${skill} has kind="alt" but no alt={[...]} alternatives (${pageId})`);
 }
 if (kind !== 'alt' && alt.length > 0) {
-	throw new Error(`FlowStep: ${skill} lists alt alternatives but kind is "${kind}", not "alt"`);
+	throw new Error(`FlowStep: ${skill} lists alt alternatives but kind is "${kind}", not "alt" (${pageId})`);
 }
-const isOneTool = tools.length > 0 && tools.length < ALL_TOOLS.length;
+const isOneTool = tools.length > 0 && tools.length < TOOLS.length;
 ---
 
-<li class:list={['flow-step', { optional }]} data-flow-step={kind}>
+<li class:list={['flow-step', { optional }]} data-flow-step={kind} data-flow-optional={optional ? 'true' : 'false'}>
 	<div class="card">
 		<p class="head">
+			<span class="sr-only">{optional ? '선택 단계:' : '필수 단계:'}</span>
 			<SkillLink name={skill} />
 			{
 				alt.map((name) => (
@@ -45,7 +56,7 @@ const isOneTool = tools.length > 0 && tools.length < ALL_TOOLS.length;
 		</p>
 		<p class="meta">
 			{kind === 'loop' && <span class="badge loop">↔ 반복</span>}
-			{optional ? <span class="badge">선택</span> : <span class="sr-only">필수</span>}
+			{optional && <span class="badge" aria-hidden="true">선택</span>}
 			{isOneTool && <span class="badge tools">{tools.map((tool) => TOOL_LABELS[tool]).join(' · ')} 전용</span>}
 		</p>
 		<p class="desc">{desc}</p>
