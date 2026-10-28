@@ -45,7 +45,7 @@ Covers: F-FLOW (흐름 10–17), F-NAV (흐름 → skill 2 클릭), SC003, R-SEA
   - 10: `ywc-tech-research`, `ywc-ubiquitous-language` 선택 → 9/2
   - 11: `ywc-agent-legibility-audit` 선택 → 3/1
   - 12: `ywc-tdd-ritual` 선택 (test 로 확인할 동작이 없는 변경) → 4/1
-  - 13: `ywc-security-audit`, `ywc-finish-branch` 선택 (executor 가 병합까지 끝내는 경우) → 6/2. 실행 단계는 alt 1개 (task-executor / sequential / parallel / code-gen)
+  - 13: `ywc-impl-review` (executor `--review` 로 이미 리뷰한 경우), `ywc-security-audit`, `ywc-finish-branch` (executor 가 병합까지 끝내는 경우) 선택 → 5/3. 실행 단계는 alt 1개 (task-executor / sequential / parallel / code-gen)
   - 16: `ywc-resolve-conflict` 선택 (local 충돌이 있을 때만), `ywc-review-learnings` 는 `,` 기본 규칙으로 선택 → 3/2
   - 17: `ywc-incident-postmortem` 선택 (운영 장애가 아닌 bug) → 1/1
   - 14, 15 는 예외 없음.

@@ -7,8 +7,8 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 titleBlock:
   number: 13
   steps: 8
-  required: 6
-  optional: 2
+  required: 5
+  optional: 3
   outputs: [docs/ywc-plans/, tasks/, 병합 commit]
 sidebar:
   order: 13
@@ -35,7 +35,7 @@ import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 <FlowStep skill="ywc-task-generator" desc="spec 을 task 디렉터리와 의존 그래프로 나눕니다." />
 <FlowStep skill="ywc-confidence-gate" desc="구현에 들어가기 직전에 준비 상태를 판정합니다." />
 <FlowStep skill="ywc-task-executor" kind="alt" alt={['ywc-sequential-executor', 'ywc-parallel-executor', 'ywc-code-gen']} desc="실행 방식 하나를 고릅니다. 고르기 어려우면 ywc-task-executor 에 맡깁니다." />
-<FlowStep skill="ywc-impl-review" desc="구현이 spec 과 맞는지와 품질 문제를 병합 전에 리뷰합니다." />
+<FlowStep skill="ywc-impl-review" desc="구현이 spec 과 맞는지와 품질 문제를 병합 전에 리뷰합니다." optional />
 <FlowStep skill="ywc-security-audit" desc="인증·외부 입력·민감 data 를 다루는 code 의 보안을 점검합니다." optional />
 <FlowStep skill="ywc-finish-branch" desc="끝난 branch 를 병합하고 task 완료 처리를 합니다." optional />
 </Flow>
@@ -172,7 +172,7 @@ $ywc-finish-branch --mode local-merge --branch feature/<task-name> --base-branch
 
 ## 건너뛸 수 있는 조건
 
-- **6단계 <SkillLink name="ywc-impl-review" />**: 5단계 executor 를 `--review` 와 함께 실행했다면 task 마다 리뷰가 이미 끝나 있습니다. 이 단계는 전체 변경을 한 번 더 볼 때만 실행합니다.
+- **6단계 <SkillLink name="ywc-impl-review" />**: 5단계 executor 를 `--review` 와 함께 실행했다면 task 마다 리뷰가 이미 끝나 있으므로 건너뜁니다. 전체 변경을 한 번 더 보고 싶을 때만 실행합니다.
 - **7단계 <SkillLink name="ywc-security-audit" />**: 인증, 외부 입력, 민감 data 를 건드리지 않는 변경이면 건너뜁니다.
 - **8단계 <SkillLink name="ywc-finish-branch" />**: 5단계에서 executor 를 썼다면 task 마다 병합과 완료 처리까지 끝나므로 건너뜁니다. <SkillLink name="ywc-code-gen" /> 으로 만든 branch 는 이 단계로 마무리합니다.
 - 변경이 file 몇 개로 끝나면 [12 작은 변경](/develop-with-llm-guide/flows/small-change/) 흐름을 씁니다.
