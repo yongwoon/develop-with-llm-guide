@@ -45,6 +45,12 @@ import Default from '@astrojs/starlight/components/Sidebar.astro';
 </script>
 
 <style>
+	/* The wrapper must not change Starlight's flex gap between the nav list
+	 * and the mobile menu footer. */
+	.sidebar-body {
+		display: contents;
+	}
+
 	.sidebar-toggle {
 		display: none;
 	}

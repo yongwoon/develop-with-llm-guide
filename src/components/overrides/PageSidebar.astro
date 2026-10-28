@@ -59,7 +59,7 @@ const hasToc = Boolean(Astro.locals.starlightRoute.toc);
 			document.body.style.userSelect = 'none';
 		});
 		handle.addEventListener('pointermove', (event) => {
-			if (handle.hasPointerCapture(event.pointerId)) apply(window.innerWidth - event.clientX);
+			if (handle.hasPointerCapture(event.pointerId)) apply(root.clientWidth - event.clientX);
 		});
 		const stop = (event: PointerEvent) => {
 			if (!handle.hasPointerCapture(event.pointerId)) return;

@@ -223,7 +223,12 @@ starlight-theme-select select {
 
 @media (min-width: 50rem) {
 	:root[data-sidebar='collapsed'] {
-		--sl-sidebar-width: 3rem;
+		--sl-sidebar-width: 3.5rem;
+	}
+
+	/* Classic scrollbars would otherwise squeeze the toggle out of the rail. */
+	:root[data-sidebar='collapsed'] .sidebar-pane {
+		scrollbar-gutter: auto;
 	}
 
 	:root[data-sidebar='collapsed'] .sidebar-content {
@@ -232,10 +237,6 @@ starlight-theme-select select {
 }
 
 @media (min-width: 72rem) {
-	:root[data-has-toc] {
-		--__toc-width: var(--toc-width);
-	}
-
 	.right-sidebar-container {
 		--sl-sidebar-width: var(--toc-width);
 		--sl-sidebar-pad-x: 1rem;
