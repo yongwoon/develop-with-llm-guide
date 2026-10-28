@@ -74,6 +74,11 @@
 - `userInvoked` 의 Codex 값은 화면에서 "권고"로 병기한다 (OQ-13).
 - **크기 주의**: page 당 option 표·예시 포함 약 100 LOC 로 task 합계가 llm 기준(~1,000 LOC)을 넘을 수 있다. session 안에서 끝나지 않으면 완료한 page 까지 병합하고 남은 page 를 Implementation Notes 에 기록해 보고한다.
 - **Mobile-first**: layout 은 component 가 소유한다. 이 task 는 375px 에서 page 가로 scroll 0 만 확인한다 (긴 명령은 code block 내부 scroll).
+- **owner 판정 (excludedOptions, 2026-10-28)**: 아래 option 은 사용자가 직접 쓰는 option 이므로 표에 포함한다 (제외 없음).
+  - `ywc-docker-isolate` (Codex): `--task-name`, `--worktree-path`, `--expect` 는 `--isolation-key`, `--execution-root`, `--expect-keys` 의 하위 호환 alias 이므로 새 이름과 같은 행에 `--isolation-key / --task-name` 형식으로 쓴다
+  - `ywc-project-docs` (Codex): `--lang` 포함
+  - `ywc-setup` (Codex): `--lang`, `--lang-doc`, `--lang-task`, `--lang-pr` 포함
+  - 사실 메모 작성 중 새 후보가 나오면 해당 skill 을 보류하고 owner 판정을 받는다.
 
 ## Parallel Execution Metadata
 
