@@ -54,3 +54,8 @@ Covers: R-RELEASE (첫 공개 조건), R-SEARCH (전 항목), R-UX (Lighthouse·
 - [ ] fresh-check 통과 (`pnpm run fresh-check` exit 0)
 
 ## Implementation Notes (optional)
+
+- 범위 (owner 결정, 2026-10-28): 측정·기록까지만 하고 `content/initial` → main 병합 전에 멈춘다. IME 3 환경은 "owner 수동 점검 — 대기". 결과는 `docs/measurements/first-release.md`.
+- 검색 보강 1건: `--local-merge` 미적중 → `ywc-sequential-executor` 의 description 과 사용 case 소제목에 `--local-merge` 추가 → 재측정 1위. 12/12.
+- Lighthouse Performance: 사용한 Lighthouse 도구는 Performance category 를 내지 않는다. mobile 조건 trace 로 LCP·CLS 를 기록했고 점수 확인은 owner 에게 남겼다. trace file 은 저장소에 남기지 않았다.
+- Stop Condition 해당 없음: 첫 검색 전송량 237 KB (1 MB 이하), fresh-check exit 0, IME 는 미측정이라 "손실 있음"이 아니다.
