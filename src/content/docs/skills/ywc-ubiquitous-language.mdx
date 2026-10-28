@@ -1,0 +1,72 @@
+---
+title: ywc-ubiquitous-language
+description: 개발자, 도메인 전문가, LLM 이 함께 쓰는 도메인 용어집을 만들고 갱신합니다. "용어집 업데이트", "도메인 용어 정리" 요청에 docs/ubiquitous-language.md 를 새로 쓰거나 code 에서 추출합니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: docs
+tools: [claude-code, codex]
+summary: 도메인 용어집 docs/ubiquitous-language.md 를 만들고 갱신합니다.
+outputs: [docs/ubiquitous-language.md]
+options:
+  - name: --mode
+    format: "new|extract|update"
+    default: 상황에 맞춰 자동 선택
+    when: 동작을 고정합니다. new 는 새로 작성, extract 는 code 에서 추출, update 는 기존 용어집 갱신입니다.
+    tools: [claude-code, codex]
+  - name: --context
+    format: "<name>"
+    default: 모든 context
+    when: extract·update 의 범위를 bounded context 하나로 좁힙니다.
+    tools: [claude-code, codex]
+  - name: --output
+    format: "<path>"
+    default: docs/ubiquitous-language.md
+    when: 용어집을 다른 경로에 둘 때 씁니다.
+    tools: [claude-code, codex]
+  - name: --ddd
+    format: flag
+    when: Entity, Value Object 같은 DDD 유형 열을 추가합니다.
+    tools: [claude-code, codex]
+  - name: --dry-run
+    format: flag
+    when: file 에 쓰지 않고 바뀔 내용만 보여 줍니다.
+    tools: [claude-code, codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### code 에서 용어집 처음 만들기
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-ubiquitous-language --mode extract --dry-run
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-ubiquitous-language --mode extract --dry-run
+```
+</TabItem>
+</Tabs>
+
+**결과물**: code 에서 찾은 도메인 용어와 정의, 피해야 할 동의어 후보가 나옵니다. `--dry-run` 을 빼면 `docs/ubiquitous-language.md` 에 씁니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 일반 project 문서를 쓸 때 → `ywc-project-docs`
+- 처음 보는 저장소를 파악할 때 → `ywc-onboard-repo`
+- 리뷰 선호를 쌓을 때 → `ywc-review-learnings`
+
+<VerifiedStamp />

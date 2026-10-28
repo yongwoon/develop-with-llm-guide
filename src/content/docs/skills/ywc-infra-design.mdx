@@ -1,0 +1,66 @@
+---
+title: ywc-infra-design
+description: AWS, GCP, Azure 에 새 cloud 인프라를 설계합니다. "인프라 설계" 요청에 요구사항에 맞는 서비스 구성을 정하고 docs/infrastructure/ 에 설계 문서 묶음을 만듭니다. Terraform 작성 전 단계입니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: infra
+tools: [claude-code, codex]
+summary: 요구사항을 받아 cloud 인프라 설계 문서 묶음을 만듭니다.
+outputs: [docs/infrastructure/]
+argsNote: Codex 에서는 option 없이 인프라 요구사항과 provider·region 조건을 문장으로 적습니다.
+options:
+  - name: --target-dir
+    format: "<path>"
+    default: 현재 project root
+    when: 설계 문서를 만들 project 가 다른 디렉터리에 있을 때 씁니다.
+    tools: [claude-code]
+  - name: --provider
+    format: "aws|gcp|azure"
+    default: 물어봄
+    when: cloud provider 를 미리 정해 선호 질문을 건너뜁니다.
+    tools: [claude-code]
+  - name: "<requirements>"
+    format: 자유 문장
+    when: 인프라 요구사항과 provider·region 조건을 적습니다.
+    tools: [codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### 작은 API 서비스의 GCP 인프라
+
+GCP 에 작은 API 서비스와 PostgreSQL 을 둡니다. Claude Code 는 요구사항을 질문으로 받고, Codex 는 처음에 문장으로 줍니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-infra-design --provider gcp
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-infra-design GCP 에 작은 API 서비스와 PostgreSQL 을 둔다. region 은 asia-northeast1
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 요구사항 질문에 답하면 서비스 구성과 그 이유가 정리됩니다. 결과는 `docs/infrastructure/` 의 설계 문서 묶음으로 남고, `ywc-iac-author` 의 입력이 됩니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 설계를 Terraform code 로 만들 때 → `ywc-iac-author`
+- 기존 Terraform 을 리뷰할 때 → `ywc-infra-review`
+- 로컬 Docker 개발 환경을 만들 때 → `ywc-docker-compose`
+
+<VerifiedStamp />

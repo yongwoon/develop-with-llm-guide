@@ -1,0 +1,68 @@
+---
+title: ywc-skill-author
+description: ywc skill 을 새로 만들거나 기존 skill 의 구조를 정비하고, 규칙에 맞는지 점검합니다. "ywc skill 만들어줘", "ywc skill 개선", "ywc skill 룰 점검" 요청에 씁니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: meta
+tools: [claude-code, codex]
+summary: ywc skill 을 만들거나 정비하고 규칙 준수를 점검합니다.
+outputs: [skill file]
+argsNote: Claude Code 에는 option 이 없습니다. 만들거나 고치거나 점검할 skill 을 요청 문장으로 적습니다.
+options:
+  - name: --mode
+    format: "author|audit|prune"
+    default: author
+    when: 할 일을 고릅니다. author 는 작성·수정, audit 는 점검, prune 은 근거가 있는 내용 정리입니다.
+    tools: [codex]
+  - name: --skill
+    format: "<path>"
+    when: 작업하거나 점검할 skill 하나의 경로를 줍니다.
+    tools: [codex]
+  - name: --skill-root
+    format: "<path>"
+    when: audit 에서 skill 묶음 전체의 root 를 줍니다.
+    tools: [codex]
+    note: --skill 과 함께 쓸 수 없습니다.
+  - name: --evidence
+    format: "<path-or-eval-id>"
+    when: prune 에서 정리의 근거가 되는 실패 사례, 점검 결과, 평가를 줍니다. prune 에서는 반드시 줍니다.
+    tools: [codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### 기존 skill 들이 규칙을 지키는지 점검
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-skill-author 모든 ywc skill 이 현재 규칙을 지키는지 점검해 줘
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-skill-author --mode audit --skill-root skills/
+```
+</TabItem>
+</Tabs>
+
+**결과물**: skill 마다 규칙 위반 항목과 고칠 방향이 나옵니다. audit 는 file 을 바꾸지 않습니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 일반 작업 중 skill 내용을 잠깐 고칠 때 → 직접 수정
+- ywc 가 아닌 skill 을 만들 때 → 이 skill 의 범위 밖
+- skill 이름을 바꾸거나 옮길 때 → git mv 로 직접
+
+<VerifiedStamp />

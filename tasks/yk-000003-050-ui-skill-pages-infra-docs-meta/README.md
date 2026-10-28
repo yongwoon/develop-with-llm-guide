@@ -80,6 +80,7 @@
   - `ywc-setup` (Codex): `--lang`, `--lang-doc`, `--lang-task`, `--lang-pr` 포함
   - 사실 메모 작성 중 새 후보가 나오면 해당 skill 을 보류하고 owner 판정을 받는다.
 - **문체·template (owner 결정, 2026-10-28)**: 사이트 문장은 `docs/specification/06-requirements.md` 의 "사이트 문체"(합니다체)를 따른다. 구성·분량·사례 값 수준은 owner 가 확인한 `src/content/docs/skills/ywc-plan.mdx` 를 기준으로 삼는다. "쓰지 말아야 할 때" 항목은 "~할 때 → `ywc-…`" 형식으로 쓴다.
+- **owner 판정 (excludedOptions, 2026-10-28, 실행 중 추가)**: `ywc-infra-optimize` (Claude Code) 의 `--usage-data` 는 사용자가 비용 보고서 file 을 직접 줄 때도 쓰므로 포함한다.
 
 ## Parallel Execution Metadata
 
