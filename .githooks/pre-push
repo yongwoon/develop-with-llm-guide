@@ -1,0 +1,12 @@
+#!/bin/sh
+# Build, then run the public guard (spec R-GUARD) before every push.
+# Register once per clone: git config core.hooksPath .githooks
+# Never enable shell tracing (set -x) here; it could print sensitive words.
+set -eu
+# The guard reads the working tree, so it must match the commit being pushed.
+if ! git diff --quiet HEAD --; then
+	echo "pre-push: commit or stash local changes first so the guard checks what you push" >&2
+	exit 1
+fi
+npm run build
+npm run guard
