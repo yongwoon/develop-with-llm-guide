@@ -11,13 +11,62 @@ export default defineConfig({
 		starlight({
 			title: 'develop-with-llm guide',
 			plugins: [starlightLinksValidator()],
+			customCss: ['./src/styles/pretendard.css', './src/styles/theme.css'],
+			components: {
+				Search: './src/components/overrides/Search.astro',
+				PageTitle: './src/components/overrides/PageTitle.astro',
+				Sidebar: './src/components/overrides/Sidebar.astro',
+				PageSidebar: './src/components/overrides/PageSidebar.astro',
+			},
+			// dwlg-sans.woff2 (a renamed Pretendard subset) holds every character the site uses
+			// (scripts/subset-font.mjs), so preloading it covers the body text.
+			head: [
+				// Restores the layout preferences saved by the Sidebar and PageSidebar
+				// overrides before first paint, so the page does not jump on load.
+				{
+					tag: 'script',
+					content:
+						"try{var s=localStorage,r=document.documentElement;if(s.getItem('dwlg:sidebar')==='collapsed')r.dataset.sidebar='collapsed';var w=parseInt(s.getItem('dwlg:toc-width'),10);if(w>=192&&w<=448)r.style.setProperty('--toc-width',w+'px')}catch(e){}",
+				},
+				{
+					tag: 'link',
+					attrs: {
+						rel: 'preload',
+						href: '/develop-with-llm-guide/fonts/dwlg-sans/dwlg-sans.woff2',
+						as: 'font',
+						type: 'font/woff2',
+						crossorigin: '',
+					},
+				},
+			],
+			// Code blocks are navy in both themes, so one dark syntax theme fits.
+			expressiveCode: {
+				themes: ['github-dark'],
+				styleOverrides: {
+					codeBackground: 'var(--code-bg)',
+					codeForeground: 'var(--code-fg)',
+					borderColor: 'var(--shadow)',
+					borderRadius: '6px',
+					frames: {
+						editorBackground: 'var(--code-bg)',
+						terminalBackground: 'var(--code-bg)',
+						editorTabBarBackground: 'var(--code-bg)',
+						terminalTitlebarBackground: 'var(--code-bg)',
+						frameBoxShadowCssValue: '3px 3px 0 var(--shadow)',
+					},
+				},
+			},
 			locales: {
 				root: { label: '한국어', lang: 'ko' },
 			},
 			sidebar: [
 				{
 					label: '시작하기',
-					items: [{ label: '홈', slug: 'index' }],
+					items: [
+						{ label: '홈', slug: 'index' },
+						{ label: '설치', slug: 'getting-started/install' },
+						{ label: '두 도구의 차이', slug: 'getting-started/tool-differences' },
+					],
 				},
 				{
 					label: '상황별 흐름',

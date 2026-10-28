@@ -1,0 +1,98 @@
+---
+title: 장기·불확실한 initiative
+description: 결정할 것이 많고 여러 세션에 걸치는 장기 initiative 를 결정 지도, mission, ADR 기록 순서로 풀어 가는 흐름입니다.
+kind: flow
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+titleBlock:
+  number: 15
+  steps: 3
+  required: 3
+  optional: 0
+  outputs: ["docs/ywc-plans/<slug>-wayfinder.md", docs/mission.md, docs/architecture/adr/]
+sidebar:
+  order: 15
+  label: 15 장기·불확실한 initiative
+---
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+import Flow from '../../../components/Flow.astro';
+import FlowStep from '../../../components/FlowStep.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+한 번에 계획할 수 없는 큰 작업은 결정해야 할 것을 지도로 나누고, 세션마다 하나씩 정한 뒤 그 결정을 기록으로 남깁니다.
+
+<Aside title="언제 쓰나">
+- 방향은 있지만 정해야 할 것이 많아 바로 계획을 세울 수 없을 때
+- 여러 세션에 걸쳐 결정을 하나씩 쌓아 가야 할 때
+</Aside>
+
+## 장기 initiative 흐름
+
+<Flow>
+<FlowStep skill="ywc-wayfinder" desc="정할 것을 결정 ticket 지도로 나누고 세션마다 하나씩 정합니다." />
+<FlowStep skill="ywc-mission" desc="정해진 목적, 성공 기준, 기각한 접근을 mission 문서에 반영합니다." />
+<FlowStep skill="ywc-adr" tools={['claude-code']} desc="architecture 결정을 ADR 로 기록합니다." />
+</Flow>
+
+## 장기 initiative 실행 예시
+
+### 1. ywc-wayfinder
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-wayfinder search-migration 사이트 검색을 바꾸고 싶은데 결정할 것이 많다
+/ywc-wayfinder search-migration D-002 를 정하자
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-wayfinder 사이트 검색을 바꾸고 싶은데 결정할 것이 많다
+$ywc-wayfinder D-002
+```
+</TabItem>
+</Tabs>
+
+### 2. ywc-mission
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-mission 검색 index 를 외부 서비스로 옮기는 방식은 기각. 정적 hosting 제약 때문
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-mission 검색 index 를 외부 서비스로 옮기는 방식은 기각. 정적 hosting 제약 때문
+```
+</TabItem>
+</Tabs>
+
+### 3. ywc-adr
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-adr 사이트 검색은 Pagefind 를 유지한다. 정적 hosting 에서 동작하기 때문이다
+```
+</TabItem>
+<TabItem label="Codex">
+Codex 에는 이 skill 이 없습니다. 결정 내용을 `docs/architecture/adr/` 에 직접 씁니다. 기각한 접근은 `$ywc-mission` 으로 기록합니다.
+</TabItem>
+</Tabs>
+
+<SkillLink name="ywc-adr" /> 은 Claude Code 전용입니다. Codex 에서는 위처럼 직접 기록합니다.
+
+## 건너뛸 수 있는 조건
+
+- 세 단계 모두 필수입니다. 결정 지도에서 정한 결과는 mission 과 ADR 에 남겨야 다음 세션에서 같은 논의를 반복하지 않습니다.
+- 정할 것이 몇 개뿐이라 한 번에 계획할 수 있으면 이 흐름 대신 [13 중·대형 기능](/develop-with-llm-guide/flows/large-feature/) 흐름으로 시작합니다.
+
+## 관련 흐름
+
+- [13 중·대형 기능](/develop-with-llm-guide/flows/large-feature/)
+- [14 목표 하나로 자율 실행](/develop-with-llm-guide/flows/autonomous-goal/)
+- [10 새 project 시작하기](/develop-with-llm-guide/flows/new-project/)
+
+<VerifiedStamp />

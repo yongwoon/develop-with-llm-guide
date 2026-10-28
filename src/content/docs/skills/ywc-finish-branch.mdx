@@ -1,0 +1,93 @@
+---
+title: ywc-finish-branch
+description: 구현이 끝난 feature branch 하나를 base branch 까지 전달합니다. "branch 마무리" 요청에 병합부터 task 완료 처리까지 마칩니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: git
+tools: [claude-code, codex]
+summary: 끝난 feature branch 를 병합하고 task 완료 처리까지 마칩니다.
+outputs: ["병합 commit", "tasks/completed/<task>/"]
+options:
+  - name: --mode
+    format: "normal-pr|local-merge|draft|skip-ci-wait|per-task-pr"
+    when: 전달 방식을 고릅니다. normal-pr 은 PR 을 거쳐 병합하고, local-merge 는 PR 없이 직접 병합합니다. draft 와 skip-ci-wait 은 PR 까지만 만듭니다.
+    tools: [claude-code, codex]
+    note: per-task-pr 은 ywc-parallel-executor 가 쓰는 값입니다.
+  - name: --branch
+    format: "feature/<task-name>"
+    when: 전달할 feature branch 를 지정합니다. local 에 있어야 합니다.
+    tools: [claude-code, codex]
+  - name: --base-branch
+    format: "<branch-name>"
+    default: 설정값. 없으면 develop, main, master 순
+    when: 병합할 base branch 를 정합니다.
+    tools: [claude-code, codex]
+  - name: --task-name
+    format: "<task-name>"
+    when: 완료로 표시할 task 디렉터리 이름을 줍니다.
+    tools: [claude-code, codex]
+  - name: --tasks-dir
+    format: "<path>"
+    default: tasks/
+    when: task 디렉터리가 다른 곳에 있을 때 씁니다.
+    tools: [claude-code, codex]
+  - name: --pr-lang
+    format: "<lang>"
+    default: PR 언어 설정값
+    when: PR 제목과 설명의 언어를 정합니다.
+    tools: [claude-code, codex]
+  - name: --bot-action
+    format: "sequential|parallel"
+    default: sequential
+    when: bot 리뷰 지적을 고친 뒤 CI 를 다시 확인하는 방식을 정합니다. sequential 은 매번 다시 확인합니다.
+    tools: [claude-code, codex]
+    note: Claude Code 에서는 parallel 도 sequential 과 같게 동작합니다.
+excludedOptions: { claude-code: [--defer-push, --keep-branch, --worktree-path], codex: [--defer-push, --keep-branch] }
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### 혼자 쓰는 저장소에서 바로 병합
+
+task 하나의 구현과 검증이 끝났습니다. PR 없이 base branch 에 병합하고 완료 처리합니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-finish-branch --mode local-merge --branch feature/000004-010-ui-flow-pages-10-17 --base-branch content/initial --task-name 000004-010-ui-flow-pages-10-17
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-finish-branch --mode local-merge --branch feature/000004-010-ui-flow-pages-10-17 --base-branch content/initial --task-name 000004-010-ui-flow-pages-10-17
+```
+</TabItem>
+</Tabs>
+
+**결과물**: feature branch 가 base branch 에 병합되고 push 됩니다. task 디렉터리는 `tasks/completed/` 로 옮겨지고 완료 commit 이 남습니다. local feature branch 는 지워집니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- branch 를 새로 만들 때 → git 명령이나 executor
+- PR 만 만들고 병합하지 않을 때 → <SkillLink name="ywc-create-pr" />
+- 커밋만 할 때 → <SkillLink name="ywc-commit" />
+- 열린 PR 의 리뷰 코멘트를 처리할 때 → <SkillLink name="ywc-handle-pr-reviews" />
+
+## 관련 흐름
+
+- [13 중·대형 기능](/develop-with-llm-guide/flows/large-feature/)
+- [16 PR review 대응과 merge](/develop-with-llm-guide/flows/pr-review-merge/)
+
+<VerifiedStamp />

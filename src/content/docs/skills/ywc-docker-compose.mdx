@@ -1,0 +1,87 @@
+---
+title: ywc-docker-compose
+description: project 의 로컬 Docker Compose 개발 환경을 만들거나 최신화합니다. "docker 환경 만들어줘", "docker image 최신화" 요청에 compose file, Dockerfile.local, 운영용 Dockerfile 을 다룹니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: implement
+tools: [claude-code, codex]
+summary: 로컬 Docker Compose 환경을 만들거나 image·package 를 최신화합니다.
+next: [ywc-worktrees]
+outputs: [compose.yaml, Dockerfile.local, Dockerfile]
+options:
+  - name: --mode
+    format: "create|update"
+    default: compose file 이나 Dockerfile 이 있으면 update, 없으면 create
+    when: 새로 만들지 기존 환경을 고칠지 직접 정합니다.
+    tools: [claude-code, codex]
+  - name: --scope
+    format: "images,packages,structure"
+    default: 셋 다
+    when: update 에서 볼 범위를 좁힙니다. images 는 base image, packages 는 app 의존성, structure 는 compose 구성입니다.
+    tools: [claude-code, codex]
+  - name: --app-name
+    format: "<slug>"
+    default: manifest 의 이름. 없으면 원래 checkout 디렉터리 이름
+    when: compose project 이름의 기본값을 정합니다.
+    tools: [claude-code]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### Docker 환경이 없는 project 에 처음 만들기
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-docker-compose --mode create --app-name sample-api
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-docker-compose --mode create
+```
+</TabItem>
+</Tabs>
+
+**결과물**: compose file, 개발용 `Dockerfile.local`, 운영용 `Dockerfile` 이 생깁니다. 여러 git worktree 에서 동시에 띄울 수 있는 구성입니다.
+
+### base image 만 최신화
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-docker-compose --scope images
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-docker-compose --scope images
+```
+</TabItem>
+</Tabs>
+
+**결과물**: base image 와 service image 의 tag 가 현재 LTS·안정 버전으로 바뀝니다. package 와 구성은 건드리지 않습니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 실행 중인 worktree 의 port 충돌을 풀 때 → <SkillLink name="ywc-docker-isolate" />
+- Dependabot 의 docker PR 을 병합할 때 → <SkillLink name="ywc-merge-dependabot" />
+- Terraform·Kubernetes 같은 cloud 인프라를 다룰 때 → <SkillLink name="ywc-iac-author" />
+
+## 관련 흐름
+
+- [24 로컬 환경과 병렬 작업](/develop-with-llm-guide/flows/local-parallel/)
+
+<VerifiedStamp />

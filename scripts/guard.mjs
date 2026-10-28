@@ -157,7 +157,7 @@ function ruleLegend(config) {
 function run() {
 	const config = loadConfig();
 	const words = loadWords();
-	if (!existsSync(join(root, config.distDir))) throw new GuardExit(`${config.distDir}/ not found; run "npm run build" first`, 2);
+	if (!existsSync(join(root, config.distDir))) throw new GuardExit(`${config.distDir}/ not found; run "pnpm run build" first`, 2);
 
 	const distFiles = listFiles(join(root, config.distDir)).filter(
 		(path) => !config.distExclude.some((prefix) => path.startsWith(prefix)),

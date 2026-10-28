@@ -1,0 +1,95 @@
+---
+title: ywc-adr
+description: 이미 내린 architecture 결정을 ADR(Architecture Decision Record)로 기록합니다. "결정 기록", "ADR 작성" 요청에 새 ADR 작성, 기존 ADR 대체·폐기, 목록 보기를 합니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0 }
+category: plan
+tools: [claude-code]
+summary: 이미 내린 architecture 결정을 ADR 로 기록·대체·폐기합니다.
+outputs: [docs/architecture/adr/]
+argsNote: 폐기할 ADR 은 --mode deprecate 뒤에 ADR-NNNN 또는 NNNN 으로 적습니다.
+options:
+  - name: --mode
+    format: "new|list|deprecate"
+    default: 요청에 맞춰 자동 선택. 모호하면 new
+    when: 할 일을 분명히 정할 때 씁니다. new 는 기록, list 는 목록, deprecate 는 폐기입니다.
+    tools: [claude-code]
+  - name: --supersedes
+    format: ADR-NNNN
+    when: 새 ADR 이 기존 ADR 을 대체할 때 씁니다. 대체되는 번호를 줍니다.
+    tools: [claude-code]
+    note: new 에서만 씁니다. list 나 deprecate 와 함께 주면 아무것도 쓰지 않습니다.
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### 정한 framework 를 결정으로 남기기
+
+조사 끝에 Astro Starlight 를 쓰기로 정했습니다. 나중에 이유를 다시 찾아볼 수 있게 남깁니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-adr 정적 사이트 framework 로 Astro Starlight 를 채택한다. 한국어 검색과 MDX component 가 이유다
+```
+</TabItem>
+<TabItem label="Codex">
+Codex 에는 이 skill 이 없습니다. 결정 내용을 `docs/architecture/adr/` 에 직접 씁니다. 기각한 접근이라면 `$ywc-mission` 으로 기록합니다.
+</TabItem>
+</Tabs>
+
+**결과물**: `docs/architecture/adr/` 에 번호가 붙은 ADR file 이 새로 생깁니다.
+
+### 이전 결정을 대체하기
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-adr --supersedes ADR-0001 정적 사이트 framework 를 Astro Starlight 에서 VitePress 로 바꾼다
+```
+</TabItem>
+<TabItem label="Codex">
+Codex 에는 이 skill 이 없습니다. 새 결정을 `docs/architecture/adr/` 에 직접 씁니다. 이전 ADR 의 상태는 대체됨으로 고칩니다.
+</TabItem>
+</Tabs>
+
+**결과물**: 새 ADR 이 생깁니다. `ADR-0001` 에는 대체되었다는 표시가 붙습니다.
+
+### 더 이상 맞지 않는 결정을 폐기
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-adr --mode deprecate ADR-0002
+```
+</TabItem>
+<TabItem label="Codex">
+Codex 에는 이 skill 이 없습니다. 해당 ADR file 의 상태를 직접 폐기로 고칩니다.
+</TabItem>
+</Tabs>
+
+**결과물**: `ADR-0002` 가 폐기 상태로 바뀝니다. file 은 지우지 않고 남깁니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 아직 결정을 내리지 못했을 때 → 먼저 <SkillLink name="ywc-tech-research" /> 로 비교
+- 구현 계획이나 spec 을 쓸 때 → <SkillLink name="ywc-plan" />
+- project 의 목적이나 기각한 접근을 기록할 때 → <SkillLink name="ywc-mission" />
+
+## 관련 흐름
+
+- [15 장기·불확실한 initiative](/develop-with-llm-guide/flows/uncertain-initiative/)
+
+<VerifiedStamp />

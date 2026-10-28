@@ -1,0 +1,231 @@
+---
+// Full option table of a skill page, from the page's frontmatter. The page
+// writes the "Options" heading right above it, which gives the #options
+// anchor (spec 03-data). Narrow screens get one card per option.
+import type { SkillOption, Tool } from '../content.config';
+
+const COLUMNS = { format: '형식', default: '기본값', when: '언제 쓰나' } as const;
+// Tool display labels; keep in sync with SkillCard, SkillIndex, VerifiedStamp.
+const TOOL_COLUMNS: [Tool, string][] = [
+	['claude-code', 'Claude Code'],
+	['codex', 'Codex'],
+];
+const EMPTY = '—';
+
+const { entry } = Astro.locals.starlightRoute;
+const { data } = entry;
+if (data.kind !== 'skill') {
+	throw new Error(`OptionTable: ${entry.id} is kind "${data.kind}", not a skill page`);
+}
+const options: SkillOption[] = data.options;
+// Long value lists such as `a|b|c|d` may only wrap after a `|`.
+const formatParts = (format: string) => format.split('|');
+---
+
+<div class="option-table not-content">
+	{
+		options.length === 0 ? (
+			<p class="none">option 없음</p>
+		) : (
+			<table aria-label="option 목록">
+				<thead>
+					<tr>
+						<th scope="col">option</th>
+						<th scope="col">{COLUMNS.format}</th>
+						<th scope="col">{COLUMNS.default}</th>
+						<th scope="col">{COLUMNS.when}</th>
+						{TOOL_COLUMNS.map(([, label]) => (
+							<th scope="col">{label}</th>
+						))}
+					</tr>
+				</thead>
+				<tbody>
+					{options.map((option) => (
+						<tr>
+							<th scope="row" class="option-name">
+								<code>{option.name}</code>
+							</th>
+							<td data-label={COLUMNS.format}>
+								<code>
+									{formatParts(option.format).map((part, index) => (
+										<>
+											{index > 0 && (
+												<>
+													|<wbr />
+												</>
+											)}
+											{part}
+										</>
+									))}
+								</code>
+							</td>
+							<td data-label={COLUMNS.default}>{option.default ?? EMPTY}</td>
+							<td data-label={COLUMNS.when}>
+								{option.when}
+								<small class="note">{option.note ?? EMPTY}</small>
+							</td>
+							{TOOL_COLUMNS.map(([tool, label]) => {
+								const isSupported = option.tools.includes(tool);
+								return (
+									<td data-label={label} class="support">
+										<span aria-hidden="true">{isSupported ? '●' : '–'}</span>
+										<span class="sr-only">{isSupported ? '지원' : '미지원'}</span>
+									</td>
+								);
+							})}
+						</tr>
+					))}
+				</tbody>
+			</table>
+		)
+	}
+	{data.argsNote && <p class="args-note">{data.argsNote}</p>}
+</div>
+
+<style>
+	.option-table {
+		margin-block: 1rem 1.5rem;
+	}
+
+	/* Base (narrow): each row is a card, each cell a labelled line. */
+	table,
+	tbody,
+	tr,
+	th,
+	td {
+		display: block;
+	}
+
+	table {
+		width: 100%;
+		border-collapse: collapse;
+	}
+
+	thead {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+		white-space: nowrap;
+	}
+
+	tbody tr {
+		margin-bottom: 0.75rem;
+		padding: 0.75rem 1rem;
+		border: var(--card-border);
+		border-radius: var(--radius);
+		background-color: var(--card-bg);
+	}
+
+	th,
+	td {
+		padding: 0.15rem 0;
+		text-align: start;
+		color: var(--text);
+	}
+
+	td::before {
+		content: attr(data-label);
+		display: block;
+		color: var(--muted);
+		font-size: var(--sl-text-xs);
+	}
+
+	.option-name code {
+		font: 500 1rem var(--sl-font-mono);
+		overflow-wrap: anywhere;
+	}
+
+	td code {
+		font-family: var(--sl-font-mono);
+		overflow-wrap: anywhere;
+	}
+
+	.note {
+		display: block;
+		margin-top: 0.25rem;
+		color: var(--muted);
+		font-size: var(--sl-text-xs);
+	}
+
+	.support {
+		display: inline-block;
+		width: 50%;
+	}
+
+	.none,
+	.args-note {
+		margin: 0.5rem 0 0;
+		color: var(--text-2);
+	}
+
+	/* Wide: a real table. Option names, formats and headers never break
+	 * inside a word; a table wider than the column scrolls on its own. */
+	@media (min-width: 50rem) {
+		.option-table {
+			overflow-x: auto;
+		}
+
+		.option-name code,
+		thead th {
+			white-space: nowrap;
+		}
+
+		td code {
+			overflow-wrap: normal;
+		}
+
+		table {
+			display: table;
+			font-size: var(--sl-text-sm);
+		}
+
+		thead {
+			position: static;
+			display: table-header-group;
+			width: auto;
+			height: auto;
+			overflow: visible;
+			clip-path: none;
+			white-space: normal;
+		}
+
+		tbody {
+			display: table-row-group;
+		}
+
+		tr,
+		tbody tr {
+			display: table-row;
+			margin: 0;
+			padding: 0;
+			border: 0;
+			background: none;
+		}
+
+		th,
+		td,
+		.support {
+			display: table-cell;
+			width: auto;
+			padding: 0.5rem 0.75rem;
+			border-bottom: 1px solid var(--rule-color);
+			vertical-align: top;
+		}
+
+		thead th {
+			color: var(--muted);
+			font-weight: 500;
+			border-bottom: 1.5px solid var(--text);
+		}
+
+		td::before {
+			content: none;
+		}
+
+		.support {
+			text-align: center;
+		}
+	}
+</style>

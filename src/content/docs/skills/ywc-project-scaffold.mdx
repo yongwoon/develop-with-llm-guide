@@ -1,0 +1,59 @@
+---
+title: ywc-project-scaffold
+description: 새 project 의 폴더 구조를 설계하거나 기존 구조의 재구성안을 냅니다. "프로젝트 구조", "폴더 구성" 요청에 기술 stack 에 맞는 layout 을 제안합니다. file 은 만들지 않고 계획만 냅니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: docs
+tools: [claude-code, codex]
+summary: 기술 stack 에 맞는 project 폴더 구조를 계획으로 제안합니다.
+next: [ywc-ubiquitous-language]
+outputs: [폴더 구조 계획]
+options:
+  - name: "<description>"
+    format: 자유 문장
+    when: 언어, framework, architecture, protocol, 규모, 도메인을 담아 project 를 설명합니다. 빠진 필수 요소가 있으면 되묻습니다.
+    tools: [claude-code, codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### Astro 문서 사이트의 구조
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-project-scaffold TypeScript, Astro Starlight, 정적 문서 사이트, GitHub Pages 배포, page 약 90개, 도메인은 skill 사용법 guide
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-project-scaffold TypeScript, Astro Starlight, 정적 문서 사이트, GitHub Pages 배포, page 약 90개, 도메인은 skill 사용법 guide
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 디렉터리 tree 와 디렉터리마다의 역할, 그렇게 나눈 이유가 나옵니다. file 은 만들지 않습니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 실제 file 과 code 를 만들 때 → <SkillLink name="ywc-code-gen" />
+- task 로 나눌 때 → <SkillLink name="ywc-task-generator" />
+- 이미 있는 저장소를 파악할 때 → <SkillLink name="ywc-onboard-repo" />
+
+## 관련 흐름
+
+- [10 새 project 시작하기](/develop-with-llm-guide/flows/new-project/)
+
+<VerifiedStamp />

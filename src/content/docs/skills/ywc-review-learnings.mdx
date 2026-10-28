@@ -1,0 +1,108 @@
+---
+title: ywc-review-learnings
+description: 저장소별 리뷰 선호를 쌓고, 읽고, 정리합니다. "리뷰 학습 누적", "이건 false positive 야 학습해줘" 요청에 docs/review-learnings.md 를 관리합니다. 다음 리뷰가 같은 지적을 반복하지 않게 합니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: review
+tools: [claude-code, codex]
+summary: 저장소별 리뷰 선호를 docs/review-learnings.md 에 쌓고 관리합니다.
+outputs: [docs/review-learnings.md]
+options:
+  - name: --mode
+    format: "read|update|list|curate"
+    default: 요청에 맞춰 자동 선택
+    when: 동작을 고정합니다. read 는 읽기, update 는 추가, list 는 목록, curate 는 오래된 항목 정리입니다.
+    tools: [claude-code, codex]
+  - name: --target
+    format: "<glob|path...>"
+    default: 바뀐 file
+    when: 어떤 경로에 적용할 선호인지 정합니다.
+    tools: [claude-code, codex]
+  - name: --source
+    format: "feedback|review|pr|incident|mining"
+    default: feedback
+    when: update 에서 새 선호의 출처를 정합니다.
+    tools: [claude-code]
+  - name: --source
+    format: "feedback|review|pr|incident"
+    default: feedback
+    when: update 에서 새 선호의 출처를 정합니다.
+    tools: [codex]
+  - name: --pr
+    format: "<number>"
+    when: --source pr 에서 해당 PR 의 bot 리뷰 코멘트를 가져와 선호로 정리합니다.
+    tools: [claude-code, codex]
+  - name: --output
+    format: "<path>"
+    default: docs/review-learnings.md
+    when: 선호 file 을 다른 경로에 둘 때 씁니다.
+    tools: [claude-code, codex]
+  - name: --dry-run
+    format: flag
+    when: file 에 쓰기 전에 바뀔 내용을 먼저 봅니다.
+    tools: [claude-code, codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### 잘못된 지적을 다시 받지 않게
+
+리뷰가 test fixture 의 하드코딩 값을 계속 지적합니다. 이 project 에서는 문제가 아니라고 남깁니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-review-learnings tests/fixtures 의 하드코딩 값 지적은 false positive 다. fixture 는 고정값이 맞다
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-review-learnings tests/fixtures 의 하드코딩 값 지적은 false positive 다. fixture 는 고정값이 맞다
+```
+</TabItem>
+</Tabs>
+
+**결과물**: `docs/review-learnings.md` 에 추가할 항목을 먼저 보여 줍니다. 확인하면 FALSE-POSITIVE 항목으로 기록됩니다. 다음 <SkillLink name="ywc-impl-review" /> 는 이 지적을 내지 않습니다.
+
+### PR 의 bot 코멘트에서 선호 추출
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-review-learnings --mode update --source pr --pr 15
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-review-learnings --mode update --source pr --pr 15
+```
+</TabItem>
+</Tabs>
+
+**결과물**: PR 15 의 bot 리뷰 코멘트 중 계속 지킬 만한 것을 골라 선호 후보로 보여 줍니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 지금 리뷰를 실행할 때 → <SkillLink name="ywc-impl-review" />
+- 열린 PR 의 코멘트를 처리할 때 → <SkillLink name="ywc-handle-pr-reviews" />
+- 병합된 PR 여러 개의 코멘트를 한꺼번에 분석할 때 → <SkillLink name="ywc-mine-review-history" />
+- 도메인 용어를 정리할 때 → <SkillLink name="ywc-ubiquitous-language" />
+
+## 관련 흐름
+
+- [16 PR review 대응과 merge](/develop-with-llm-guide/flows/pr-review-merge/)
+- [25 세션 운영과 skill 관리](/develop-with-llm-guide/flows/session-skill-management/)
+
+<VerifiedStamp />

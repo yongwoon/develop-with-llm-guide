@@ -124,6 +124,7 @@ FlowStep 은 skill 이름, 한 줄 설명, 선택 여부, 사용 가능 도구, 
   - `SKILL.md` 를 보며 바로 본문을 쓰지 않는다. 먼저 사실 메모(사용 case, option 이름·형식·기본값, 산출물)를 추출하고, 그 메모만 보고 본문을 쓴다.
   - option 이름, skill 이름 같은 식별자는 원본 그대로 옮긴다 (SC002). 설명 문장은 새로 쓴다.
   - 최종 확인은 사람의 review 로 한다.
+- **문체**: 06-requirements 의 "사이트 문체" 규칙을 따른다 (합니다체).
 - **사례 값**: project 이름, 경로, PR 번호는 가상의 값이나 이 guide 저장소 자체의 값만 쓴다. owner 의 다른 private project 이름은 쓰지 않는다.
 
 ## Agent page

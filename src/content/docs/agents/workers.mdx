@@ -1,0 +1,35 @@
+---
+title: 작업 agent
+description: code·test·문서·Terraform 을 직접 고치는 write-enabled 작업 agent 와 그 agent 를 쓰는 skill 목록입니다.
+kind: agent
+agentGroup: worker
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+sidebar:
+  order: 2
+  label: 작업 agent
+---
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+작업 agent 는 file 을 고칠 수 있는 agent 입니다. skill 이 구현·test·정리 같은 실제 변경을 맡길 때 씁니다.
+
+## 작업 agent 목록
+
+| agent | 사용 가능 도구 | 권한 | 역할 | 주로 쓰는 skill |
+|---|---|---|---|---|
+| `ywc-backend-coder` | Claude Code | write-enabled | API, business logic, DB 같은 server 쪽 code 를 구현합니다 | <SkillLink name="ywc-code-gen" />, <SkillLink name="ywc-parallel-executor" />, <SkillLink name="ywc-auth-implement" /> |
+| `ywc-frontend-coder` | Claude Code | write-enabled | UI component, 상태, routing 같은 화면 쪽 code 를 구현합니다 | <SkillLink name="ywc-code-gen" />, <SkillLink name="ywc-parallel-executor" />, <SkillLink name="ywc-auth-implement" /> |
+| `ywc-qa-engineer` | Claude Code | write-enabled | unit·integration·E2E test code 를 씁니다 | <SkillLink name="ywc-code-gen" />, <SkillLink name="ywc-sequential-executor" />, <SkillLink name="ywc-parallel-executor" />, <SkillLink name="ywc-tdd-ritual" /> |
+| `ywc-doc-writer` | Claude Code | write-enabled | 문서와 code comment 를 씁니다 | <SkillLink name="ywc-auth-implement" /> |
+| `ywc-infra-engineer` | Claude Code | write-enabled | Terraform code 를 쓰고 plan 으로 확인합니다. apply 는 하지 않습니다 | <SkillLink name="ywc-iac-author" />, <SkillLink name="ywc-infra-design" />, <SkillLink name="ywc-infra-optimize" /> |
+| `ywc-refactor-cleaner` | Claude Code, Codex | write-enabled | 쓰지 않는 code 를 지웁니다 | <SkillLink name="ywc-refactor-clean" /> |
+| `ywc-complexity-cleaner` | Codex | write-enabled | task 범위 안의 code 를 동작은 그대로 두고 덜 복잡하게 고칩니다 | <SkillLink name="ywc-sequential-executor" />, <SkillLink name="ywc-parallel-executor" /> |
+| `ywc-test-hardener` | Codex | write-enabled | task 범위 안의 test 가 결함을 놓치지 않도록 assertion 을 보강합니다 | <SkillLink name="ywc-sequential-executor" />, <SkillLink name="ywc-parallel-executor" /> |
+
+## 도구에 없는 agent
+
+- Codex 에는 `ywc-backend-coder`, `ywc-frontend-coder`, `ywc-qa-engineer`, `ywc-doc-writer`, `ywc-infra-engineer` 가 없습니다.
+- Claude Code 에는 `ywc-complexity-cleaner`, `ywc-test-hardener` 가 없습니다.
+
+<VerifiedStamp />

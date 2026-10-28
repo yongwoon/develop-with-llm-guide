@@ -1,0 +1,116 @@
+---
+title: 기존 repo 진입하기
+description: 처음 보는 기존 저장소에 들어갈 때 onboarding guide, 도메인 용어집, module 경계 규칙, agent 가독성 점검 순서로 파악하는 흐름입니다.
+kind: flow
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+titleBlock:
+  number: 11
+  steps: 4
+  required: 3
+  optional: 1
+  outputs: [Onboarding Guide, docs/ubiquitous-language.md, architecture-invariants.yaml]
+sidebar:
+  order: 11
+  label: 11 기존 repo 진입하기
+---
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+import Flow from '../../../components/Flow.astro';
+import FlowStep from '../../../components/FlowStep.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+이미 code 가 있는 저장소에 처음 들어갈 때, 구조와 용어와 경계 규칙을 먼저 문서로 남긴 뒤 작업을 시작합니다.
+
+<Aside title="언제 쓰나">
+- 남이 만든 저장소나 오래 손대지 않은 저장소에서 작업을 시작할 때
+- agent 가 이 저장소에서 헤매지 않도록 지침 file 과 규칙을 먼저 갖추고 싶을 때
+</Aside>
+
+## 기존 저장소 파악 흐름
+
+<Flow>
+<FlowStep skill="ywc-onboard-repo" desc="저장소를 훑어 onboarding guide 와 시작용 agent 지침 file 을 만듭니다." />
+<FlowStep skill="ywc-ubiquitous-language" desc="extract 방식으로 code 와 문서에서 도메인 용어를 뽑아 용어집을 만듭니다." />
+<FlowStep skill="ywc-architecture-invariants" desc="module 경계 규칙을 yaml 로 선언하고 현재 code 가 지키는지 확인합니다." />
+<FlowStep skill="ywc-agent-legibility-audit" desc="code 와 문서가 agent 에게 읽기 쉬운지 점검합니다." optional />
+</Flow>
+
+## 기존 저장소 실행 예시
+
+### 1. ywc-onboard-repo
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-onboard-repo
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-onboard-repo
+```
+</TabItem>
+</Tabs>
+
+monorepo 라면 `--scope apps/web/` 처럼 볼 범위를 좁힙니다.
+
+### 2. ywc-ubiquitous-language
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-ubiquitous-language --mode extract --dry-run
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-ubiquitous-language --mode extract --dry-run
+```
+</TabItem>
+</Tabs>
+
+결과를 확인한 뒤 `--dry-run` 을 빼고 다시 실행해 용어집에 반영합니다.
+
+### 3. ywc-architecture-invariants
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-architecture-invariants --mode draft
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-architecture-invariants --mode draft --root . --output architecture-invariants.yaml
+```
+</TabItem>
+</Tabs>
+
+### 4. ywc-agent-legibility-audit
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-agent-legibility-audit --scope src/components --target code
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-agent-legibility-audit --scope src/components --target code
+```
+</TabItem>
+</Tabs>
+
+## 건너뛸 수 있는 조건
+
+- **4단계 <SkillLink name="ywc-agent-legibility-audit" />**: 저장소가 작아 agent 가 이미 문제없이 작업하고 있으면 건너뜁니다.
+- 저장소에 아직 code 가 없다면 [10 새 project 시작하기](/develop-with-llm-guide/flows/new-project/) 흐름을 씁니다.
+
+## 관련 흐름
+
+- [10 새 project 시작하기](/develop-with-llm-guide/flows/new-project/)
+- [22 코드 구조 개선](/develop-with-llm-guide/flows/code-structure/)
+- [25 세션 운영과 skill 관리](/develop-with-llm-guide/flows/session-skill-management/)
+
+<VerifiedStamp />

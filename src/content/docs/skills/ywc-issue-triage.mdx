@@ -1,0 +1,64 @@
+---
+title: ywc-issue-triage
+description: GitHub issue 와 PR 을 분류하고 상태 label 을 정리합니다. "issue 정리", "triage" 요청에 bug·enhancement 분류와 진행 상태를 추천하고, 확인을 받아 label 과 comment 를 적용합니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0 }
+category: git
+tools: [claude-code]
+summary: GitHub issue·PR 의 분류와 상태 label 을 정리합니다.
+outputs: [issue·PR 의 label 과 comment]
+options:
+  - name: --limit
+    format: "<n>"
+    default: "200"
+    when: 한 번에 가져올 issue 수의 상한을 바꿉니다.
+    tools: [claude-code]
+  - name: --dry-run
+    format: flag
+    when: 추천과 실행할 gh 명령만 보여 주고 아무것도 바꾸지 않습니다. 처음 보는 저장소에서 씁니다.
+    tools: [claude-code]
+  - name: "<issue-or-pr-number>"
+    format: 숫자
+    when: 전체를 훑지 않고 issue 나 PR 하나만 정리합니다.
+    tools: [claude-code]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### 쌓인 issue 를 먼저 훑어보기
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-issue-triage --dry-run
+```
+</TabItem>
+<TabItem label="Codex">
+Codex 에는 이 skill 이 없습니다. gh CLI 로 issue 목록을 보며 label 을 직접 정리합니다.
+</TabItem>
+</Tabs>
+
+**결과물**: issue 마다 분류(bug, enhancement)와 상태(needs-triage, needs-info, ready-for-agent, ready-for-human, wontfix) 추천이 나옵니다. 실행할 gh 명령도 함께 보여 주지만 적용하지는 않습니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 열린 PR 의 리뷰 코멘트를 처리할 때 → <SkillLink name="ywc-handle-pr-reviews" />
+- bug 원인을 찾을 때 → <SkillLink name="ywc-debug-rootcause" />
+
+## 관련 흐름
+
+- [23 릴리스와 저장소 운영](/develop-with-llm-guide/flows/release-repo-ops/)
+
+<VerifiedStamp />

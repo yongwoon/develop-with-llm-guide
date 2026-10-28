@@ -1,0 +1,59 @@
+---
+title: ywc-manual-wizard
+description: agent 가 대신할 수 없는 수동 절차를 안내하는 대화형 bash wizard 를 만듭니다. "수동 절차 wizard", "credential 발급 안내" 요청에 외부 console 조작이나 key 발급 순서를 script 로 정리합니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0 }
+category: implement
+tools: [claude-code]
+summary: 사람이 직접 해야 하는 절차를 안내하는 대화형 bash wizard 를 만듭니다.
+outputs: ["./manual-wizard-<slug>.sh"]
+options:
+  - name: --output
+    format: "<path>"
+    default: ./manual-wizard-<slug>.sh
+    when: 만들 wizard script 의 경로를 바꿉니다.
+    tools: [claude-code]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### OAuth app 등록 절차를 wizard 로
+
+Google Cloud console 에서 OAuth client 를 직접 만들어야 합니다. 단계와 확인을 안내하는 script 를 만듭니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-manual-wizard Google OAuth client 를 등록하고 client ID 를 .env 에 넣는 절차 --output ./register-oauth-client.sh
+```
+</TabItem>
+<TabItem label="Codex">
+Codex 에는 이 skill 이 없습니다. 절차를 문서로 정리하거나, 같은 요청을 Claude Code 에서 실행합니다.
+</TabItem>
+</Tabs>
+
+**결과물**: `./register-oauth-client.sh` 가 생깁니다. 실행하면 단계마다 할 일을 보여 주고, 사람의 확인과 입력을 받으며 진행합니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- CLI 나 API 로 agent 가 직접 할 수 있는 절차일 때 → 자동화 script 를 직접 작성
+- Terraform 같은 IaC 를 쓸 때 → <SkillLink name="ywc-iac-author" />
+- 사람 확인이 필요 없는 CI/CD pipeline 일 때 → pipeline 설정을 직접 작성
+
+## 관련 흐름
+
+- [25 세션 운영과 skill 관리](/develop-with-llm-guide/flows/session-skill-management/)
+
+<VerifiedStamp />

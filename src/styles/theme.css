@@ -1,0 +1,253 @@
+/*
+ * "도면 (Blueprint)" C+ theme (docs/design/design-system.md).
+ * Design tokens first, then the --sl-* mapping Starlight reads, then the
+ * restyling of Starlight's own elements. Unlayered rules win over Starlight's
+ * cascade layers, so !important is used only in the reduced-motion block,
+ * which must beat every inline transition. Mobile-first: base rules are
+ * for narrow screens; Starlight's own breakpoints (50rem / 72rem) are kept.
+ */
+
+@font-face {
+	font-family: 'DM Mono';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/dm-mono/dm-mono-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'DM Mono';
+	font-style: normal;
+	font-weight: 500;
+	font-display: swap;
+	src: url('/fonts/dm-mono/dm-mono-latin-500-normal.woff2') format('woff2');
+}
+
+/* Dark is Starlight's default theme, light is [data-theme='light']. */
+:root {
+	--bg: #0b1f3a;
+	--grid: #12294a;
+	--text: #e6eeff;
+	--text-2: #b7c6e4;
+	--muted: #7f95bd;
+	--accent: #7fb2ff;
+	--card-bg: #0f2646;
+	--card-border: 1.5px solid #4a6aa0;
+	--code-bg: #06152b;
+	--code-fg: #eaf0ff;
+	--marker: rgba(255, 244, 168, 0.28);
+	--shadow: #000814;
+	--rule-color: #24406e;
+
+	--radius: 10px;
+	--radius-sm: 6px;
+}
+
+:root[data-theme='light'] {
+	--bg: #eef2f7;
+	--grid: #dde5f0;
+	--text: #13294b;
+	--text-2: #34496b;
+	--muted: #56698a;
+	--accent: #2f5bff;
+	--card-bg: #ffffff;
+	--card-border: 1.5px solid #13294b;
+	--code-bg: #13294b;
+	--code-fg: #eaf0ff;
+	--marker: #fff4a8;
+	--shadow: #13294b;
+	--rule-color: #b9c6d9;
+}
+
+:root,
+:root[data-theme='light'] {
+	--sl-font: 'DWLG Sans', 'Pretendard Variable', Pretendard, sans-serif;
+	--sl-font-mono: 'DM Mono', ui-monospace, monospace;
+
+	--sl-color-white: var(--text);
+	--sl-color-gray-1: var(--text);
+	--sl-color-gray-2: var(--text-2);
+	--sl-color-gray-3: var(--muted);
+	--sl-color-gray-4: var(--muted);
+	--sl-color-gray-5: var(--rule-color);
+	--sl-color-gray-6: var(--card-bg);
+	--sl-color-black: var(--bg);
+	--sl-color-text: var(--text-2);
+	--sl-color-text-accent: var(--accent);
+	--sl-color-accent: var(--accent);
+	--sl-color-bg: var(--bg);
+	--sl-color-bg-nav: var(--bg);
+	--sl-color-bg-sidebar: var(--bg);
+	--sl-color-bg-inline-code: var(--marker);
+	--sl-color-hairline: var(--rule-color);
+	--sl-color-hairline-light: var(--rule-color);
+	--sl-color-hairline-shade: var(--rule-color);
+
+	--sl-text-h1: 2.5rem;
+	--sl-text-h2: 1.5rem;
+	--sl-text-h3: 1.25rem;
+	--sl-text-h4: 1.125rem;
+	--sl-line-height: 1.75;
+	--sl-sidebar-width: 16.875rem;
+	/* The content column fills the space between the sidebars; running text
+	 * keeps a readable measure through --prose-width (see Layout controls). */
+	--sl-content-width: 90rem;
+	--prose-width: 46.25rem;
+	--toc-width: 16.875rem;
+}
+
+/* 24px blueprint grid. */
+body {
+	background-color: var(--bg);
+	background-image:
+		linear-gradient(var(--grid) 1px, transparent 1px),
+		linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+	background-size: 24px 24px;
+	word-break: keep-all;
+	overflow-wrap: anywhere;
+}
+
+/* Headings: Pretendard 800 with tight tracking; h2 gets a §n index. */
+.sl-markdown-content {
+	counter-reset: section;
+}
+
+h1,
+.sl-markdown-content :is(h2, h3) {
+	font-weight: 800;
+	letter-spacing: -0.035em;
+	color: var(--text);
+}
+
+.sl-markdown-content h2 {
+	counter-increment: section;
+}
+
+.sl-markdown-content h2::before {
+	content: '§' counter(section);
+	margin-inline-end: 0.625rem;
+	font: 500 0.8rem/1 var(--sl-font-mono);
+	color: var(--accent);
+	vertical-align: 0.25rem;
+}
+
+/* Inline code reads as a highlighter mark; long tokens scroll inside. */
+.sl-markdown-content :not(pre) > code {
+	background-color: var(--marker);
+	color: var(--text);
+	border-radius: 4px;
+}
+
+.sl-markdown-content :is(table, pre) {
+	max-width: 100%;
+	overflow-x: auto;
+}
+
+/* Sidebar: the current item is an accent outlined box, not a filled pill. */
+.sidebar-content [aria-current='page'],
+.sidebar-content [aria-current='page']:hover,
+.sidebar-content [aria-current='page']:focus {
+	color: var(--accent);
+	background-color: transparent;
+	outline: 1.5px solid var(--accent);
+	outline-offset: -1.5px;
+	border-radius: var(--radius-sm);
+}
+
+/* TOC: 2px rule on the left; the current section turns accent. */
+starlight-toc ul {
+	border-inline-start: 2px solid var(--rule-color);
+}
+
+starlight-toc a[aria-current='true'] {
+	color: var(--accent);
+	box-shadow: -2px 0 0 var(--accent);
+}
+
+/* Pager: line border, no shadow (shadows are only for things to copy). */
+.pagination-links a {
+	border: var(--card-border);
+	border-radius: var(--radius);
+	background-color: var(--card-bg);
+	box-shadow: none;
+}
+
+.pagination-links a:hover {
+	border-color: var(--accent);
+}
+
+/* Aside: dashed accent border on a card surface. */
+.starlight-aside {
+	border: 1.5px dashed var(--accent);
+	border-radius: var(--radius);
+	background-color: var(--card-bg);
+}
+
+/* Tabs carry the same "copy me" shadow as code blocks. */
+.sl-markdown-content starlight-tabs {
+	box-shadow: 3px 3px 0 var(--shadow);
+	border: var(--card-border);
+	border-radius: var(--radius-sm);
+	background-color: var(--card-bg);
+}
+
+starlight-theme-select select {
+	border: var(--card-border);
+	border-radius: var(--radius-sm);
+	background-color: var(--card-bg);
+}
+
+:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		transition: none !important;
+		animation: none !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+/* Layout controls. Tables and code use the full content column; running text
+ * keeps --prose-width. From 50rem the left sidebar can collapse to a rail; from
+ * 72rem the TOC column takes --toc-width, which the PageSidebar override lets
+ * the reader drag. Starlight sizes the TOC with --sl-sidebar-width, so it is
+ * redefined inside the TOC column only. */
+.sl-markdown-content > :is(p, ul, ol, blockquote) {
+	max-width: var(--prose-width);
+}
+
+@media (min-width: 50rem) {
+	:root[data-sidebar='collapsed'] {
+		--sl-sidebar-width: 3.5rem;
+	}
+
+	/* Classic scrollbars would otherwise squeeze the toggle out of the rail. */
+	:root[data-sidebar='collapsed'] .sidebar-pane {
+		scrollbar-gutter: auto;
+	}
+
+	:root[data-sidebar='collapsed'] .sidebar-content {
+		padding-inline: 0.25rem;
+	}
+}
+
+@media (min-width: 72rem) {
+	.right-sidebar-container {
+		--sl-sidebar-width: var(--toc-width);
+		--sl-sidebar-pad-x: 1rem;
+		width: var(--toc-width);
+	}
+
+	.right-sidebar-container .sl-container {
+		max-width: none;
+	}
+
+	:root[data-has-sidebar][data-has-toc] .main-pane {
+		width: calc(100% - var(--toc-width));
+	}
+}

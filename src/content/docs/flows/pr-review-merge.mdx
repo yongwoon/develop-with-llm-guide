@@ -1,0 +1,126 @@
+---
+title: PR review 대응과 merge
+description: PR 에 리뷰 코멘트가 달렸을 때 리뷰 대응, 지적 검증, 충돌 해결, 병합, 리뷰 학습 기록 순서로 마무리하는 흐름입니다.
+kind: flow
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+titleBlock:
+  number: 16
+  steps: 5
+  required: 3
+  optional: 2
+  outputs: [수정 commit, 병합 commit, docs/review-learnings.md]
+sidebar:
+  order: 16
+  label: 16 PR review 대응과 merge
+---
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+import Flow from '../../../components/Flow.astro';
+import FlowStep from '../../../components/FlowStep.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+PR 에 사람이나 bot 의 리뷰가 달리면, 지적을 확인하고 고친 뒤 병합까지 이 순서로 진행합니다.
+
+<Aside title="언제 쓰나">
+- 열린 PR 에 리뷰 코멘트가 달려 리뷰 대응이 필요할 때
+- 리뷰를 반영한 뒤 병합과 task 완료 처리까지 끝내고 싶을 때
+</Aside>
+
+## 리뷰 대응 흐름
+
+<Flow>
+<FlowStep skill="ywc-handle-pr-reviews" desc="열린 PR 의 리뷰 코멘트에 대응하고 병합 가능한 상태로 만듭니다." />
+<FlowStep skill="ywc-receive-review" desc="받아들이기 전에 지적이 맞는지 하나씩 확인합니다." />
+<FlowStep skill="ywc-resolve-conflict" tools={['claude-code']} desc="local merge·rebase 충돌을 hunk 하나씩 해결합니다." optional />
+<FlowStep skill="ywc-finish-branch" desc="branch 를 병합하고 task 완료 처리를 합니다." />
+<FlowStep skill="ywc-review-learnings" desc="반복되는 지적이나 false positive 를 저장소의 리뷰 학습으로 남깁니다." optional />
+</Flow>
+
+## 리뷰 대응 실행 예시
+
+### 1. ywc-handle-pr-reviews
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-handle-pr-reviews <PR#>
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-handle-pr-reviews <PR#>
+```
+</TabItem>
+</Tabs>
+
+### 2. ywc-receive-review
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-receive-review CodeRabbit: src/components/SkillIndex.astro 의 filter 함수가 null 을 처리하지 않는다
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-receive-review CodeRabbit: src/components/SkillIndex.astro 의 filter 함수가 null 을 처리하지 않는다
+```
+</TabItem>
+</Tabs>
+
+### 3. ywc-resolve-conflict
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-resolve-conflict
+```
+</TabItem>
+<TabItem label="Codex">
+Codex 에는 이 skill 이 없습니다. 충돌 file 을 보여 주고 hunk 마다 어느 쪽을 살릴지 직접 요청합니다.
+</TabItem>
+</Tabs>
+
+### 4. ywc-finish-branch
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-finish-branch --mode normal-pr --branch feature/<task-name> --base-branch main --task-name <task-name>
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-finish-branch --mode normal-pr --branch feature/<task-name> --base-branch main --task-name <task-name>
+```
+</TabItem>
+</Tabs>
+
+### 5. ywc-review-learnings
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-review-learnings --mode update --source pr --pr <PR#>
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-review-learnings --mode update --source pr --pr <PR#>
+```
+</TabItem>
+</Tabs>
+
+## 건너뛸 수 있는 조건
+
+- **3단계 <SkillLink name="ywc-resolve-conflict" />**: 진행 중인 local merge·rebase 충돌이 없으면 건너뜁니다. 열린 PR 이 base branch 와 충돌하는 경우는 1단계 <SkillLink name="ywc-handle-pr-reviews" /> 가 맡습니다. Claude Code 전용이며 Codex 에서는 위 대체 방법을 씁니다.
+- **5단계 <SkillLink name="ywc-review-learnings" />**: 다음 리뷰에도 남길 만한 지적이 없으면 건너뜁니다.
+
+## 관련 흐름
+
+- [13 중·대형 기능](/develop-with-llm-guide/flows/large-feature/)
+- [23 릴리스와 저장소 운영](/develop-with-llm-guide/flows/release-repo-ops/)
+- [25 세션 운영과 skill 관리](/develop-with-llm-guide/flows/session-skill-management/)
+
+<VerifiedStamp />

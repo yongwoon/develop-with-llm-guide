@@ -1,0 +1,85 @@
+---
+title: ywc-improve-architecture
+description: 얕은 module 여러 개를 단순한 interface 를 가진 깊은 module 로 재구성합니다. "리팩터링 구조 개선", "deep module 로 합치기" 요청에 동작을 바꾸지 않고 검토 가능한 단위로 하나씩 합칩니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: review
+tools: [claude-code, codex]
+summary: 얕은 module 들을 동작은 유지한 채 깊은 module 로 하나씩 합칩니다.
+next: [ywc-refactor-clean]
+outputs: [개선 후보 목록, 재구성 commit]
+options:
+  - name: --scope
+    format: "<path>"
+    when: 재구성할 module 이나 디렉터리를 정합니다. 반드시 줍니다. 저장소 전체는 받지 않습니다.
+    tools: [claude-code, codex]
+  - name: --tier
+    format: "safe|safe+caution"
+    default: safe
+    when: 어느 위험 등급까지 실제로 재구성할지 정합니다. danger 등급은 실행하지 않습니다.
+    tools: [claude-code, codex]
+  - name: --dry-run
+    format: flag
+    when: 개선 후보와 등급만 보고하고 재구성은 하지 않습니다.
+    tools: [claude-code, codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### component 디렉터리의 개선 후보 보기
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-improve-architecture --scope src/components --dry-run
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-improve-architecture --scope src/components --dry-run
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 합칠 수 있는 module 묶음이 위험 등급과 함께 목록으로 나옵니다. code 는 바꾸지 않습니다.
+
+### 안전한 것만 재구성
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-improve-architecture --scope src/components --tier safe
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-improve-architecture --scope src/components --tier safe
+```
+</TabItem>
+</Tabs>
+
+**결과물**: safe 등급 후보를 하나씩 재구성합니다. 단위마다 동작이 같은지 확인하고 따로 commit 합니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 쓰지 않는 code 를 지울 때 → <SkillLink name="ywc-refactor-clean" />
+- 고치지 않고 리뷰만 할 때 → <SkillLink name="ywc-impl-review" />
+- 새로 설계할 때 → <SkillLink name="ywc-plan" />
+
+## 관련 흐름
+
+- [22 코드 구조 개선](/develop-with-llm-guide/flows/code-structure/)
+
+<VerifiedStamp />

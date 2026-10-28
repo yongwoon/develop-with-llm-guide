@@ -8,7 +8,7 @@
 | push 부터 사이트 반영까지 | 10분 이내. Actions run 의 시작부터 Pages 배포 완료까지의 시간으로 잰다 |
 | build 실패, 가드 실패 시 | 배포하지 않고 직전 배포를 유지 |
 | runtime | Node.js 22.23.4 이상 (Astro 7.4.2 의 engines 요구). `.nvmrc` 와 `package.json` engines 로 고정한다 |
-| 의존성 버전 | `@astrojs/starlight` 는 exact version 으로 고정한다. 2026-10-28 기준 최신은 0.42.7. 업그레이드는 별도 작업으로 다룬다. package manager 는 npm 이며 lockfile 기반으로 install 한다 |
+| 의존성 버전 | `@astrojs/starlight` 는 exact version 으로 고정한다. 2026-10-28 기준 최신은 0.42.7. 업그레이드는 별도 작업으로 다룬다. package manager 는 pnpm 이며(`package.json` 의 `packageManager` 로 버전 고정) lockfile 기반으로 install 한다 (2026-10-28 owner 결정으로 npm 에서 전환) |
 | 실패 알림 | GitHub 기본 알림(email)으로 충분하다. 별도 알림 채널을 두지 않는다 |
 | 오염 배포 rollback | 해당 commit 을 revert 하는 commit 을 main 에 push 한다 |
 
@@ -148,7 +148,7 @@ Pagefind 의 한국어 품질을 실측한 근거가 없으므로 (`docs/researc
 | 항목 | 목표 |
 |---|---|
 | 대비 | WCAG 2.2 AA. 본문과 라벨 4.5:1 이상 (design-system 의 token 대비표) |
-| 반응형 | 375px 에서 page 가로 scroll 0. 긴 mono 토큰과 코드 블록은 해당 요소 내부의 가로 scroll 을 허용한다. Skill 색인은 카드 목록으로 바뀐다. 820px 이하에서 sidebar drawer, 1100px 이상에서 TOC 표시 |
+| 반응형 | 375px 에서 page 가로 scroll 0. 긴 mono 토큰과 코드 블록은 해당 요소 내부의 가로 scroll 을 허용한다. Skill 색인은 카드 목록으로 바뀐다. 800px(50rem) 미만에서 sidebar drawer, 1152px(72rem) 이상에서 TOC 표시 (Starlight 기본값, 2026-10-28 owner 결정) |
 | Lighthouse (mobile, 대표 페이지 3개: 홈, 흐름 10, `ywc-mission`) | Accessibility 95 이상, Performance 90 이상, SEO 90 이상. 첫 공개 gate 는 build 후 preview 에서 mobile preset 으로 측정한다. 공개 후 배포 URL 에서 한 번 더 측정한다. 결과는 `docs/` 에 기록한다 |
 | 검색 엔진 색인 | 허용한다. 사이트는 공개 guidebook 이며, NG001 이 금지하는 것은 develop-with-llm 의 다른 자료 공개다 (OQ-14 결정) |
 | keyboard | 검색, tab 전환, theme 전환, copy, sidebar drawer(열기/닫기, Escape 로 닫기, 닫은 뒤 여는 버튼으로 focus 반환)를 keyboard 만으로 수행 가능 |
@@ -167,8 +167,19 @@ Pagefind 의 한국어 품질을 실측한 근거가 없으므로 (`docs/researc
 | flow page 수 | 16 |
 | agent page | 3 page, agent 표 합계 17행 |
 | 내부 logic 비포함 (CN004) | 단계 절차, 판정 규칙, dispatch 방식 서술 0건. review checklist 항목으로 확인 |
+| 사이트 문체 | 아래 "사이트 문체" 규칙 위반 0건. review checklist 항목으로 확인 |
 | 원문 복사 | 0건. 사실 메모를 먼저 쓰고 그 메모로 본문을 쓴다. 최종 확인은 사람의 review (OQ-06 결정) |
 | 깨진 내부 link | 0건. build 시 `starlight-links-validator` 로 검사하며, SkillLink 의 존재하지 않는 skill 이름과 `#options` anchor 도 포함 |
+
+### 사이트 문체 (owner 결정, 2026-10-28)
+
+사이트에 게시하는 모든 문장(page 본문, frontmatter 의 `description`·`summary`·`argsNote`·option 의 `when`·`note`, component 의 안내 문구)에 적용한다. `docs/`·`tasks/` 의 작업 문서에는 적용하지 않는다.
+
+- 합니다체(격식체 존댓말)로 통일한다. 문서 중간에 해요체나 해라체를 섞지 않는다. 목록 항목과 표 칸이 문장이 아니면 명사형("~할 때")으로 끝낸다.
+- 문장은 짧게 쓰고, 한 문장에 하나의 정보만 담는다.
+- 능동태를 우선하고, 번역투("~에 의해", "~를 통해", "~하는 것이 가능하다")를 피한다.
+- "~하시기 바랍니다", "~일 수 있습니다" 같은 불필요한 완곡 표현을 쓰지 않는다.
+- 감탄사, 이모지, 마케팅성 수식어("강력한", "간편한")를 쓰지 않는다.
 
 ## Existing Constraints Touched
 
@@ -176,7 +187,7 @@ Pagefind 의 한국어 품질을 실측한 근거가 없으므로 (`docs/researc
 |---|---|---|
 | `docs/mission.md` | SC001–SC005, NG001–NG003, CN001–CN004, RA001–RA003 | 전 section 의 판단 기준 |
 | `docs/research/2026-10-28-static-site-framework.md` | Starlight 0.42.7, Pagefind open issue #1211 / #1283 | R-DEPLOY, R-SEARCH |
-| `docs/design/design-system.md` | color token, contrast 값, breakpoint 820 / 1100 px | R-UX |
+| `docs/design/design-system.md` | color token, contrast 값, breakpoint 800 / 1152 px | R-UX |
 | `docs/tech-stack.md` | directory 구조, base path | 04-interfaces |
 | npm registry `astro` engines (2026-10-28 조회) | Node 22.23.4 이상 | R-DEPLOY |
 | develop-with-llm `tools/claude-code/VERSION`, `tools/codex-skill/VERSION` (2026-10-28) | 1.0.0 / 0.16.164-candidate.4 | 03-data 의 `sourceVersion` 초기값 |

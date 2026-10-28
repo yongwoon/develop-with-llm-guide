@@ -1,0 +1,86 @@
+---
+title: ywc-wayfinder
+description: 목적지는 알지만 경로가 불확실한 큰 작업을 여러 세션에 걸쳐 풀어 갑니다. "불확실한 큰 작업", "여러 세션 계획"에 결정 ticket 지도를 만들고, 세션마다 ticket 하나를 정합니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: plan
+tools: [claude-code, codex]
+summary: 불확실한 큰 작업을 결정 ticket 지도로 나눠 세션마다 하나씩 정합니다.
+next: [ywc-mission]
+outputs: ["docs/ywc-plans/<slug>-wayfinder.md"]
+argsNote: Claude Code 에서 특정 ticket 을 풀려면 요청 문장에 D-001 처럼 ticket 번호를 적습니다.
+options:
+  - name: "<slug>"
+    format: kebab-case
+    default: 작업 이름에서 만듦. 이름도 없으면 물어봄
+    when: 지도 file 이름을 정합니다. 이어 갈 지도를 가리킬 때도 씁니다.
+    tools: [claude-code]
+  - name: "<request>"
+    format: 작업 설명 또는 ticket 번호 (예 D-001)
+    default: 지도에서 열린 ticket 하나
+    when: 새 작업을 지도로 만들 때 씁니다. 기존 지도의 특정 ticket 을 풀 때도 씁니다.
+    tools: [codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### 큰 이전 작업을 지도로 시작
+
+guide 사이트의 검색을 바꾸려고 합니다. 먼저 정해야 할 것이 여러 갈래입니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-wayfinder search-migration 사이트 검색을 바꾸고 싶은데 결정할 것이 많다
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-wayfinder 사이트 검색을 바꾸고 싶은데 결정할 것이 많다
+```
+</TabItem>
+</Tabs>
+
+**결과물**: `docs/ywc-plans/<slug>-wayfinder.md` 에 지도가 생깁니다. 지도에는 결정 ticket 목록과 ticket 사이의 선후 관계가 들어갑니다. 이번 세션에는 ticket 하나를 정합니다.
+
+### 다음 세션에서 이어 가기
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-wayfinder search-migration D-002 를 정하자
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-wayfinder D-002
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 지도에 해당 ticket 의 결정을 기록합니다. 다음에 열 수 있는 ticket 목록도 갱신합니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 경로가 정해졌고 계획만 세울 때 → <SkillLink name="ywc-plan" />
+- library 하나를 고를 때 → <SkillLink name="ywc-tech-research" />
+- 기능 하나의 의도만 정리할 때 → <SkillLink name="ywc-brainstorm" />
+- 만든 task 를 실행할 때 → <SkillLink name="ywc-sequential-executor" />
+
+## 관련 흐름
+
+- [15 장기·불확실한 initiative](/develop-with-llm-guide/flows/uncertain-initiative/)
+
+<VerifiedStamp />

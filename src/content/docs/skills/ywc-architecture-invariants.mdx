@@ -1,0 +1,121 @@
+---
+title: ywc-architecture-invariants
+description: module 경계 규칙을 architecture-invariants.yaml 로 선언하고 점검합니다. "아키텍처 경계 계약", "architecture invariants" 요청에 금지 의존 관계를 file 로 정의하고, 바뀐 code 가 이를 지키는지 확인합니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: review
+tools: [claude-code, codex]
+summary: module 경계 규칙을 yaml 로 선언하고 code 가 지키는지 점검합니다.
+next: [ywc-agent-legibility-audit]
+outputs: [architecture-invariants.yaml, 점검 보고]
+options:
+  - name: --mode
+    format: "draft|audit|validate"
+    default: validate
+    when: 할 일을 고릅니다. draft 는 규약 초안 작성, audit 는 code 점검, validate 는 규약 file 검증입니다.
+    tools: [claude-code]
+  - name: --mode
+    format: "draft|audit|validate"
+    when: 할 일을 고릅니다. draft 는 규약 초안 작성, audit 는 code 점검, validate 는 규약 file 검증입니다.
+    tools: [codex]
+  - name: --manifest
+    format: "<path>"
+    default: 저장소 root 의 architecture-invariants.yaml
+    when: 규약 file 이 다른 경로에 있을 때 줍니다. 지정한 경로에 없으면 다른 곳을 찾지 않고 멈춥니다.
+    tools: [claude-code, codex]
+  - name: --output
+    format: "<path>"
+    default: architecture-invariants.yaml
+    when: draft 에서 규약 초안을 쓸 경로를 정합니다.
+    tools: [claude-code]
+  - name: --output
+    format: "<path>"
+    when: draft 에서 규약 초안을 쓸 경로를 정합니다.
+    tools: [codex]
+  - name: --scope
+    format: "<path>"
+    default: 저장소 root
+    when: audit 의 점검 범위를 경로로 좁힙니다.
+    tools: [claude-code]
+  - name: --git-range
+    format: "<range>"
+    when: audit 의 점검 대상을 commit 범위의 변경으로 정합니다. --scope 와 함께 주면 둘이 겹치는 부분만 봅니다.
+    tools: [claude-code]
+  - name: --allow-verifier
+    format: flag
+    when: validate 에서 규약 file 에 적힌 검증 명령의 실행을 허락합니다. 없으면 실행하지 않습니다.
+    tools: [claude-code]
+  - name: --root
+    format: "<repository-root>"
+    when: 대상 저장소 root 를 지정합니다.
+    tools: [codex]
+  - name: --changed-path
+    format: "<repository-relative-path>"
+    when: audit 에서 점검할 변경 경로를 지정합니다.
+    tools: [codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### 경계 규약 초안 만들기
+
+component 가 content 를 import 하지 못하게 하는 등 경계를 file 로 남기고 싶습니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-architecture-invariants --mode draft
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-architecture-invariants --mode draft --root . --output architecture-invariants.yaml
+```
+</TabItem>
+</Tabs>
+
+**결과물**: `architecture-invariants.yaml` 에 component 목록과 금지 의존 관계 초안이 생깁니다.
+
+### branch 의 변경이 규약을 지키는지
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-architecture-invariants --mode audit --git-range main..HEAD
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-architecture-invariants --mode audit --root . --changed-path src/components
+```
+</TabItem>
+</Tabs>
+
+Codex 에는 --git-range 가 없어 점검할 경로를 --changed-path 로 줍니다.
+
+**결과물**: 변경된 file 이 어느 component 에 속하는지와, 금지된 의존을 만든 곳이 있는지 보고합니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 경계 규약 없이 구조 판단이 필요할 때 → <SkillLink name="ywc-impl-review" />
+- 얕은 module 을 실제로 재구성할 때 → <SkillLink name="ywc-improve-architecture" />
+- 하나의 설계 결정을 기록할 때 → <SkillLink name="ywc-adr" />
+
+## 관련 흐름
+
+- [11 기존 repo 진입하기](/develop-with-llm-guide/flows/onboarding-existing-repo/)
+- [22 코드 구조 개선](/develop-with-llm-guide/flows/code-structure/)
+
+<VerifiedStamp />

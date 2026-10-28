@@ -1,0 +1,58 @@
+---
+title: ywc-verify-done
+description: 작업 완료를 주장하기 전에 실제 증거로 확인합니다. "다 됐어", "test 통과", "build 성공"이라고 말하기 전, 그리고 commit·PR·다음 task 로 넘어가기 직전에 씁니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: test
+tools: [claude-code, codex]
+summary: 완료를 주장하기 전에 명령 실행 결과로 확인합니다.
+next: [ywc-commit]
+argsNote: option 이 없습니다. 지금 대화에서 하려는 완료 주장을 대상으로 확인합니다.
+options: []
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### PR 을 만들기 전에
+
+구현이 끝났다고 생각합니다. PR 을 만들기 전에 정말 끝났는지 확인합니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-verify-done
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-verify-done
+```
+</TabItem>
+</Tabs>
+
+**결과물**: test, build 같은 확인 명령을 다시 실행하고, 명령과 출력과 종료 코드를 근거로 보여 줍니다. 근거가 없는 완료 주장은 통과시키지 않습니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 아직 구현 중일 때 → 구현을 먼저 마치기
+- spec 과 대조하는 리뷰가 필요할 때 → <SkillLink name="ywc-impl-review" />
+- 구현 착수 전에 준비 상태를 볼 때 → <SkillLink name="ywc-confidence-gate" />
+
+## 관련 흐름
+
+- [12 작은 변경](/develop-with-llm-guide/flows/small-change/)
+- [18 테스트와 완료 검증](/develop-with-llm-guide/flows/testing-verification/)
+
+<VerifiedStamp />

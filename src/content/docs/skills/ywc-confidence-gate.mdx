@@ -1,0 +1,64 @@
+---
+title: ywc-confidence-gate
+description: 큰 구현이나 되돌리기 비싼 설계에 착수하기 직전에 준비 상태를 점검합니다. "구현 시작해도 돼?", "준비 됐어?" 질문에 진행·재검토·중단 중 하나로 판정합니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: plan
+tools: [claude-code, codex]
+summary: 구현 착수 직전에 준비 상태를 PROCEED·REVIEW·STOP 으로 판정합니다.
+next: [ywc-task-executor, ywc-sequential-executor, ywc-parallel-executor]
+argsNote: Claude Code 에는 option 이 없습니다. 지금 대화의 작업을 대상으로 판정합니다.
+options:
+  - name: "<work item>"
+    format: 자유 문장
+    default: 지금 대화의 작업
+    when: 판정 대상을 따로 적을 때 씁니다. 착수하려는 작업을 문장으로 줍니다.
+    tools: [codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### task 실행 전 마지막 점검
+
+task 를 다 만들었습니다. 실행 skill 을 돌리기 직전입니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-confidence-gate
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-confidence-gate Phase 3 skill page task 실행
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 판정 하나와 그 근거, 부족한 점이 대화에 나옵니다. 판정은 PROCEED(진행), REVIEW(보완 후 진행), STOP(중단) 중 하나입니다. file 은 만들지 않습니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 끝낸 작업이 정말 완료됐는지 확인할 때 → <SkillLink name="ywc-verify-done" />
+- spec 문서를 검토할 때 → <SkillLink name="ywc-spec-validate" />
+- 구현된 code 를 검토할 때 → <SkillLink name="ywc-impl-review" />
+- 무엇을 만들지 아직 흐릴 때 → <SkillLink name="ywc-brainstorm" />
+
+## 관련 흐름
+
+- [10 새 project 시작하기](/develop-with-llm-guide/flows/new-project/)
+- [13 중·대형 기능](/develop-with-llm-guide/flows/large-feature/)
+
+<VerifiedStamp />

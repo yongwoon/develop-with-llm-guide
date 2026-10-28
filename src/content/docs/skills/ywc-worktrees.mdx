@@ -1,0 +1,122 @@
+---
+title: ywc-worktrees
+description: 격리된 작업 공간용 git worktree 를 만들고, 점검하고, 정리합니다. "worktree 생성", "worktree 정리" 요청에 씁니다. 주로 executor 가 대신 부르지만 직접 써도 됩니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: implement
+tools: [claude-code, codex]
+summary: 작업용 git worktree 를 만들고 점검하고 정리합니다.
+next: [ywc-docker-isolate]
+outputs: [project 의 worktree 디렉터리]
+options:
+  - name: --mode
+    format: "create|audit|prune|resolve"
+    when: 할 일을 고릅니다. create 는 생성, audit 는 점검, prune 은 정리, resolve 는 위치 확인입니다.
+    tools: [claude-code]
+  - name: --mode
+    format: "create|audit|prune|prune-recorded|resolve"
+    when: 할 일을 고릅니다. prune-recorded 는 executor 가 실행 기록으로 worktree 를 정리할 때 쓰는 mode 입니다.
+    tools: [codex]
+  - name: --task-name
+    format: "<task-name>"
+    when: worktree 가 속한 task 를 지정합니다. create·prune 에 필요합니다.
+    tools: [claude-code, codex]
+  - name: --branch
+    format: "<branch-name>"
+    when: worktree 에 연결할 branch 를 지정합니다. create 에 필요합니다.
+    tools: [claude-code, codex]
+  - name: --base-branch
+    format: "<branch-name>"
+    when: 새 branch 를 만들 출발점을 지정합니다.
+    tools: [claude-code, codex]
+    note: --existing-branch 와 함께 쓸 수 없습니다.
+  - name: --existing-branch
+    format: flag
+    when: 새 branch 를 만들지 않고 --branch 의 기존 branch 를 그대로 꺼냅니다.
+    tools: [claude-code]
+    note: --base-branch 와 함께 쓸 수 없습니다.
+  - name: --existing-branch
+    format: "<branch-name>"
+    when: 새 branch 를 만들지 않고 지정한 기존 branch 를 꺼냅니다.
+    tools: [codex]
+    note: --base-branch 와 함께 쓸 수 없습니다.
+  - name: --root
+    format: "<path>"
+    when: project 설정이 없을 때 worktree 를 둘 위치를 정합니다.
+    tools: [claude-code, codex]
+  - name: --expect
+    format: "<task1,task2,...>"
+    when: audit 에서 지금 worktree 가 있어야 할 task 를 나열합니다. 남거나 빠진 것이 있으면 실패합니다.
+    tools: [claude-code, codex]
+  - name: --force
+    format: flag
+    when: prune 에서 변경이 남은 worktree 도 지웁니다. 내용이 필요 없을 때만 씁니다.
+    tools: [claude-code, codex]
+  - name: --keep-branch
+    format: flag
+    when: prune 에서 worktree 만 지우고 branch 는 남깁니다.
+    tools: [claude-code, codex]
+excludedOptions: { codex: [--state-file, --repo-common-dir, --expected-operation] }
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### 남은 worktree 점검
+
+병렬 실행이 중간에 끊겼습니다. 지금 남아 있어야 할 worktree 와 실제 상태를 비교합니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-worktrees --mode audit --expect 000004-010,000004-020
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-worktrees --mode audit --expect 000004-010,000004-020
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 남은 worktree 목록과 기대한 목록의 차이가 나옵니다. 차이가 있으면 점검 결과가 실패로 나옵니다.
+
+### 끝난 task 의 worktree 정리
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-worktrees --mode prune --task-name 000004-010-ui-flow-pages-10-17
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-worktrees --mode prune --task-name 000004-010-ui-flow-pages-10-17
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 해당 worktree 와 local branch 가 지워집니다. 변경이 남아 있으면 지우지 않고 멈춥니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- branch 만 만들거나 지울 때 → git 명령으로 직접
+- 병합과 완료 처리까지 할 때 → <SkillLink name="ywc-finish-branch" />
+- Docker port 를 분리할 때 → <SkillLink name="ywc-docker-isolate" />
+
+## 관련 흐름
+
+- [24 로컬 환경과 병렬 작업](/develop-with-llm-guide/flows/local-parallel/)
+
+<VerifiedStamp />

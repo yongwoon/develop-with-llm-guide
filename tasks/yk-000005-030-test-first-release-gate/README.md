@@ -5,9 +5,9 @@
 
 ## Scope
 - page 수 확인: 86 (skill 63 + 색인 1 + 흐름 16 + agent 3 + guide 3), Skill 색인 63행
-- `npm run fresh-check` exit 0
+- `pnpm run fresh-check` exit 0
 - R-SEARCH: query 12개 상위 3개 적중, Pagefind 색인 86 page 이상, 첫 검색 전송량 1 MB 이하, 한국어 IME 조합 중 Enter 손실 0 (macOS Chrome·Safari 최신, iOS Safari), 검색 상태 표시
-- R-UX: 로컬 `npm run preview` 에서 mobile preset Lighthouse (홈, 흐름 10, `ywc-mission`) A11y ≥95·Perf ≥90·SEO ≥90, 375px 가로 scroll 0, keyboard 조작
+- R-UX: 로컬 `pnpm run preview` 에서 mobile preset Lighthouse (홈, 흐름 10, `ywc-mission`) A11y ≥95·Perf ≥90·SEO ≥90, 375px 가로 scroll 0, keyboard 조작
 - 결과를 `docs/measurements/first-release.md` 에 기록
 - 검색 미적중 시 해당 page 의 description·소제목 보강 후 재측정
 - 통과 후 `content/initial` → main 병합 (owner 승인), 배포 URL 에서 Lighthouse 1회 재측정 기록
@@ -75,9 +75,9 @@
 - yk-000005-020-ui-skill-crosslinks-test-to-meta
 
 ### Task Verify
-- `npm run build`
-- `npm run guard`
-- `npm run fresh-check`
+- `pnpm run build`
+- `pnpm run guard`
+- `pnpm run fresh-check`
 - `ls src/content/docs/skills/*.mdx | grep -v '/index.mdx' | wc -l (= 63)`
 - `find src/content/docs -name '*.mdx' | wc -l (= 86)`
 - (preview 에서 R-SEARCH 12/12, Lighthouse 3 page 목표 통과 — `docs/measurements/first-release.md` 기록)

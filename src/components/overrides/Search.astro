@@ -1,0 +1,115 @@
+---
+// Wraps Starlight's Search (spec F-SEARCH). Without JS the search button stays
+// disabled, so a link to the Skill index takes its place. With JS, the dialog
+// shows a loading line and, if the Pagefind bundle or index cannot load, a
+// fallback.
+import Default from '@astrojs/starlight/components/Search.astro';
+import ko from '../../content/i18n/ko.json';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const indexHref = `${base}/skills/`;
+const entryHref = `${base}/pagefind/pagefind-entry.json`;
+// Matches the zero-results line; [SEARCH_TERM] stands for any query.
+const zeroResultsSuffix = ko['pagefind.zero_results'].replace('[SEARCH_TERM]', '');
+---
+
+<Default {...Astro.props} />
+<noscript>
+	<a class="search-fallback" href={indexHref}>Skill 색인</a>
+	<style is:inline>
+		site-search {
+			display: none;
+		}
+	</style>
+</noscript>
+<template id="search-status-template">
+	<p class="search-status" role="status" aria-live="polite"></p>
+</template>
+
+<script define:vars={{ indexHref, entryHref, zeroResultsSuffix }}>
+	// Pagefind UI only logs to the console when its files fail to load, so the
+	// first time the dialog opens we request the index entry ourselves and show
+	// loading, then hide the line or replace it with a fallback link. A failed
+	// index chunk later looks like zero results, so on zero results we fetch
+	// the entry again: an error (offline, server down) or a changed index hash
+	// (redeployed while the tab was open) means the search did not really run.
+	const container = document.getElementById('starlight__search');
+	const dialog = container?.closest('dialog');
+	const template = document.getElementById('search-status-template');
+	if (container && dialog && template) {
+		const status = template.content.firstElementChild.cloneNode(true);
+		container.before(status);
+		// The live region stays in the DOM and is hidden by CSS while empty.
+		// Content goes in a tick after any change, so screen readers announce it.
+		let pending;
+		const setStatus = (...nodes) => {
+			clearTimeout(pending);
+			status.replaceChildren();
+			if (nodes.length) pending = setTimeout(() => status.replaceChildren(...nodes), 50);
+		};
+		const failureNodes = () => {
+			const link = document.createElement('a');
+			link.href = indexHref;
+			link.textContent = 'Skill 색인';
+			return ['검색을 불러오지 못했습니다. 새로고침하거나 ', link, '에서 찾아 주세요.'];
+		};
+		const fetchEntry = async () => {
+			const response = await fetch(entryHref, { cache: 'no-store' });
+			if (!response.ok) throw new Error(`HTTP ${response.status}`);
+			return response.text();
+		};
+		let entry;
+		// Only the latest check may write the status line.
+		let checkId = 0;
+		const check = async () => {
+			const id = ++checkId;
+			let ok;
+			try {
+				const latest = await fetchEntry();
+				entry ??= latest;
+				ok = latest === entry;
+			} catch {
+				ok = false;
+			}
+			if (id === checkId) setStatus(...(ok ? [] : failureNodes()));
+		};
+		new MutationObserver((_, observer) => {
+			if (!dialog.open) return;
+			observer.disconnect();
+			setStatus('검색 index 를 불러오는 중입니다…');
+			check();
+		}).observe(dialog, { attributes: true, attributeFilter: ['open'] });
+		let lastMessage = '';
+		new MutationObserver(() => {
+			const message = container.querySelector('.pagefind-ui__message')?.textContent ?? '';
+			if (message === lastMessage) return;
+			lastMessage = message;
+			if (message.endsWith(zeroResultsSuffix)) check();
+			else if (container.querySelector('.pagefind-ui__result')) {
+				checkId++;
+				setStatus();
+			}
+		}).observe(container, { childList: true, subtree: true, characterData: true });
+	}
+</script>
+
+<style>
+	.search-fallback {
+		font-size: var(--sl-text-sm);
+		color: var(--accent);
+	}
+
+	:global(.search-status:empty) {
+		display: none;
+	}
+
+	:global(.search-status) {
+		margin: 0.75rem 1rem 0;
+		color: var(--muted);
+		font-size: var(--sl-text-sm);
+	}
+
+	:global(.search-status a) {
+		color: var(--accent);
+	}
+</style>

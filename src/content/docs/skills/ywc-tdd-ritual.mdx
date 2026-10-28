@@ -1,0 +1,63 @@
+---
+title: ywc-tdd-ritual
+description: 새 기능, bug 수정, 동작 변경을 test 를 먼저 쓰는 방식으로 진행합니다. "TDD", "테스트 먼저" 요청에 실패하는 test 를 먼저 확인하고, 통과시킨 뒤 정리합니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: test
+tools: [claude-code, codex]
+summary: test 를 먼저 쓰고 실패를 확인한 뒤 구현하는 방식으로 진행합니다.
+next: [ywc-verify-done]
+outputs: [test 와 구현 code]
+argsNote: Claude Code 에는 option 이 없습니다. 구현할 내용은 요청 문장으로 적습니다.
+options:
+  - name: "<behavior>"
+    format: 자유 문장
+    when: test 를 먼저 쓰며 구현할 기능, bug 수정, 동작 변경을 적습니다.
+    tools: [codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### bug 를 test 로 먼저 재현
+
+Skill 색인에서 분류 filter 를 바꾸면 개수 표시가 갱신되지 않습니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-tdd-ritual Skill 색인에서 분류를 바꾸면 skill 개수 표시가 갱신되지 않는다
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-tdd-ritual Skill 색인에서 분류를 바꾸면 skill 개수 표시가 갱신되지 않는다
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 먼저 bug 를 재현하는 test 가 생기고, 실패하는 것을 확인합니다. 그다음 test 를 통과시키는 최소한의 수정이 들어가고, 마지막에 code 를 정리합니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 원인을 아직 모르는 bug 일 때 → 먼저 <SkillLink name="ywc-debug-rootcause" />
+- spec 에서 여러 층의 code 를 한 번에 만들 때 → <SkillLink name="ywc-code-gen" />
+- 버릴 시험용 code 일 때 → skill 없이 직접 작성
+
+## 관련 흐름
+
+- [12 작은 변경](/develop-with-llm-guide/flows/small-change/)
+- [18 테스트와 완료 검증](/develop-with-llm-guide/flows/testing-verification/)
+
+<VerifiedStamp />

@@ -1,0 +1,69 @@
+---
+title: ywc-infra-review
+description: terraform plan 결과나 기존 IaC 를 apply 전에 리뷰합니다. "인프라 리뷰해줘", "Terraform 검토" 요청에 과도한 IAM 권한, 공개 network 노출, state lock, 비용 증가, 단일 장애점과 backup 누락을 봅니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: infra
+tools: [claude-code, codex]
+summary: terraform plan 이나 기존 IaC 의 보안·비용·신뢰성 문제를 apply 전에 리뷰합니다.
+next: [ywc-infra-optimize]
+outputs: [심각도별 인프라 리뷰 보고]
+argsNote: Codex 에서는 option 없이 리뷰할 plan, diff, file 범위를 적습니다.
+options:
+  - name: --plan-file
+    format: "<path>"
+    when: 저장해 둔 terraform plan 출력이나 diff 를 리뷰합니다.
+    tools: [claude-code]
+  - name: --scope
+    format: "<path>"
+    when: 새 plan 이 없을 때, 이미 apply 된 IaC 나 배포 workflow 경로를 리뷰합니다.
+    tools: [claude-code]
+    note: 한 번도 plan 하지 않은 새 Terraform 의 리뷰를 대신하지 않습니다.
+  - name: "<review target>"
+    format: plan, diff, file 범위
+    when: 리뷰할 대상을 줍니다.
+    tools: [codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### apply 전에 plan 결과 리뷰
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-infra-review --plan-file terraform-plan.txt
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-infra-review terraform-plan.txt 의 plan 결과
+```
+</TabItem>
+</Tabs>
+
+**결과물**: IAM 권한, network 노출, state lock, 비용, 신뢰성 관점의 지적이 심각도별로 나옵니다. 지적마다 자원 위치와 고치는 방향이 붙습니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- application code 의 보안을 볼 때 → <SkillLink name="ywc-security-audit" />
+- Terraform 을 새로 쓸 때 → <SkillLink name="ywc-iac-author" />
+- 이미 운영 중인 인프라를 줄이거나 정리할 때 → <SkillLink name="ywc-infra-optimize" />
+
+## 관련 흐름
+
+- [20 인프라·클라우드](/develop-with-llm-guide/flows/infra-cloud/)
+
+<VerifiedStamp />

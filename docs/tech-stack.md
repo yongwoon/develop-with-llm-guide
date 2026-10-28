@@ -24,24 +24,29 @@ develop-with-llm-guide/
 │   ├── content.config.ts              # docsLoader + docsSchema. frontmatter 확장 (아래 "frontmatter 확장 필드")
 │   ├── components/
 │   │   ├── overrides/                 # Starlight 기본 component 교체 (astro.config 의 components 옵션에 등록)
-│   │   │   └── PageTitle.astro        # h1 + TitleBlock(표제란) 렌더링
+│   │   │   ├── PageSidebar.astro      # 기본 TOC 열 + 폭 조절 handle (drag·←/→, localStorage)
+│   │   │   ├── PageTitle.astro        # h1 + TitleBlock(표제란) 렌더링
+│   │   │   ├── Search.astro           # 기본 Search + JS 비활성 시 Skill 색인 link, 로딩·실패 안내
+│   │   │   └── Sidebar.astro          # 기본 Sidebar + 데스크톱 접기 button (localStorage)
 │   │   ├── Flow.astro                 # 흐름 컨테이너: 연결선
 │   │   ├── FlowStep.astro             # 단계: 번호 원 + 카드, optional → 점선, 단계 종류 step/loop/alt
-│   │   ├── SkillCard.astro            # skill 요약 카드 (분류 tag·도구·산출물·다음 skill, crop mark)
+│   │   ├── SkillCard.astro            # skill 요약 카드 (분류 tag·도구·직접 호출 전용·산출물·다음 skill, crop mark)
 │   │   ├── SkillLink.astro            # 본문의 skill 이름 → <skill>/#options. collection 에 없는 skill 이면 build 실패
 │   │   ├── OptionTable.astro          # frontmatter options/argsNote → 전체 option 표 ("Options" heading 아래, #options)
 │   │   ├── SkillIndex.astro           # 전 skill frontmatter → Skill 색인 표 + 분류 필터
 │   │   ├── VerifiedStamp.astro        # page 하단 확인일·bundle version 표시
 │   │   └── TitleBlock.astro           # 표제란 4칸 (PageTitle 에서 사용)
 │   ├── styles/
-│   │   └── theme.css                  # design token (light/dark) → --sl-* 매핑 + 모눈 배경, sidebar, TOC, § counter, @font-face
+│   │   ├── theme.css                  # design token (light/dark) → --sl-* 매핑 + 모눈 배경, sidebar, TOC, § counter, @font-face
+│   │   └── pretendard.css             # DWLG Sans (Pretendard 사이트 subset) + Pretendard dynamic subset fallback @font-face
 │   └── assets/                        # 빌드 시 최적화되는 이미지 (필요할 때만)
 ├── public/
 │   ├── favicon.svg
 │   └── fonts/                         # self-host font (Pretendard Variable subset woff2, DM Mono)
 ├── scripts/                           # Node script (owner 로컬 + CI)
 │   ├── guard.mjs                      # 공개 가드 (R-GUARD). dist/ 와 원본 tree 검사
-│   └── fresh-check.mjs                # 최신성 점검 (R-FRESH). 로컬 전용
+│   ├── fresh-check.mjs                # 최신성 점검 (R-FRESH). 로컬 전용
+│   └── subset-font.mjs                # 사이트에서 쓰는 글자만 담은 Pretendard subset 을 DWLG Sans 로 이름 바꿔 생성. 로컬 전용
 ├── .github/
 │   └── workflows/
 │       ├── deploy.yml                 # main push → build + guard → GitHub Pages (R-DEPLOY)
@@ -60,7 +65,7 @@ develop-with-llm-guide/
 ├── .gitignore
 ├── .nvmrc                             # Node version 고정
 ├── tsconfig.json
-├── package.json                       # npm. engines, scripts(build, guard, fresh-check), lockfile 은 package-lock.json
+├── package.json                       # pnpm. packageManager, engines, scripts(build, guard, fresh-check), lockfile 은 pnpm-lock.yaml
 ├── AGENTS.md                          # 공통 agent 지침 (CLAUDE.md / GEMINI.md 는 import 만)
 ├── CLAUDE.md
 └── GEMINI.md
@@ -112,14 +117,15 @@ develop-with-llm-guide/
 
 ### `public/fonts/`
 
-- **역할**: self-host 하는 font file 을 둔다. Pretendard Variable 은 dynamic subset 또는 subset woff2, DM Mono 는 woff2 로 둔다. `font-display: swap` 과 본문 font preload 는 `docs/design/design-system.md` Typography 를 따른다.
+- **역할**: self-host 하는 font file 을 둔다. Pretendard Variable 의 사이트 subset 을 `dwlg-sans/dwlg-sans.woff2` 로 먼저 쓰고, 그 file 에 없는 글자만 Pretendard dynamic subset 에서 받는다. subset 은 수정본이라 SIL OFL 의 Reserved Font Name 규정에 따라 글꼴 이름을 DWLG Sans 로 바꾸고, 원본 license 를 함께 둔다. DM Mono 는 woff2 로 둔다. `font-display: swap` 과 본문 font preload 는 `docs/design/design-system.md` Typography 를 따른다.
+- **갱신**: 글자가 많이 늘면 `pnpm run build && pnpm run subset-font` 후 다시 build 한다. 갱신하지 않아도 새 글자는 dynamic subset 으로 표시된다.
 
 ### `scripts/`
 
 - **역할**: build 외 점검용 Node script 를 둔다.
   - `guard.mjs`: 공개 가드 (spec R-GUARD). `dist/` 의 텍스트 file 과 원본 tree 를 검사한다(범위는 R-GUARD 표). 일반 패턴은 `guard.config.json`, 민감 단어는 로컬 `guard-words.local.txt` 또는 CI secret 에서 읽는다.
   - `fresh-check.mjs`: 최신성 점검 (spec R-FRESH). owner 로컬에서만 실행하며 저장소에 아무것도 쓰지 않는다.
-- **npm script**: `build`, `guard`, `fresh-check`. CI 는 build 와 guard 를 별도 step 으로 실행한다.
+- **script** (`pnpm run <name>`): `build`, `guard`, `fresh-check`. CI 는 build 와 guard 를 별도 step 으로 실행한다.
 
 ### `.github/workflows/`
 
@@ -139,10 +145,10 @@ develop-with-llm-guide/
   - plugin: `starlight-links-validator` (깨진 내부 link·anchor 를 build 시 검사)
   - `redirects`: 삭제·개명한 skill page 의 이전 경로 (spec 03-data Skill 수명주기)
 - **Base path**: MDX 에서 skill 이름 link 는 `SkillLink` 로, 그 밖의 내부 link 는 `/develop-with-llm-guide/` prefix 를 포함한 절대 경로로 쓴다. 상대 경로는 쓰지 않는다.
-- **의존성**: `@astrojs/starlight`, `astro`, `starlight-links-validator`. 추가 의존성은 이 문서에 먼저 적는다.
+- **의존성**: `@astrojs/starlight`, `astro`, `starlight-links-validator`. 개발 의존성 `yaml`(최신성 점검 `fresh-check.mjs` 의 frontmatter 파싱, 로컬 전용). 추가 의존성은 이 문서에 먼저 적는다.
 - **버전 고정**: Starlight 가 0.x 이므로 `package.json` 의 `@astrojs/starlight` 는 exact version 으로 고정한다. 업그레이드는 별도 작업으로 다룬다.
-- **package manager**: npm. `package-lock.json` 을 commit 하고 CI 는 lockfile 기반으로 install 한다.
+- **package manager**: pnpm (2026-10-28 owner 결정으로 npm 에서 전환). 버전은 `package.json` 의 `packageManager` 로 고정하고(corepack 호환, pnpm 11), `pnpm-lock.yaml` 을 commit 한다. CI 는 `pnpm install --frozen-lockfile --ignore-scripts` 로 install 한다. pnpm 은 선언하지 않은 간접 의존성을 import 할 수 없게 하므로, 코드가 직접 쓰는 package 는 모두 `package.json` 에 적는다.
 - **Node 고정**: `.nvmrc` 와 `package.json` 의 engines 로 고정한다 (spec R-DEPLOY).
-- **Mobile-first**: 375px 기준으로 작성하고, 820px(sidebar drawer)·1100px(TOC 표시)에서 확장한다.
+- **Mobile-first**: 375px 기준으로 작성하고, 800px(sidebar 고정)·1152px(TOC 표시)에서 확장한다. 둘 다 Starlight 기본 breakpoint 다.
 - **Spec 반영**: 배포 workflow (R-DEPLOY), 한국어 검색 실측 (R-SEARCH), 공개 가드 (R-GUARD), 최신성 점검 (R-FRESH) 는 `docs/specification/06-requirements.md` 가 기준이다.
 - **Architecture invariants**: layer 간 금지 의존이 `overrides → components` 단방향 하나뿐이다. manifest 를 따로 두지 않는다.

@@ -8,5 +8,5 @@ if ! git diff --quiet HEAD --; then
 	echo "pre-push: commit or stash local changes first so the guard checks what you push" >&2
 	exit 1
 fi
-npm run build
-npm run guard
+pnpm run build
+pnpm run guard

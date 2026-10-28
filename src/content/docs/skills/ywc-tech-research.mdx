@@ -1,0 +1,90 @@
+---
+title: ywc-tech-research
+description: library 비교, 기술 조사, 구현 방식 검토에 씁니다. "어떤 걸 쓸까", "라이브러리 비교해줘" 같은 질문에 근거와 함께 추천안을 냅니다. spec 작성 전 단계입니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: plan
+tools: [claude-code, codex]
+summary: library·구현 방식을 비교 조사해 근거 있는 추천을 냅니다.
+next: [ywc-project-scaffold]
+outputs: ["--output 으로 지정한 조사 보고서"]
+argsNote: 조사 주제는 option 없이 문장으로 적습니다. 주제는 반드시 필요합니다.
+options:
+  - name: --compare
+    format: '"A,B"'
+    when: 비교할 후보를 직접 정할 때 씁니다. 후보는 쉼표로 나열합니다.
+    tools: [claude-code, codex]
+  - name: --depth
+    format: "25|50|75|100"
+    default: 주제에 맞춰 자동 선택. 정하지 못하면 50
+    when: 보고서 분량을 고릅니다. 25 는 요약만 싣습니다. 100 은 출처 발췌까지 모두 싣습니다.
+    tools: [claude-code]
+  - name: --depth
+    format: "25|50|75|100"
+    default: "50"
+    when: 보고서 분량을 고릅니다. 25 는 요약만 싣습니다. 100 은 출처 발췌까지 모두 싣습니다.
+    tools: [codex]
+  - name: --format
+    format: "markdown|html"
+    default: markdown
+    when: 브라우저로 볼 단독 HTML 보고서가 필요하면 html 을 고릅니다.
+    tools: [claude-code, codex]
+    note: HTML 보고서가 생기는 디렉터리는 도구마다 다릅니다. Claude Code 는 claudedocs/, Codex 는 codexdocs/ 입니다.
+  - name: --output
+    format: "<path>"
+    when: 조사 결과를 저장소에 Markdown 으로 남길 때 씁니다. 경로는 조사·계획 문서를 두는 디렉터리 안의 상대 경로여야 합니다.
+    tools: [claude-code, codex]
+    note: Codex 에서 이미 있는 file 을 바꾸려면 --overwrite 도 줍니다.
+  - name: --overwrite
+    format: flag
+    when: --output 으로 지정한 기존 보고서를 새 결과로 바꿀 때 함께 줍니다.
+    tools: [codex]
+    note: --output 과 함께만 씁니다.
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### 정적 사이트 framework 를 고르기 전
+
+guide 사이트를 만들 framework 를 아직 정하지 않았습니다. 후보 두 개를 같은 기준으로 비교하고, 결과를 저장소에 남깁니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-tech-research 한국어 검색이 되는 정적 문서 사이트 --compare "Astro Starlight,VitePress" --output docs/ywc-plans/static-site-framework-research.md
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-tech-research 한국어 검색이 되는 정적 문서 사이트 --compare "Astro Starlight,VitePress" --output docs/ywc-plans/static-site-framework-research.md
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 보고서가 대화에 나오고 `docs/ywc-plans/static-site-framework-research.md` 에 저장됩니다. 보고서에는 후보별 비교표, 추천안, 이 project 에서 주의할 점, 출처가 들어갑니다. 계획 수립은 하지 않습니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 조사를 마치고 구현 계획을 세울 때 → <SkillLink name="ywc-plan" />
+- 사양서를 쓸 때 → <SkillLink name="ywc-spec-writer" />
+- 도입의 사업적 가치를 판단할 때 → <SkillLink name="ywc-product-review" />
+- 이미 내린 결정을 기록할 때 → <SkillLink name="ywc-adr" />
+- 비교 없이 문서 한 곳만 찾아볼 때 → skill 없이 질문
+
+## 관련 흐름
+
+- [10 새 project 시작하기](/develop-with-llm-guide/flows/new-project/)
+
+<VerifiedStamp />

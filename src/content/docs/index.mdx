@@ -1,8 +1,44 @@
 ---
 title: develop-with-llm guide
-description: ywc skill 과 agent 의 사용법을 상황별로 찾아보는 한국어 guidebook 입니다.
+description: ywc skill 과 agent 의 사용법을 상황별 흐름과 skill 별 option 표로 찾아보는 한국어 guidebook 입니다.
+kind: guide
+verifiedAt: "2026-10-28"
+sourceVersion:
+  claude-code: 1.0.0
+  codex: 0.16.164-candidate.4
 ---
+import VerifiedStamp from '../../components/VerifiedStamp.astro';
 
-이 사이트는 ywc skill 과 agent 를 어떤 상황에서, 어떤 option 으로 쓰는지 정리하는 guidebook 입니다.
+ywc skill 과 agent 를 어떤 상황에서, 어떤 option 으로 쓰는지 정리한 guidebook 입니다.
 
-본문은 아직 준비 중입니다.
+## 이 guide 사용법
+
+- **상황에서 출발**: 아래 흐름 목록에서 지금 상황을 고릅니다. 흐름 page 에서 skill 이름을 누르면 그 skill 의 option 표로 갑니다.
+- **skill 이름으로 출발**: [Skill 색인](/develop-with-llm-guide/skills/) 에서 skill 을 고르거나, 위쪽 검색(⌘K / Ctrl+K)에 skill 이름이나 option 이름을 넣습니다.
+- **처음 설치할 때**: [설치](/develop-with-llm-guide/getting-started/install/) 와 [두 도구의 차이](/develop-with-llm-guide/getting-started/tool-differences/) 를 먼저 봅니다.
+
+## 상황별 흐름
+
+- [10 새 project 시작하기](/develop-with-llm-guide/flows/new-project/)
+- [11 기존 repo 진입하기](/develop-with-llm-guide/flows/onboarding-existing-repo/)
+- [12 작은 변경](/develop-with-llm-guide/flows/small-change/)
+- [13 중·대형 기능](/develop-with-llm-guide/flows/large-feature/)
+- [14 목표 하나로 자율 실행](/develop-with-llm-guide/flows/autonomous-goal/)
+- [15 장기·불확실한 initiative](/develop-with-llm-guide/flows/uncertain-initiative/)
+- [16 PR review 대응과 merge](/develop-with-llm-guide/flows/pr-review-merge/)
+- [17 디버깅과 장애 회고](/develop-with-llm-guide/flows/debug-postmortem/)
+- [18 테스트와 완료 검증](/develop-with-llm-guide/flows/testing-verification/)
+- [19 디자인·제품 점검](/develop-with-llm-guide/flows/design-product-review/)
+- [20 인프라·클라우드](/develop-with-llm-guide/flows/infra-cloud/)
+- [21 인증 구현](/develop-with-llm-guide/flows/auth-implementation/)
+- [22 코드 구조 개선](/develop-with-llm-guide/flows/code-structure/)
+- [23 릴리스와 저장소 운영](/develop-with-llm-guide/flows/release-repo-ops/)
+- [24 로컬 환경과 병렬 작업](/develop-with-llm-guide/flows/local-parallel/)
+- [25 세션 운영과 skill 관리](/develop-with-llm-guide/flows/session-skill-management/)
+
+## Skill 과 agent
+
+- [Skill 색인](/develop-with-llm-guide/skills/): 모든 skill 을 이름순으로 보고 분류로 좁힙니다.
+- [Agent 개요](/develop-with-llm-guide/agents/overview/): skill 이 일을 맡기는 agent 의 도구별 구성입니다.
+
+<VerifiedStamp />

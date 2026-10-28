@@ -1,0 +1,62 @@
+---
+title: ywc-handoff
+description: 지금 대화를 새 agent session 이 이어받을 수 있는 인수인계 문서로 압축합니다. "handoff", "인수인계" 요청에 다음 session 의 목적에 맞춰 내용을 정리합니다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: meta
+tools: [claude-code, codex]
+summary: 지금 대화를 새 session 이 이어받을 인수인계 문서로 압축합니다.
+outputs: [인수인계 문서 file]
+userInvoked: { claude-code: true, codex: true }
+argsNote: Codex 에는 option 이 없습니다. 지금 대화와 직접 준 자료로 문서를 만듭니다.
+options:
+  - name: "<focus>"
+    format: 자유 문장
+    default: 열려 있는 작업 전체
+    when: 다음 session 에서 무엇을 할지 적습니다. 모든 내용을 그 목적에 맞춰 정리합니다.
+    tools: [claude-code]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### context 가 가득 차기 전에 넘기기
+
+남은 task 를 새 session 에서 이어서 하려고 합니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-handoff Phase 4 흐름 page 작성
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-handoff
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 현재 상태, 내린 결정, 남은 일, 주의할 점이 담긴 인수인계 문서가 임시 file 로 저장되고, 그 경로를 알려 줍니다. 새 session 에서 이 file 을 읽혀 이어서 작업합니다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- session 을 돌아보고 개선점을 찾을 때 → <SkillLink name="ywc-retro" />
+- project 의 목적을 오래 남길 때 → <SkillLink name="ywc-mission" />
+
+## 관련 흐름
+
+- [25 세션 운영과 skill 관리](/develop-with-llm-guide/flows/session-skill-management/)
+
+<VerifiedStamp />
