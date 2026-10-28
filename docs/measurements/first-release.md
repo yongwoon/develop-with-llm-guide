@@ -7,7 +7,7 @@
 
 ## 요약
 
-**판정: 첫 공개 gate 미충족 (대기 1건).** IME 조합 중 Enter 점검이 남아 있다. Lighthouse Performance 는 글꼴 개선 후 3 page 모두 90 이상(95–98)이다. 나머지 측정 항목은 모두 통과했다.
+**판정: 첫 공개 gate 미충족 (대기 1건).** IME 조합 중 Enter 점검은 macOS Chrome 에서 통과했고, macOS Safari 와 iOS Safari 가 남아 있다. Lighthouse Performance 는 글꼴 개선 후 3 page 모두 90 이상(95–98)이다. 나머지 측정 항목은 모두 통과했다.
 
 | 조건 | 결과 |
 |---|---|
@@ -16,7 +16,7 @@
 | R-SEARCH 적중률 | 통과 (12/12, 보강 1건 후) |
 | R-SEARCH 색인 page 수 | 통과 (86) |
 | R-SEARCH 첫 검색 전송량 | 통과 (약 237 KB, 비압축) |
-| R-SEARCH IME 조합 중 Enter | **owner 수동 점검 — 대기** (3 환경) |
+| R-SEARCH IME 조합 중 Enter | macOS Chrome 통과, **Safari 2 환경 owner 수동 점검 — 대기** |
 | R-SEARCH 검색 상태 표시 | 통과 |
 | R-UX Lighthouse A11y·SEO | 통과 (3 page 모두 100) |
 | R-UX Lighthouse Performance | 통과 (95–98, 글꼴 개선 후) |
@@ -88,7 +88,7 @@ Pagefind JS API(`search()` 결과 순위)로 측정했다. 사이트 검색 UI �
 
 | 환경 | 결과 |
 |---|---|
-| macOS Chrome 최신 | owner 수동 점검 — 대기 |
+| macOS Chrome 최신 | 통과 (owner, 2026-10-29: "병렬" 이 그대로 남고 결과가 나옴) |
 | macOS Safari 최신 | owner 수동 점검 — 대기 |
 | iOS Safari | owner 수동 점검 — 대기 |
 
@@ -101,7 +101,9 @@ Pagefind JS API(`search()` 결과 순위)로 측정했다. 사이트 검색 UI �
 | 항목 | 결과 |
 |---|---|
 | JS 비활성 시 Skill 색인 link | 있음 (`<noscript>` 안의 Skill 색인 link) |
-| 로딩 실패 안내 | 있음. pagefind 요청을 실패시킨 상태에서 검색을 열면 "검색을 불러오지 못했습니다. Skill 색인에서 찾아 주세요." 가 표시됨 |
+| 로딩 실패 안내 | 있음. pagefind 요청을 실패시킨 상태에서 검색을 열면 "검색을 불러오지 못했습니다. 새로고침하거나 Skill 색인에서 찾아 주세요." 가 표시됨 |
+| 검색 도중 index 실패 안내 | 있음 (2026-10-29 추가). 검색을 연 뒤 server 를 멈추고 검색하면, "결과가 없습니다" 와 함께 위 실패 안내가 표시됨. 다시 결과가 나오면 안내는 사라짐. 실제로 결과가 없는 검색어에는 안내가 표시되지 않음 |
+| 검색 UI 문구 | 한국어 (2026-10-29 추가). 예: "병렬 검색 결과 11건", "zzqqxx 검색 결과가 없습니다", "지우기" |
 | index 로딩 중 표시 | 있음 ("검색 index 를 불러오는 중입니다…" 를 표시하고, 불러오면 숨김) |
 
 ## R-UX
@@ -166,7 +168,7 @@ Pagefind JS API(`search()` 결과 순위)로 측정했다. 사이트 검색 UI �
 
 ## 남은 일 (owner)
 
-1. IME 조합 중 Enter 점검 3 환경 (위 방법). 손실이 있으면 기록하고 검색 UI override task 를 만든다
+1. IME 조합 중 Enter 점검: macOS Safari, iOS Safari (위 방법, macOS Chrome 은 통과). 손실이 있으면 기록하고 검색 UI override task 를 만든다
 2. ~~Lighthouse Performance 개선~~ 완료 (95–98)
 3. 위 두 항목 통과 후 `content/initial` → main 병합 승인, deploy run 성공 확인
 4. 배포 URL 에서 Lighthouse 1회 재측정 후 이 문서에 추가
