@@ -6,7 +6,7 @@ import { spawnSync } from 'node:child_process';
 import { cpSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { test } from 'node:test';
+import { after, test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { cellKeys, parseArguments, siteKeys, splitRow } from './fresh-check.mjs';
 
@@ -16,8 +16,12 @@ const FIXTURE = fileURLToPath(new URL('./fixtures/fresh-check/', import.meta.url
 const args = (rows, after = '') =>
 	['## Arguments', '', '| Parameter | Format |', '|---|---|', ...rows, after].join('\n');
 
+const tempDirs = [];
+after(() => tempDirs.forEach((dir) => rmSync(dir, { recursive: true, force: true })));
+
 function withFixture(change) {
 	const dir = mkdtempSync(join(tmpdir(), 'fresh-check-'));
+	tempDirs.push(dir);
 	cpSync(FIXTURE, dir, { recursive: true });
 	change?.(dir);
 	return dir;
@@ -95,10 +99,12 @@ const differences = [
 	['userInvoked', (d) => edit(docs(d, 'skills/ywc-beta.mdx'), 'userInvoked: { claude-code: true }\n', ''), /ywc-beta: claude-code userInvoked: site false \/ develop-with-llm true/],
 	['codex policy', (d) => edit(sourceFile(d, 'codex-skill/skills/ywc-alpha/agents/openai.yaml'), 'true', 'false'), /ywc-alpha: codex userInvoked: site false/],
 	['tools', (d) => edit(docs(d, 'skills/ywc-gamma.mdx'), 'tools: [codex]\nsummary', 'tools: [claude-code, codex]\nsummary'), /ywc-gamma: tools: site \[claude-code, codex\] \/ develop-with-llm \[codex\]/],
-	['missing page', (d) => rmSync(docs(d, 'skills/ywc-beta.mdx')), /ywc-beta: skill page 없음/],
+	['missing page', (d) => rmSync(docs(d, 'skills/ywc-beta.mdx')), /skill page 없음 1개: ywc-beta[\s\S]*그중 skill page 없음 1건/],
 	['page without source', (d) => cpSync(docs(d, 'skills/ywc-beta.mdx'), docs(d, 'skills/ywc-delta.mdx')), /ywc-delta: develop-with-llm 에 없는 skill page/],
 	['stale version', (d) => writeFileSync(sourceFile(d, 'codex-skill/VERSION'), '0.2.0\n'), /stale: skills\/ywc-gamma\.mdx codex 0\.1\.0 \(현재 0\.2\.0\)/],
 	['agent missing', (d) => edit(docs(d, 'agents/workers.mdx'), '| `ywc-worker` | Codex | write-enabled |\n', ''), /agents: codex 누락: ywc-worker/],
+	['agent extra', (d) => edit(docs(d, 'agents/workers.mdx'), '| `ywc-worker` | Codex |', '| `ywc-worker` | Claude Code · Codex |'), /agents: claude-code 초과: ywc-worker/],
+	['claude agent missing', (d) => rmSync(sourceFile(d, 'claude-code/agents/ywc-helper.md')), /agents: claude-code 초과: ywc-helper/],
 	['no agent page', (d) => rmSync(docs(d, 'agents/workers.mdx')), /agents: agent page 없음/],
 	['broken Arguments', (d) => edit(sourceFile(d, 'codex-skill/skills/ywc-gamma/SKILL.md'), '## Arguments', '## Usage'), /ywc-gamma: codex Arguments parse error: no "## Arguments" section/],
 ];
@@ -110,6 +116,34 @@ for (const [name, change, expected] of differences) {
 		assert.match(result.out, expected);
 	});
 }
+
+test('skill arguments narrow the report and the exit code to those skills', () => {
+	const dir = withFixture((d) => {
+		rmSync(docs(d, 'skills/ywc-beta.mdx'));
+		edit(docs(d, 'skills/ywc-gamma.mdx'), 'name: --x,', 'name: --y,');
+	});
+	const clean = spawnSync(process.execPath, [SCRIPT, 'ywc-alpha'], { cwd: join(dir, 'site'), env: { ...process.env, FRESH_CHECK_SOURCE: join(dir, 'source') }, encoding: 'utf8' });
+	assert.equal(clean.status, 0, clean.stdout + clean.stderr);
+	assert.doesNotMatch(clean.stdout, /ywc-beta|ywc-gamma|agents/);
+	const dirty = spawnSync(process.execPath, [SCRIPT, 'ywc-gamma'], { cwd: join(dir, 'site'), env: { ...process.env, FRESH_CHECK_SOURCE: join(dir, 'source') }, encoding: 'utf8' });
+	assert.equal(dirty.status, 1);
+	assert.match(dirty.stdout, /ywc-gamma: codex option 초과: --y/);
+	assert.doesNotMatch(dirty.stdout, /ywc-beta/);
+	const unknown = spawnSync(process.execPath, [SCRIPT, 'ywc-nope'], { cwd: join(dir, 'site'), env: { ...process.env, FRESH_CHECK_SOURCE: join(dir, 'source') }, encoding: 'utf8' });
+	assert.equal(unknown.status, 2);
+	assert.match(unknown.stderr, /unknown skill: ywc-nope/);
+});
+
+test('site alias split keeps slashes inside placeholders', () => {
+	assert.deepEqual(siteKeys('<owner/repo>'), ['positional:<owner/repo>']);
+});
+
+test('YAML errors name the file without echoing its text', () => {
+	const result = run(withFixture((d) => writeFileSync(sourceFile(d, 'codex-skill/skills/ywc-gamma/agents/openai.yaml'), 'policy: [unclosed secret-text\n')));
+	assert.equal(result.code, 2);
+	assert.match(result.err, /cannot parse YAML in .*openai\.yaml/);
+	assert.doesNotMatch(result.err, /secret-text/);
+});
 
 test('excluded helper skill is ignored', () => {
 	const result = run(withFixture());

@@ -3,7 +3,8 @@
 // checkout with this site's frontmatter, per tool and in both directions.
 // Reads only names, option keys, userInvoked flags and VERSION; prints the
 // report to stdout and writes nothing. Exit 0 match / 1 differences / 2 the
-// source cannot be read.
+// source or site cannot be read. Skill names given as arguments narrow the
+// report to those skills (for checking one page while others are unwritten).
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -19,6 +20,8 @@ const SOURCE_TOOLS = {
 	codex: { root: 'tools/codex-skill', agentExt: '.toml' },
 };
 const TOOL_NAMES = Object.keys(SOURCE_TOOLS);
+// Wording that suggests an option only other skills pass. Shown as a note so
+// the owner can decide on excludedOptions; never changes the exit code.
 const DELEGATION_HINT = /caller-only|passed by|\balias\b/i;
 const FLAG = /--[A-Za-z0-9][\w-]*/g;
 const PLACEHOLDER = /<[^<>]+>/g;
@@ -105,8 +108,9 @@ export function parseArguments(markdown) {
 }
 
 // Site option names: aliases are written `--a / --b`, placeholders `<PR#>`.
+// Split on " / " only, so a placeholder such as <owner/repo> stays whole.
 export function siteKeys(name) {
-	return name.split('/').flatMap((part) => {
+	return name.split(/\s+\/\s+/).flatMap((part) => {
 		const flag = part.match(FLAG);
 		if (flag) return flag;
 		return (part.match(PLACEHOLDER) ?? []).map((token) => `positional:${token}`);
@@ -133,6 +137,16 @@ function listDir(path) {
 
 const frontmatterOf = (text) => text.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? '';
 
+// Parse errors name the file but never echo its text: a private file's
+// content must not end up in a pasted log.
+function parseYamlIn(path, text) {
+	try {
+		return parseYaml(text);
+	} catch (error) {
+		throw new SourceError(`cannot parse YAML in ${path} (${error.code ?? error.name})`);
+	}
+}
+
 function readSourceTool(sourceRoot, tool) {
 	const root = join(sourceRoot, SOURCE_TOOLS[tool].root);
 	const version = readSourceFile(join(root, 'VERSION')).trim();
@@ -142,7 +156,7 @@ function readSourceTool(sourceRoot, tool) {
 		if (!entry.isDirectory() || !entry.name.startsWith('ywc-') || EXCLUDED_SKILLS.has(entry.name)) continue;
 		if (!existsSync(skillMd)) continue;
 		const text = readSourceFile(skillMd);
-		skills.set(entry.name, { args: parseArguments(text), userInvoked: isUserInvoked(tool, text, join(root, 'skills', entry.name)) });
+		skills.set(entry.name, { args: parseArguments(text), userInvoked: isUserInvoked(tool, skillMd, text) });
 	}
 	const agents = new Set(
 		listDir(join(root, 'agents'))
@@ -154,11 +168,11 @@ function readSourceTool(sourceRoot, tool) {
 
 // Claude Code: `disable-model-invocation: true` in SKILL.md frontmatter.
 // Codex: `policy.allow_implicit_invocation: false` in agents/openai.yaml.
-function isUserInvoked(tool, skillText, skillDir) {
-	if (tool === 'claude-code') return parseYaml(frontmatterOf(skillText))?.['disable-model-invocation'] === true;
-	const policyFile = join(skillDir, 'agents', 'openai.yaml');
+function isUserInvoked(tool, skillMd, skillText) {
+	if (tool === 'claude-code') return parseYamlIn(skillMd, frontmatterOf(skillText))?.['disable-model-invocation'] === true;
+	const policyFile = join(skillMd, '..', 'agents', 'openai.yaml');
 	if (!existsSync(policyFile)) return false;
-	return parseYaml(readSourceFile(policyFile))?.policy?.allow_implicit_invocation === false;
+	return parseYamlIn(policyFile, readSourceFile(policyFile))?.policy?.allow_implicit_invocation === false;
 }
 
 // ---- Site ----
@@ -167,12 +181,12 @@ function readSitePages(siteRoot) {
 	const docs = join(siteRoot, DOCS_DIR);
 	const pages = [];
 	const walk = (dir) => {
-		for (const entry of readdirSync(dir, { withFileTypes: true })) {
+		for (const entry of listDir(dir)) {
 			const path = join(dir, entry.name);
 			if (entry.isDirectory()) walk(path);
 			else if (/\.mdx?$/.test(entry.name)) {
-				const text = readFileSync(path, 'utf8');
-				pages.push({ path: path.slice(docs.length + 1), name: entry.name.replace(/\.mdx?$/, ''), text, data: parseYaml(frontmatterOf(text)) ?? {} });
+				const text = readSourceFile(path);
+				pages.push({ path: path.slice(docs.length + 1), name: entry.name.replace(/\.mdx?$/, ''), text, data: parseYamlIn(path, frontmatterOf(text)) ?? {} });
 			}
 		}
 	};
@@ -246,52 +260,68 @@ export function check(sourceRoot, siteRoot) {
 	const skillPages = new Map(pages.filter((page) => page.data.kind === 'skill').map((page) => [page.name, page]));
 	const sourceSkills = new Set(TOOL_NAMES.flatMap((tool) => [...source[tool].skills.keys()]));
 
+	// Each item: { skill (or null for agents and non-skill pages), text }.
 	const report = [];
 	const info = [];
-	for (const name of [...new Set([...sourceSkills, ...skillPages.keys()])].sort()) {
+	const missingPages = [];
+	const skills = [...new Set([...sourceSkills, ...skillPages.keys()])].sort();
+	for (const name of skills) {
 		const page = skillPages.get(name);
-		if (!sourceSkills.has(name)) report.push(`${name}: develop-with-llm 에 없는 skill page`);
-		else if (!page) report.push(`${name}: skill page 없음`);
-		else report.push(...compareSkill(name, source, page).map((issue) => `${name}: ${issue}`));
-		if (sourceSkills.has(name)) info.push(...notes(name, source));
+		if (!sourceSkills.has(name)) report.push({ skill: name, text: `${name}: develop-with-llm 에 없는 skill page` });
+		else if (!page) missingPages.push(name);
+		else report.push(...compareSkill(name, source, page).map((issue) => ({ skill: name, text: `${name}: ${issue}` })));
+		if (sourceSkills.has(name)) info.push(...notes(name, source).map((text) => ({ skill: name, text })));
 	}
 
 	const agentPages = pages.filter((page) => page.data.kind === 'agent');
-	if (agentPages.length === 0) report.push('agents: agent page 없음');
+	if (agentPages.length === 0) report.push({ skill: null, text: 'agents: agent page 없음' });
 	else {
 		const site = siteAgents(pages);
 		for (const tool of TOOL_NAMES) {
 			const missing = difference(source[tool].agents, site.get(tool));
 			const extra = difference(site.get(tool), source[tool].agents);
-			if (missing.length > 0) report.push(`agents: ${tool} 누락: ${missing.join(', ')}`);
-			if (extra.length > 0) report.push(`agents: ${tool} 초과: ${extra.join(', ')}`);
+			if (missing.length > 0) report.push({ skill: null, text: `agents: ${tool} 누락: ${missing.join(', ')}` });
+			if (extra.length > 0) report.push({ skill: null, text: `agents: ${tool} 초과: ${extra.join(', ')}` });
 		}
 	}
 
 	for (const page of pages) {
 		for (const [tool, version] of Object.entries(page.data.sourceVersion ?? {})) {
 			const current = source[tool]?.version;
-			if (current && String(version) !== current) report.push(`stale: ${page.path} ${tool} ${version} (현재 ${current})`);
+			if (current && String(version) !== current) {
+				const skill = page.data.kind === 'skill' ? page.name : null;
+				report.push({ skill, text: `stale: ${page.path} ${tool} ${version} (현재 ${current})` });
+			}
 		}
 	}
-	return { report, info };
+	return { report, info, missingPages, skills };
 }
 
 function main() {
 	const sourceRoot = process.env[SOURCE_ENV] || DEFAULT_SOURCE;
+	const only = process.argv.slice(2);
 	try {
-		const { report, info } = check(sourceRoot, process.cwd());
-		if (info.length > 0) process.stdout.write(`참고\n${info.map((line) => `  ${line}`).join('\n')}\n\n`);
-		if (report.length === 0) {
-			process.stdout.write('fresh-check: 차이 없음\n');
-			process.exit(0);
-		}
-		process.stdout.write(`${report.join('\n')}\n\nfresh-check: 차이 ${report.length}건\n`);
-		process.exit(1);
+		const result = check(sourceRoot, process.cwd());
+		const unknown = only.filter((name) => !result.skills.includes(name));
+		if (unknown.length > 0) throw new SourceError(`unknown skill: ${unknown.join(', ')}`);
+		const keep = (item) => only.length === 0 || only.includes(item.skill);
+		const report = result.report.filter(keep).map((item) => item.text);
+		const info = result.info.filter(keep).map((item) => item.text);
+		const missingPages = result.missingPages.filter((name) => only.length === 0 || only.includes(name));
+
+		if (info.length > 0) process.stdout.write(`참고 (exit code 에 영향 없음)\n${info.map((line) => `  ${line}`).join('\n')}\n\n`);
+		if (report.length > 0) process.stdout.write(`${report.join('\n')}\n\n`);
+		if (missingPages.length > 0) process.stdout.write(`skill page 없음 ${missingPages.length}개: ${missingPages.join(', ')}\n\n`);
+		const total = report.length + missingPages.length;
+		process.stdout.write(
+			total === 0 ? 'fresh-check: 차이 없음\n' : `fresh-check: 차이 ${total}건 (그중 skill page 없음 ${missingPages.length}건)\n`,
+		);
+		process.exitCode = total === 0 ? 0 : 1;
 	} catch (error) {
-		const message = error instanceof SourceError ? error.message : `${error.code ?? error.name}: ${error.message}`;
+		// Unexpected errors print only their name: messages may quote file text.
+		const message = error instanceof SourceError ? error.message : `error (${error.code ?? error.name})`;
 		process.stderr.write(`fresh-check: ${message}\n`);
-		process.exit(2);
+		process.exitCode = 2;
 	}
 }
 
