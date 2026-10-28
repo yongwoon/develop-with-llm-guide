@@ -73,6 +73,7 @@
 - `userInvoked` 의 Codex 값은 화면에서 "권고"로 병기한다 (OQ-13).
 - **크기 주의**: page 당 option 표·예시 포함 약 100 LOC 로 task 합계가 llm 기준(~1,000 LOC)을 넘을 수 있다. session 안에서 끝나지 않으면 완료한 page 까지 병합하고 남은 page 를 Implementation Notes 에 기록해 보고한다.
 - **Mobile-first**: layout 은 component 가 소유한다. 이 task 는 375px 에서 page 가로 scroll 0 만 확인한다 (긴 명령은 code block 내부 scroll).
+- **문체·template (owner 결정, 2026-10-28)**: 사이트 문장은 `docs/specification/06-requirements.md` 의 "사이트 문체"(합니다체)를 따른다. 구성·분량·사례 값 수준은 owner 가 확인한 `src/content/docs/skills/ywc-plan.mdx` 를 기준으로 삼는다. "쓰지 말아야 할 때" 항목은 "~할 때 → `ywc-…`" 형식으로 쓴다.
 
 ## Parallel Execution Metadata
 
