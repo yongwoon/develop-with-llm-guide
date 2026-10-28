@@ -7,7 +7,7 @@
 
 ## 요약
 
-**판정: 첫 공개 gate 미충족 (대기 2건).** IME 조합 중 Enter 점검과 Lighthouse Performance 점수 확인이 남아 있다. 나머지 측정 항목은 모두 통과했다.
+**판정: 첫 공개 gate 미충족.** Lighthouse Performance 가 3 page 모두 90 미만(80–83)이고, IME 조합 중 Enter 점검이 남아 있다. 나머지 측정 항목은 모두 통과했다.
 
 | 조건 | 결과 |
 |---|---|
@@ -19,7 +19,7 @@
 | R-SEARCH IME 조합 중 Enter | **owner 수동 점검 — 대기** (3 환경) |
 | R-SEARCH 검색 상태 표시 | 통과 |
 | R-UX Lighthouse A11y·SEO | 통과 (3 page 모두 100) |
-| R-UX Lighthouse Performance | **점수 미측정 — owner 확인 필요** (lab 지표는 아래) |
+| R-UX Lighthouse Performance | **미달** (80–83, 기준 90) |
 | R-UX 375px 가로 scroll | 통과 |
 | R-UX keyboard | 통과 |
 
@@ -110,22 +110,27 @@ Pagefind JS API(`search()` 결과 순위)로 측정했다. 사이트 검색 UI �
 
 | page | Accessibility | Best Practices | SEO | Performance |
 |---|---|---|---|---|
-| 홈 | 100 | 100 | 100 | 점수 미측정 |
-| 흐름 10 (새 project 시작하기) | 100 | 100 | 100 | 점수 미측정 |
-| `ywc-mission` | 100 | 100 | 100 | 점수 미측정 |
+| 홈 | 100 | 100 | 100 | 83 |
+| 흐름 10 (새 project 시작하기) | 100 | 100 | 100 | 82 |
+| `ywc-mission` | 100 | 100 | 100 | 80 |
 
-- 사용한 Lighthouse 도구는 Performance category 를 내지 않는다. 대신 같은 page 를 mobile 조건(CPU 4배 감속, Slow 4G, 빈 cache)으로 trace 했다.
+- A11y·BP·SEO 는 Chrome DevTools (MCP) 의 Lighthouse 로 쟀다. 이 도구는 Performance category 를 내지 않으므로, Performance 는 Lighthouse CLI 12.6.1 (`--form-factor=mobile`, 기본 throttling, headless Chrome) 로 따로 쟀다 (2026-10-29).
 
-| page | LCP | CLS |
-|---|---|---|
-| 홈 | 1,585 ms | 0.00 |
-| 흐름 10 | 1,622 ms | 0.00 |
-| `ywc-mission` | 1,606 ms | 0.00 |
+| page | Performance | FCP | LCP | TBT | CLS |
+|---|---|---|---|---|---|
+| 홈 | 83 | 3.3 s | 3.6 s | 0 ms | 0 |
+| 흐름 10 | 82 | 2.0 s | 4.5 s | 0 ms | 0 |
+| `ywc-mission` | 80 | 3.6 s | 3.9 s | 0 ms | 0 |
 
-- LCP 는 모두 2.5 s 이하, CLS 는 0 이다. 다만 Performance 점수 90 이상이라는 gate 는 점수로 확인하지 못했다.
-- owner 확인 방법: `pnpm run build && pnpm run preview` 후 Chrome DevTools 의 Lighthouse panel 에서 Device 를 Mobile, category 에 Performance 를 넣고 홈, 흐름 10, `ywc-mission` 3 page 를 측정한다. 3 page 모두 90 이상이면 통과다.
-- 90 미만이면 점수와 주요 감점 항목을 이 문서에 기록하고, 개선은 별도 task 로 만든다 (이 task 는 component·설정을 바꾸지 않는다).
-- trace 의 개선 후보: render-blocking 요청(CSS·font) 정리. 이 task 는 component·설정을 바꾸지 않으므로 기록만 한다.
+- 감점은 FCP·LCP 에서 온다. TBT 와 CLS 는 0 이다.
+- 주요 감점 항목:
+  - render-blocking 요청: 홈 약 2,260 ms, `ywc-mission` 약 2,110 ms, 흐름 10 약 450 ms 절감 가능. Pretendard dynamic-subset CSS (약 14 KB) 와 공통 CSS 가 첫 그리기를 막는다.
+  - 글꼴: 한 page 에서 Pretendard subset file 을 12–20 개 (각 20–38 KB) 받고, DM Mono 를 2 개 받는다.
+  - 흐름 10: DOM 1,091 요소.
+  - 사용하지 않는 CSS 약 13 KB.
+- 로컬 preview 는 압축 없이 전송한다. 배포 환경에서는 CSS 가 압축되지만, 글꼴(woff2)은 이미 압축된 형식이라 크게 줄지 않는다.
+- 개선(글꼴 로딩 방식, render-blocking CSS)은 component·설정을 바꾸는 일이라 이 task 범위 밖이다. 별도 task 로 만든다.
+- 이전 trace (CPU 4배 감속, Slow 4G) 의 LCP 는 약 1.6 s 였다. Lighthouse 기본 throttling 은 그보다 느린 조건을 시뮬레이션하므로 값이 다르다.
 
 ### 375px 가로 scroll
 
@@ -147,6 +152,6 @@ Pagefind JS API(`search()` 결과 순위)로 측정했다. 사이트 검색 UI �
 ## 남은 일 (owner)
 
 1. IME 조합 중 Enter 점검 3 환경 (위 방법). 손실이 있으면 기록하고 검색 UI override task 를 만든다
-2. Lighthouse Performance 점수 확인 (3 page, 위 방법). 90 미만이면 기록하고 개선 task 를 만든다
+2. Lighthouse Performance 개선 task 작성과 실행 (현재 80–83). 개선 후 3 page 를 다시 재서 90 이상인지 확인한다
 3. 위 두 항목 통과 후 `content/initial` → main 병합 승인, deploy run 성공 확인
 4. 배포 URL 에서 Lighthouse 1회 재측정 후 이 문서에 추가
