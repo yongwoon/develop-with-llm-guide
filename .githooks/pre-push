@@ -1,0 +1,7 @@
+#!/bin/sh
+# Build, then run the public guard (spec R-GUARD) before every push.
+# Register once per clone: git config core.hooksPath .githooks
+# Never enable shell tracing (set -x) here; it could print sensitive words.
+set -eu
+npm run build
+npm run guard
