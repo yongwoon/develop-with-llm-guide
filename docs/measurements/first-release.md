@@ -7,6 +7,8 @@
 
 ## 요약
 
+**판정: 첫 공개 gate 미충족 (대기 2건).** IME 조합 중 Enter 점검과 Lighthouse Performance 점수 확인이 남아 있다. 나머지 측정 항목은 모두 통과했다.
+
 | 조건 | 결과 |
 |---|---|
 | 86 page 작성 | 통과 |
@@ -26,6 +28,7 @@
 | 항목 | 기대 | 결과 |
 |---|---|---|
 | `src/content/docs` 의 `.mdx` 수 | 86 | 86 |
+| build 가 만든 HTML page 수 | — | 87 (86 page + Starlight 기본 404 page, 404 는 검색 색인 대상 아님) |
 | skill page 수 (`skills/` 의 index 제외) | 63 | 63 |
 | Skill 색인 행 수 | 63 | 63 |
 | `pnpm run build` | 성공 | 성공 |
@@ -79,6 +82,7 @@ Pagefind JS API(`search()` 결과 순위)로 측정했다. 사이트 검색 UI �
 
 - 로컬 preview 는 압축 없이 전송하므로 file 크기를 전송량으로 썼다. 배포 환경에서 압축이 적용되면 더 작아진다.
 - 검색 UI 의 script·style 은 정의(pagefind.js, wasm, pf_meta, 첫 pf_index / pf_fragment)에 들지 않아 합계에서 뺐다.
+- `pagefind-worker.js` 와 `pagefind-entry.json` 은 정의에 없지만 첫 검색에 함께 받으므로 합계에 넣었다. 빼면 201,142 B 다.
 
 ### 한국어 입력 조합 중 Enter (Pagefind #1283)
 
@@ -89,7 +93,7 @@ Pagefind JS API(`search()` 결과 순위)로 측정했다. 사이트 검색 UI �
 | iOS Safari | owner 수동 점검 — 대기 |
 
 - 자동화 도구의 합성 key 입력은 실제 IME 조합을 재현하지 못하므로 통과 근거로 쓰지 않았다.
-- 점검 방법: 검색창에서 한글을 입력하고, 마지막 글자가 조합 중인 상태에서 Enter 를 누른다. 조합 중이던 글자가 검색어에 남아 있으면 통과다.
+- 점검 방법: 검색창에 "병렬" 을 입력하되, "렬" 의 받침까지 친 직후(조합 중, 밑줄이 보이는 상태) Enter 를 누른다. 검색어가 "병렬" 그대로 남고 결과가 나오면 통과, "병" 만 남거나 글자가 사라지면 손실이다. "리뷰 대응" 으로 한 번 더 확인한다.
 - 손실이 있으면 기록하고 검색 UI override 를 별도 task 로 만든다 (이 task 범위 밖).
 
 ### 검색 상태 표시
@@ -118,7 +122,9 @@ Pagefind JS API(`search()` 결과 순위)로 측정했다. 사이트 검색 UI �
 | 흐름 10 | 1,622 ms | 0.00 |
 | `ywc-mission` | 1,606 ms | 0.00 |
 
-- LCP 는 모두 2.5 s 이하, CLS 는 0 이다. 다만 Performance 점수 90 이상이라는 gate 는 점수로 확인하지 못했다. owner 가 Chrome DevTools 의 Lighthouse panel 에서 Performance 를 포함해 측정해 확인한다.
+- LCP 는 모두 2.5 s 이하, CLS 는 0 이다. 다만 Performance 점수 90 이상이라는 gate 는 점수로 확인하지 못했다.
+- owner 확인 방법: `pnpm run build && pnpm run preview` 후 Chrome DevTools 의 Lighthouse panel 에서 Device 를 Mobile, category 에 Performance 를 넣고 홈, 흐름 10, `ywc-mission` 3 page 를 측정한다. 3 page 모두 90 이상이면 통과다.
+- 90 미만이면 점수와 주요 감점 항목을 이 문서에 기록하고, 개선은 별도 task 로 만든다 (이 task 는 component·설정을 바꾸지 않는다).
 - trace 의 개선 후보: render-blocking 요청(CSS·font) 정리. 이 task 는 component·설정을 바꾸지 않으므로 기록만 한다.
 
 ### 375px 가로 scroll
@@ -140,7 +146,7 @@ Pagefind JS API(`search()` 결과 순위)로 측정했다. 사이트 검색 UI �
 
 ## 남은 일 (owner)
 
-1. IME 조합 중 Enter 점검 3 환경 (위 방법)
-2. Lighthouse Performance 점수 확인 (3 page)
+1. IME 조합 중 Enter 점검 3 환경 (위 방법). 손실이 있으면 기록하고 검색 UI override task 를 만든다
+2. Lighthouse Performance 점수 확인 (3 page, 위 방법). 90 미만이면 기록하고 개선 task 를 만든다
 3. 위 두 항목 통과 후 `content/initial` → main 병합 승인, deploy run 성공 확인
 4. 배포 URL 에서 Lighthouse 1회 재측정 후 이 문서에 추가
