@@ -61,7 +61,7 @@
 
 :root,
 :root[data-theme='light'] {
-	--sl-font: 'Pretendard Variable', Pretendard, sans-serif;
+	--sl-font: 'Pretendard Site', 'Pretendard Variable', Pretendard, sans-serif;
 	--sl-font-mono: 'DM Mono', ui-monospace, monospace;
 
 	--sl-color-white: var(--text);
