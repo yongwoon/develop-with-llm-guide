@@ -47,3 +47,4 @@ Covers: F-NAV (본문 skill 이름 link → `#options`), SC005 (1 클릭 option 
 - 관련 흐름 검사: 대상 36 page 모두 link 1개 이상 (최소 1, 최대 2). 누락 0건.
 - 내용 수정 필요 사항: 없음.
 - 확인: `pnpm run build` 성공 (SkillLink·`next`·links-validator), `pnpm run guard` 통과, preview 375px 에서 4 page 표본 scrollWidth = clientWidth, SkillCard 에 "다음 skill" 표시.
+- review 반영 (`next` 손질): 흐름 순서만으로 정하면 어색한 3건을 고쳤다. `ywc-spec-validate` → `ywc-task-generator` (흐름 10 의 loop 다음 단계 대신 검토 통과 후 단계), `ywc-receive-review` → `ywc-finish-branch` (선택·Claude Code 전용인 `ywc-resolve-conflict` 를 건너뜀), `ywc-design-renew` 는 `next` 삭제 (`ywc-product-review` 는 `,` 독립 단계).
