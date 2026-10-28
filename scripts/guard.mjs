@@ -3,6 +3,7 @@
 // contain forbidden strings. Prints only "<path> <rule>" lines on stdout and
 // never echoes the matched text or the sensitive word list.
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
@@ -11,9 +12,8 @@ const LOCAL_WORDS_FILE = 'guard-words.local.txt';
 const WORDS_ENV = 'GUARD_SENSITIVE_WORDS';
 const BINARY_SNIFF_BYTES = 8000;
 const SENSITIVE_WORD_NAME = 'sensitive word';
-// Shown instead of a path that itself contains a sensitive word, so the
-// public CI log never carries the word.
-const WITHHELD_PATH = '(path withheld: contains a sensitive word)';
+const WITHHELD_PREFIX = 'withheld-path-';
+const WITHHELD_HASH_LENGTH = 12;
 const HTML_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
 
 const root = process.cwd();
@@ -88,10 +88,15 @@ function readFile(path) {
 }
 
 // Tags and entities can split or encode a string in built HTML, so HTML is
-// also checked as plain decoded text.
-function htmlTextView(html) {
-	return html
-		.replace(/<[^>]*>/g, '')
+// also checked entity-decoded (attributes included) and with tags removed or
+// replaced by a space (a tag between two words of a phrase).
+function htmlViews(html) {
+	const TAG = /<[^>]*>/g;
+	return [html, html.replace(TAG, ''), html.replace(TAG, ' ')].map(decodeEntities);
+}
+
+function decodeEntities(text) {
+	return text
 		.replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(Number.parseInt(hex, 16)))
 		.replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(Number(dec)))
 		.replace(/&([a-z]+);/gi, (entity, name) => HTML_ENTITIES[name.toLowerCase()] ?? entity)
@@ -108,7 +113,7 @@ function matchesRule(rule, text) {
 function checkFile(path, { generalRules, words, sensitiveWordRule }) {
 	const { isBinary, views } = readFile(path);
 	const isHtml = path.endsWith('.html');
-	const texts = isHtml ? [...views, htmlTextView(views[0])] : views;
+	const texts = isHtml ? [...views, ...htmlViews(views[0])] : views;
 	const hits = isBinary
 		? []
 		: generalRules
@@ -118,8 +123,15 @@ function checkFile(path, { generalRules, words, sensitiveWordRule }) {
 	if (pathHasWord || texts.some((text) => words.some((word) => normalize(text).includes(word)))) {
 		hits.push(sensitiveWordRule);
 	}
-	const shownPath = pathHasWord ? WITHHELD_PATH : path;
+	const shownPath = pathHasWord && isCi ? withheldPath(path) : path;
 	return hits.map((rule) => `${shownPath} ${rule}`);
+}
+
+// In CI (public log) a path containing a sensitive word becomes one token
+// with a short hash, so findings stay distinct without revealing the word.
+// Locally the real path is shown in the owner's own terminal.
+function withheldPath(path) {
+	return `${WITHHELD_PREFIX}${createHash('sha256').update(path).digest('hex').slice(0, WITHHELD_HASH_LENGTH)}`;
 }
 
 function ruleLegend(config) {

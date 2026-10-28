@@ -14,7 +14,7 @@ const REPO_ROOT = join(SCRIPTS_DIR, '..');
 const GUARD = join(SCRIPTS_DIR, 'guard.mjs');
 const VIRTUAL_WORD = 'fixture-secret-word';
 const MATCHED_STRINGS = ['someone@example.com', '/Users/fixture-user', 'develop-with-llm/prompts', VIRTUAL_WORD];
-const WITHHELD = '(path withheld: contains a sensitive word)';
+const WITHHELD_LINE = /^withheld-path-[0-9a-f]{12} 4$/;
 
 function makeRepo(fixture) {
 	const dir = mkdtempSync(join(tmpdir(), 'guard-test-'));
@@ -74,14 +74,44 @@ test('prints a rule legend with the failure summary', () => {
 	});
 });
 
-test('withholds a path that contains a sensitive word', () => {
+test('in CI withholds each path that contains a sensitive word as a distinct token', () => {
+	withRepo('clean', (dir) => {
+		writeFileSync(join(dir, 'src', `${VIRTUAL_WORD}.txt`), 'clean content\n');
+		writeFileSync(join(dir, 'src', `${VIRTUAL_WORD.toUpperCase()}-2.txt`), 'clean content\n');
+		execFileSync('git', ['add', '-A'], { cwd: dir });
+		const { code, stdout, stderr } = runGuard(dir, { GITHUB_ACTIONS: 'true', GUARD_SENSITIVE_WORDS: VIRTUAL_WORD });
+		assert.notEqual(code, 0);
+		const lines = stdout.trim().split('\n');
+		assert.equal(lines.length, 2);
+		for (const line of lines) assert.match(line, WITHHELD_LINE);
+		assert.ok(!(stdout + stderr).toLowerCase().includes(VIRTUAL_WORD));
+	});
+});
+
+test('locally shows the real path that contains a sensitive word', () => {
 	withRepo('clean', (dir) => {
 		writeFileSync(join(dir, 'src', `${VIRTUAL_WORD}.txt`), 'clean content\n');
 		execFileSync('git', ['add', '-A'], { cwd: dir });
-		const { code, stdout, stderr } = runGuard(dir, { GUARD_SENSITIVE_WORDS: VIRTUAL_WORD });
-		assert.notEqual(code, 0);
-		assert.equal(stdout.trim(), `${WITHHELD} 4`);
-		assert.ok(!(stdout + stderr).toLowerCase().includes(VIRTUAL_WORD));
+		const { stdout } = runGuard(dir, { GUARD_SENSITIVE_WORDS: VIRTUAL_WORD });
+		assert.equal(stdout.trim(), `src/${VIRTUAL_WORD}.txt 4`);
+	});
+});
+
+test('detects emails with digit-leading domains and long local parts in HTML', () => {
+	withRepo('clean', (dir) => {
+		writeFileSync(join(dir, 'dist', 'digits.html'), '<p>mail user@163.example</p>\n');
+		writeFileSync(join(dir, 'dist', 'long.html'), `<p>${'a'.repeat(70)}-user@corp.example</p>\n`);
+		const { stdout } = runGuard(dir, { GUARD_SENSITIVE_WORDS: VIRTUAL_WORD });
+		assert.deepEqual(stdout.trim().split('\n'), ['dist/digits.html 2', 'dist/long.html 2']);
+	});
+});
+
+test('decodes entities inside HTML attributes and matches phrases split by tags', () => {
+	withRepo('clean', (dir) => {
+		writeFileSync(join(dir, 'dist', 'attr.html'), '<img alt="&#x66;ixture-secret-word" src="x.png">\n');
+		writeFileSync(join(dir, 'dist', 'phrase.html'), '<p>fixture<br>phrase</p>\n');
+		const { stdout } = runGuard(dir, { GUARD_SENSITIVE_WORDS: `${VIRTUAL_WORD}\nfixture phrase` });
+		assert.deepEqual(stdout.trim().split('\n'), ['dist/attr.html 4', 'dist/phrase.html 4']);
 	});
 });
 
