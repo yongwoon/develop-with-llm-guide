@@ -1,13 +1,13 @@
 ---
 title: ywc-infra-optimize
-description: 운영 중인 인프라의 drift, 비용 절감 후보, 안 쓰는 자원, 신뢰성 보강 지점을 찾습니다. "인프라 최적화", "비용 절감" 요청에 안전한 항목만 하나씩 plan 으로 확인하며 적용합니다.
+description: 운영 중인 인프라의 drift, 비용 절감 후보, 안 쓰는 자원, 신뢰성 보강 지점을 찾습니다. "인프라 최적화", "비용 절감" 요청에 후보 목록을 내고, 위험이 낮은 항목은 Terraform code 를 고칩니다. terraform apply 는 하지 않습니다.
 kind: skill
 verifiedAt: "2026-10-28"
 sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: infra
 tools: [claude-code, codex]
-summary: 운영 중인 인프라의 비용·drift·신뢰성 개선 후보를 찾고 안전한 것만 적용합니다.
-outputs: [개선 후보 목록, 항목별 Terraform 변경 commit]
+summary: 운영 중인 인프라의 비용·drift·신뢰성 개선 후보를 찾아 적용합니다.
+outputs: [개선 후보 목록, 항목별 Terraform 변경 commit (Claude Code)]
 argsNote: Codex 에서는 option 없이 drift, 비용 조정, 안 쓰는 자원, 신뢰성 보강 중 보고 싶은 대상을 문장으로 적습니다.
 options:
   - name: --plan-file
@@ -48,7 +48,7 @@ $ywc-infra-optimize cost-report.json 기준으로 과하게 잡힌 자원의 크
 </TabItem>
 </Tabs>
 
-**결과물**: 크기 조정과 정리 후보가 위험 등급과 함께 나옵니다. 안전한 항목만 하나씩 plan 으로 확인한 뒤 적용하고 commit 을 남깁니다.
+**결과물**: 크기 조정과 정리 후보 목록이 나옵니다. Claude Code 는 위험이 낮은 항목의 Terraform code 를 고치고 항목마다 commit 을 남깁니다. Codex 는 변경 계획까지만 냅니다. 어느 쪽도 terraform apply 는 하지 않습니다.
 
 ## Options
 

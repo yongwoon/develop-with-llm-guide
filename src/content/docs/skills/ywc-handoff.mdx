@@ -7,7 +7,7 @@ sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: meta
 tools: [claude-code, codex]
 summary: 지금 대화를 새 session 이 이어받을 인수인계 문서로 압축합니다.
-outputs: [인수인계 문서]
+outputs: [인수인계 문서 file]
 userInvoked: { claude-code: true, codex: true }
 argsNote: Codex 에는 option 이 없습니다. 지금 대화와 직접 준 자료로 문서를 만듭니다.
 options:
@@ -43,7 +43,7 @@ $ywc-handoff
 </TabItem>
 </Tabs>
 
-**결과물**: 현재 상태, 내린 결정, 남은 일, 주의할 점이 담긴 인수인계 문서가 나옵니다. 새 session 에 그대로 붙여 넣어 이어서 작업합니다.
+**결과물**: 현재 상태, 내린 결정, 남은 일, 주의할 점이 담긴 인수인계 문서가 임시 file 로 저장되고, 그 경로를 알려 줍니다. 새 session 에서 이 file 을 읽혀 이어서 작업합니다.
 
 ## Options
 

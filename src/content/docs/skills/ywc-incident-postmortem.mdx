@@ -1,13 +1,13 @@
 ---
 title: ywc-incident-postmortem
-description: 운영 장애가 끝난 뒤 사후 보고서(postmortem)를 씁니다. "장애 회고", "postmortem" 요청에 timeline, 근본 원인, 영향, 재발 방지 조치를 정리하고, 고객용 요약도 만들 수 있습니다.
+description: 운영 장애가 끝난 뒤 사후 보고서(postmortem)를 씁니다. "장애 회고", "postmortem" 요청에 timeline, 근본 원인, 영향, 재발 방지 조치를 정리합니다. 고객용 요약도 따로 만듭니다.
 kind: skill
 verifiedAt: "2026-10-28"
 sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: docs
 tools: [claude-code, codex]
 summary: 장애의 timeline·원인·영향·재발 방지를 사후 보고서로 정리합니다.
-outputs: ["docs/postmortems/<yyyymmdd>-<slug>.md"]
+outputs: ["docs/postmortems/<yyyymmdd>-<slug>.md", "docs/postmortems/<yyyymmdd>-<slug>-client.md"]
 options:
   - name: --draft
     format: flag
@@ -20,7 +20,7 @@ options:
     tools: [claude-code, codex]
   - name: --client
     format: flag
-    when: 내부 정보를 뺀 고객용 장애 요약을 덧붙입니다.
+    when: 내부 정보를 뺀 고객용 장애 요약 file 을 따로 만듭니다.
     tools: [claude-code, codex]
   - name: --format
     format: "markdown|html"
@@ -30,7 +30,7 @@ options:
     note: HTML 보고서가 생기는 디렉터리는 도구마다 다릅니다. Claude Code 는 claudedocs/, Codex 는 codexdocs/ 입니다.
   - name: --lang
     format: "<code>"
-    default: 문서 언어 설정값
+    default: 문서 언어 설정값. 없으면 물어봄
     when: 보고서 언어를 정합니다.
     tools: [claude-code, codex]
 ---

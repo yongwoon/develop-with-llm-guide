@@ -1,6 +1,6 @@
 ---
 title: ywc-infra-design
-description: AWS, GCP, Azure 에 새 cloud 인프라를 설계합니다. "인프라 설계" 요청에 요구사항을 묻고 서비스를 고른 뒤, docs/infrastructure/ 에 설계 문서 묶음을 만듭니다. Terraform 작성 전 단계입니다.
+description: AWS, GCP, Azure 에 새 cloud 인프라를 설계합니다. "인프라 설계" 요청에 요구사항에 맞는 서비스 구성을 정하고 docs/infrastructure/ 에 설계 문서 묶음을 만듭니다. Terraform 작성 전 단계입니다.
 kind: skill
 verifiedAt: "2026-10-28"
 sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
@@ -35,6 +35,8 @@ import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 ## 사용 case
 
 ### 작은 API 서비스의 GCP 인프라
+
+GCP 에 작은 API 서비스와 PostgreSQL 을 둡니다. Claude Code 는 요구사항을 질문으로 받고, Codex 는 처음에 문장으로 줍니다.
 
 <Tabs syncKey="tool">
 <TabItem label="Claude Code">

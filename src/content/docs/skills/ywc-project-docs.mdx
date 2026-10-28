@@ -12,14 +12,9 @@ argsNote: Claude Code 에서는 만들 문서를 요청 문장으로 적습니�
 options:
   - name: --lang
     format: "ko|ja|en|zh|es"
-    default: 문서 언어 설정값
-    when: 문서 언어를 정합니다.
-    tools: [claude-code]
-  - name: --lang
-    format: "ko|ja|en|zh|es"
     default: 문서 언어 설정값. 없으면 물어봄
     when: 문서 언어를 정합니다. kr 도 ko 로 받습니다.
-    tools: [codex]
+    tools: [claude-code, codex]
   - name: --dry-run
     format: flag
     when: file 을 쓰지 않고 만들 계획만 보여 줍니다.
@@ -53,7 +48,7 @@ $ywc-project-docs GitHub Pages 배포와 공개 가드 실패 시 대처를 담�
 </TabItem>
 </Tabs>
 
-**결과물**: `docs/` 의 알맞은 위치에 운영 guide 가 생깁니다.
+**결과물**: `docs/` 아래에 운영 guide 문서가 생깁니다.
 
 ## Options
 

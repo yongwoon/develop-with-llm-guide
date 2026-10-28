@@ -1,6 +1,6 @@
 ---
 title: ywc-iac-author
-description: 인프라 설계 문서를 Terraform module 로 만듭니다. "Terraform 작성해줘", "IaC 작성" 요청에 module 마다 terraform plan 으로 확인하고, 바뀌는 자원의 영향 요약을 냅니다. apply 는 하지 않습니다.
+description: 인프라 설계 문서를 Terraform module 로 만듭니다. "Terraform 작성해줘", "IaC 작성" 요청에 terraform plan 으로 확인한 module 과 바뀌는 자원의 영향 요약을 냅니다. apply 는 하지 않습니다.
 kind: skill
 verifiedAt: "2026-10-28"
 sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
@@ -36,6 +36,8 @@ import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 ### 설계 문서에서 compute module 만
 
+`docs/infrastructure/` 의 설계에서 staging 환경용 compute module 만 만듭니다. Codex 에는 설계 경로 option 이 없어 문장으로 줍니다.
+
 <Tabs syncKey="tool">
 <TabItem label="Claude Code">
 ```text
@@ -49,7 +51,7 @@ $ywc-iac-author docs/infrastructure 설계의 compute module 을 GCP staging 환
 </TabItem>
 </Tabs>
 
-**결과물**: compute module 의 Terraform code 가 생기고 `terraform plan` 으로 확인한 결과가 나옵니다. 어떤 자원이 생기거나 바뀌는지 영향 요약도 함께 나옵니다.
+**결과물**: compute module 의 Terraform code 가 생기고 `terraform plan` 확인 결과가 나옵니다. plan 을 실행하지 못한 경우에는 실행하지 못했다고 표시합니다. 어떤 자원이 생기거나 바뀌는지 영향 요약도 함께 나옵니다.
 
 ## Options
 

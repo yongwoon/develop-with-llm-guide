@@ -28,7 +28,7 @@ options:
     tools: [codex]
   - name: --enhance
     format: flag
-    when: 지침 file 이 없어도 빈 file 을 만든 뒤 기존 file 을 보강하는 방식으로 진행합니다.
+    when: 기존 지침 file 을 보강하는 방식으로 진행합니다. 지침 file 이 없으면 빈 file 부터 만듭니다.
     tools: [claude-code, codex]
 ---
 import { Tabs, TabItem } from '@astrojs/starlight/components';
