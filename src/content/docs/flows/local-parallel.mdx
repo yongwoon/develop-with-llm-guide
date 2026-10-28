@@ -1,0 +1,128 @@
+---
+title: 로컬 환경과 병렬 작업
+description: Docker Compose 로컬 환경과 git worktree 를 갖춘 뒤 worktree 마다 port 를 나눠 여러 task 를 병렬로 실행하는 병렬 작업 흐름입니다.
+kind: flow
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+titleBlock:
+  number: 24
+  steps: 5
+  required: 2
+  optional: 3
+  outputs: [compose.yaml, worktree 디렉터리, worktree 의 .env, task 별 병합]
+sidebar:
+  order: 24
+  label: 24 로컬 환경과 병렬 작업
+---
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+import Flow from '../../../components/Flow.astro';
+import FlowStep from '../../../components/FlowStep.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+여러 task 를 동시에 진행하려면 task 마다 따로 쓸 작업 공간이 필요합니다. 로컬 환경, worktree, port 분리를 갖춘 뒤 병렬로 실행합니다.
+
+<Aside title="언제 쓰나">
+- 서로 독립인 task 가 여러 개라 병렬로 실행해 시간을 줄이고 싶을 때
+- worktree 마다 Docker stack 을 띄워도 port 가 충돌하지 않게 하고 싶을 때
+</Aside>
+
+## 병렬 작업 흐름
+
+<Flow>
+<FlowStep skill="ywc-docker-compose" desc="로컬 Docker Compose 환경을 만들거나 최신화합니다." optional />
+<FlowStep skill="ywc-worktrees" desc="작업용 git worktree 를 만들고 점검하고 정리합니다." />
+<FlowStep skill="ywc-docker-isolate" desc="worktree 마다 Docker port 를 나눠 stack 충돌을 막습니다." optional />
+<FlowStep skill="ywc-parallel-executor" desc="독립인 task 를 worktree 로 나눠 동시에 실행합니다." />
+<FlowStep skill="ywc-team-assemble" desc="작업을 전문 역할별 agent 팀에 나눠 맡깁니다." optional />
+</Flow>
+
+## 병렬 작업 실행 예시
+
+### 1. ywc-docker-compose
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-docker-compose --mode create --app-name sample-api
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-docker-compose --mode create
+```
+</TabItem>
+</Tabs>
+
+### 2. ywc-worktrees
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-worktrees --mode audit --expect 000004-010,000004-020
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-worktrees --mode audit --expect 000004-010,000004-020
+```
+</TabItem>
+</Tabs>
+
+### 3. ywc-docker-isolate
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-docker-isolate setup --task-name 000004-020-ui-flow-pages-18-25 --worktree-path .worktrees/000004-020-ui-flow-pages-18-25
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-docker-isolate --mode setup --isolation-key 000004-020-ui-flow-pages-18-25 --execution-root .worktrees/000004-020-ui-flow-pages-18-25
+```
+</TabItem>
+</Tabs>
+
+### 4. ywc-parallel-executor
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-parallel-executor 000004-010..000004-030 --aggregate-pr --review
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-parallel-executor 000004-010..000004-030 --aggregate-pr --review
+```
+</TabItem>
+</Tabs>
+
+### 5. ywc-team-assemble
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-team-assemble 검색 기능을 보안, 성능, 문서 담당 agent 팀으로 나눠 병렬로 점검해 줘
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-team-assemble 검색 기능을 보안, 성능, 문서 담당 agent 팀으로 나눠 병렬로 점검해 줘
+```
+</TabItem>
+</Tabs>
+
+## 건너뛸 수 있는 조건
+
+- **1단계 <SkillLink name="ywc-docker-compose" />, 3단계 <SkillLink name="ywc-docker-isolate" />**: project 가 Docker 를 쓰지 않으면 둘 다 건너뜁니다.
+- **5단계 <SkillLink name="ywc-team-assemble" />**: tasks/ 의 task 가 아니라 역할별로 나눌 작업이 있을 때만 씁니다.
+- task 가 서로 의존해 순서대로만 진행할 수 있다면 [13 중·대형 기능](/develop-with-llm-guide/flows/large-feature/) 흐름의 순차 실행을 씁니다.
+
+## 관련 흐름
+
+- [13 중·대형 기능](/develop-with-llm-guide/flows/large-feature/)
+- [20 인프라·클라우드](/develop-with-llm-guide/flows/infra-cloud/)
+
+<VerifiedStamp />

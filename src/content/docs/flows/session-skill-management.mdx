@@ -1,0 +1,157 @@
+---
+title: 세션 운영과 skill 관리
+description: skill 기본값 설정, 세션 인수인계와 회고, 수동 절차 wizard, skill 작성, 리뷰 학습 관리 중 필요한 것을 골라 쓰는 세션 운영 흐름입니다.
+kind: flow
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+titleBlock:
+  number: 25
+  steps: 7
+  required: 0
+  optional: 7
+  outputs: [설정 file, 인수인계 문서, 개선안, docs/review-learnings.md]
+sidebar:
+  order: 25
+  label: 25 세션 운영과 skill 관리
+---
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+import Flow from '../../../components/Flow.astro';
+import FlowStep from '../../../components/FlowStep.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+작업 자체가 아니라 작업 환경을 다듬는 skill 들입니다. 서로 독립이므로 필요할 때 하나씩 씁니다.
+
+<Aside title="언제 쓰나">
+- skill 이 매번 묻는 값을 고정하거나, 세션을 다음 세션에 넘길 때
+- 세션을 회고하거나 skill·리뷰 학습을 정비할 때
+</Aside>
+
+## 세션 운영 흐름
+
+<Flow>
+<FlowStep skill="ywc-setup" desc="ywc skill 이 매번 묻는 기본값을 설정 file 에 저장합니다." optional />
+<FlowStep skill="ywc-handoff" desc="지금 대화를 새 세션이 이어받을 인수인계 문서로 압축합니다." optional />
+<FlowStep skill="ywc-retro" desc="coding 세션을 회고해 작업 환경의 개선안을 냅니다." optional />
+<FlowStep skill="ywc-manual-wizard" tools={['claude-code']} desc="사람이 직접 해야 하는 절차를 대화형 bash wizard 로 만듭니다." optional />
+<FlowStep skill="ywc-skill-author" desc="ywc skill 을 만들거나 정비하고 규칙 준수를 점검합니다." optional />
+<FlowStep skill="ywc-review-learnings" desc="저장소별 리뷰 선호를 쌓고 관리합니다." optional />
+<FlowStep skill="ywc-mine-review-history" desc="과거 PR 의 bot 리뷰에서 반복 결함 유형을 찾아 정리합니다." optional />
+</Flow>
+
+## 세션 운영 실행 예시
+
+### 1. ywc-setup
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-setup --scope project --lang ko --base-branch develop
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-setup --scope project --lang ko --base-branch develop
+```
+</TabItem>
+</Tabs>
+
+### 2. ywc-handoff
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-handoff Phase 4 흐름 page 작성
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-handoff
+```
+</TabItem>
+</Tabs>
+
+### 3. ywc-retro
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-retro
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-retro
+```
+</TabItem>
+</Tabs>
+
+### 4. ywc-manual-wizard
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-manual-wizard Google OAuth client 를 등록하고 client ID 를 .env 에 넣는 절차 --output ./register-oauth-client.sh
+```
+</TabItem>
+<TabItem label="Codex">
+Codex 에는 이 skill 이 없습니다. 절차를 문서로 정리하거나, 같은 요청을 Claude Code 에서 실행합니다.
+</TabItem>
+</Tabs>
+
+### 5. ywc-skill-author
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-skill-author 모든 ywc skill 이 현재 규칙을 지키는지 점검해 줘
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-skill-author --mode audit --skill-root skills/
+```
+</TabItem>
+</Tabs>
+
+### 6. ywc-review-learnings
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-review-learnings tests/fixtures 의 하드코딩 값 지적은 false positive 다. fixture 는 고정값이 맞다
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-review-learnings tests/fixtures 의 하드코딩 값 지적은 false positive 다. fixture 는 고정값이 맞다
+```
+</TabItem>
+</Tabs>
+
+### 7. ywc-mine-review-history
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-mine-review-history --since 2026-05-01 --limit 200 --dry-run
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-mine-review-history --since 2026-05-01 --limit 200 --dry-run
+```
+</TabItem>
+</Tabs>
+
+## 건너뛸 수 있는 조건
+
+- 일곱 단계는 서로 독립인 선택 단계입니다. 필요한 것만 씁니다.
+- **4단계 <SkillLink name="ywc-manual-wizard" />** 는 Claude Code 전용입니다. Codex 에서는 위 대체 방법을 씁니다.
+
+## 관련 흐름
+
+- [16 PR review 대응과 merge](/develop-with-llm-guide/flows/pr-review-merge/)
+- [11 기존 repo 진입하기](/develop-with-llm-guide/flows/onboarding-existing-repo/)
+
+<VerifiedStamp />

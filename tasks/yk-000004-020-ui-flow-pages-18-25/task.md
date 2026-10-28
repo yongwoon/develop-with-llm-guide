@@ -39,3 +39,18 @@ Covers: F-FLOW (흐름 18–25, 63개 skill 흐름 등장, 도구 한정 skill �
 - [ ] lint / typecheck: N/A — spec·tech-stack 이 정의한 script 가 없다
 
 ## Implementation Notes (optional)
+
+- slug: 18 `testing-verification`, 19 `design-product-review`, 20 `infra-cloud`, 21 `auth-implementation`, 22 `code-structure`, 23 `release-repo-ops`, 24 `local-parallel`, 25 `session-skill-management`.
+- 필수/선택 (범례 기본 규칙 + 예외, 각 page "건너뛸 수 있는 조건"에 근거):
+  - 18: 행 전체가 `,` → 5개 모두 선택 → 0/5
+  - 19: 예외 `ywc-design-renew` 선택 (1단계 리뷰에서 디자인 문제가 없을 때), `ywc-product-review` 선택(`,`) → 1/2
+  - 20: 예외 `ywc-infra-optimize` 선택 (운영 전·사용량 data 없음) → 3/1
+  - 21: 1/0
+  - 22: 예외 `ywc-blast-radius` 선택 (Codex 전용, Claude Code 는 대체 안내) → 3/1
+  - 23: `ywc-merge-dependabot`, `ywc-issue-triage` 선택(`,`) → 2/2
+  - 24: 예외 `ywc-docker-compose`, `ywc-docker-isolate` 선택 (Docker 미사용 project), `ywc-team-assemble` 선택(`,`) → 2/3
+  - 25: 행 전체가 `,` → 7개 모두 선택 → 0/7
+- 한쪽 도구 전용 단계: 22 `ywc-blast-radius` (Codex), 23 `ywc-issue-triage`, 25 `ywc-manual-wizard` (Claude Code). 다른 도구 tab 에 대체 방법.
+- 관련 흐름: 16개 page 모두 `<VerifiedStamp />` 앞에 2–4개, `/develop-with-llm-guide/flows/<slug>/` 절대 경로.
+- 등장 검사: 63개 skill 각각을 `src/content/docs/flows/*.mdx` 에서 grep → MISSING 0건. FlowStep 의 `skill`/`alt` prop (따옴표 포함 일치) 기준으로도 0건.
+- 확인: `pnpm run build` 성공, `pnpm run guard` 통과, preview 375px 에서 16 page scrollWidth = clientWidth.

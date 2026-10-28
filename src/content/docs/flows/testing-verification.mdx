@@ -1,0 +1,129 @@
+---
+title: 테스트와 완료 검증
+description: test 우선 구현, 수동 테스트시트, E2E test, 화면 검증 계약, 완료 확인 중 필요한 것을 골라 쓰는 테스트와 완료 검증 흐름입니다.
+kind: flow
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+titleBlock:
+  number: 18
+  steps: 5
+  required: 0
+  optional: 5
+  outputs: [test 와 구현 code, docs/test-case/, e2e/, 검증 계약 file]
+sidebar:
+  order: 18
+  label: 18 테스트와 완료 검증
+---
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+import Flow from '../../../components/Flow.astro';
+import FlowStep from '../../../components/FlowStep.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+테스트와 검증에 쓰는 skill 은 서로 독립입니다. 지금 필요한 확인 방법을 하나 이상 골라 씁니다.
+
+<Aside title="언제 쓰나">
+- 구현을 test 로 뒷받침하거나 QA 용 수동 테스트시트가 필요할 때
+- "끝났다"고 말하기 전에 실제 명령 결과로 확인하고 싶을 때
+</Aside>
+
+## 테스트와 검증 흐름
+
+<Flow>
+<FlowStep skill="ywc-tdd-ritual" desc="실패하는 test 를 먼저 쓰고 그 test 를 통과시키도록 구현합니다." optional />
+<FlowStep skill="ywc-gen-testcase" desc="PR·task·변경 범위에서 개발자와 QA 가 쓸 수동 테스트시트를 만듭니다." optional />
+<FlowStep skill="ywc-e2e-test-strategy" desc="Playwright E2E test 를 설정하고 핵심 흐름 test 를 만듭니다." optional />
+<FlowStep skill="ywc-verification-map" desc="주 사용자 화면을 확인하는 방법을 검증 계약으로 남기고 감사합니다." optional />
+<FlowStep skill="ywc-verify-done" desc="완료를 주장하기 전에 명령 실행 결과로 확인합니다." optional />
+</Flow>
+
+## 테스트와 검증 실행 예시
+
+### 1. ywc-tdd-ritual
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-tdd-ritual Skill 색인에서 분류를 바꾸면 skill 개수 표시가 갱신되지 않는다
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-tdd-ritual Skill 색인에서 분류를 바꾸면 skill 개수 표시가 갱신되지 않는다
+```
+</TabItem>
+</Tabs>
+
+### 2. ywc-gen-testcase
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-gen-testcase <PR#> --lang ko
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-gen-testcase <PR#> --lang ko
+```
+</TabItem>
+</Tabs>
+
+### 3. ywc-e2e-test-strategy
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-e2e-test-strategy --init --ci
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-e2e-test-strategy --init --ci
+```
+</TabItem>
+</Tabs>
+
+### 4. ywc-verification-map
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-verification-map --init
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-verification-map --init
+```
+</TabItem>
+</Tabs>
+
+### 5. ywc-verify-done
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-verify-done
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-verify-done
+```
+</TabItem>
+</Tabs>
+
+## 건너뛸 수 있는 조건
+
+- 다섯 단계는 서로 독립인 선택 단계입니다. 변경에 맞는 것만 씁니다.
+- 동작을 바꾸는 code 변경이라면 <SkillLink name="ywc-tdd-ritual" /> 과 <SkillLink name="ywc-verify-done" /> 은 건너뛰지 않는 편이 좋습니다.
+- E2E 환경과 검증 계약은 한 번 만들어 두면 다음부터는 `--audit` 이나 `--flow` 로 갱신만 합니다.
+
+## 관련 흐름
+
+- [12 작은 변경](/develop-with-llm-guide/flows/small-change/)
+- [13 중·대형 기능](/develop-with-llm-guide/flows/large-feature/)
+- [17 디버깅과 장애 회고](/develop-with-llm-guide/flows/debug-postmortem/)
+
+<VerifiedStamp />

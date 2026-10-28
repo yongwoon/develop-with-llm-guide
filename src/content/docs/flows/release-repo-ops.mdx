@@ -1,0 +1,109 @@
+---
+title: 릴리스와 저장소 운영
+description: release PR 의 PR 목록과 CHANGELOG·release note 를 만들고, Dependabot PR 병합과 issue 분류로 저장소를 운영하는 릴리스 흐름입니다.
+kind: flow
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+titleBlock:
+  number: 23
+  steps: 4
+  required: 2
+  optional: 2
+  outputs: [release PR 의 PR LIST 절, CHANGELOG.md, release note]
+sidebar:
+  order: 23
+  label: 23 릴리스와 저장소 운영
+---
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+import Flow from '../../../components/Flow.astro';
+import FlowStep from '../../../components/FlowStep.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+릴리스 때는 release PR 설명과 변경 기록을 정리합니다. 의존성 PR 과 issue 정리는 릴리스와 따로 필요할 때 씁니다.
+
+<Aside title="언제 쓰나">
+- develop 에서 main 으로 가는 release PR 을 준비할 때
+- 쌓인 Dependabot PR 이나 정리되지 않은 issue 를 한 번에 처리할 때
+</Aside>
+
+## 릴리스 흐름
+
+<Flow>
+<FlowStep skill="ywc-release-pr-list" desc="release PR 에 병합된 PR 목록을 작성자별로 정리합니다." />
+<FlowStep skill="ywc-changelog-release-notes" desc="git 이력과 PR 로 CHANGELOG 항목과 release note 를 씁니다." />
+<FlowStep skill="ywc-merge-dependabot" desc="쌓인 Dependabot PR 을 종류별로 묶어 일괄 병합합니다." optional />
+<FlowStep skill="ywc-issue-triage" tools={['claude-code']} desc="GitHub issue·PR 의 분류와 상태 label 을 정리합니다." optional />
+</Flow>
+
+## 릴리스 실행 예시
+
+### 1. ywc-release-pr-list
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-release-pr-list <PR#>
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-release-pr-list <PR#>
+```
+</TabItem>
+</Tabs>
+
+### 2. ywc-changelog-release-notes
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-changelog-release-notes --both --from v1.2.0 --version 1.3.0
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-changelog-release-notes --both --from v1.2.0 --version 1.3.0
+```
+</TabItem>
+</Tabs>
+
+### 3. ywc-merge-dependabot
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-merge-dependabot security
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-merge-dependabot security
+```
+</TabItem>
+</Tabs>
+
+### 4. ywc-issue-triage
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-issue-triage --dry-run
+```
+</TabItem>
+<TabItem label="Codex">
+Codex 에는 이 skill 이 없습니다. gh CLI 로 issue 목록을 보며 label 을 직접 정리합니다.
+</TabItem>
+</Tabs>
+
+## 건너뛸 수 있는 조건
+
+- **3단계 <SkillLink name="ywc-merge-dependabot" />**: 처리할 Dependabot PR 이 없으면 건너뜁니다.
+- **4단계 <SkillLink name="ywc-issue-triage" />**: 정리할 issue 가 없으면 건너뜁니다. Claude Code 전용이며 Codex 에서는 위 대체 방법을 씁니다.
+
+## 관련 흐름
+
+- [16 PR review 대응과 merge](/develop-with-llm-guide/flows/pr-review-merge/)
+- [25 세션 운영과 skill 관리](/develop-with-llm-guide/flows/session-skill-management/)
+
+<VerifiedStamp />
