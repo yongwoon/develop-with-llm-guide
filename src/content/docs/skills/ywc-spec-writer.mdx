@@ -1,52 +1,52 @@
 ---
 title: ywc-spec-writer
-description: docs/specification/ 의 project 사양서(spec)를 새로 쓰거나 갱신하는 skill. task 범위·commit·PR 의 변경을 사양서에 반영하는 "사양서 업데이트"에도 쓴다.
+description: docs/specification/ 의 project 사양서(spec)를 새로 쓰거나 갱신합니다. task 범위, commit, PR 의 변경을 사양서에 반영하는 "사양서 업데이트"에도 씁니다.
 kind: skill
 verifiedAt: "2026-10-28"
 sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
 category: plan
 tools: [claude-code, codex]
-summary: project 사양서를 새로 쓰거나 변경 이력에 맞춰 갱신한다
+summary: project 사양서를 새로 쓰거나 변경 이력에 맞춰 갱신합니다.
 outputs: [docs/specification/]
 options:
   - name: --full
     format: flag
-    when: 사양서가 없는 project 에서 전체를 처음부터 쓸 때 쓴다. 시작 전에 확인을 받는다.
+    when: 사양서가 없는 project 에서 전체를 처음부터 쓸 때 씁니다. 시작 전에 확인을 받습니다.
     tools: [claude-code, codex]
   - name: --update
     format: flag
-    when: 이미 있는 사양서의 모든 섹션을 현재 code 기준으로 다시 만들 때 쓴다.
+    when: 기존 사양서의 모든 섹션을 현재 code 기준으로 다시 만들 때 씁니다.
     tools: [claude-code, codex]
   - name: --from-task
     format: "<path>"
-    when: 끝낸 task 하나의 내용을 사양서에 반영한다. task 디렉터리 경로를 준다.
+    when: 끝낸 task 하나의 내용을 사양서에 반영합니다. task 디렉터리 경로를 줍니다.
     tools: [claude-code, codex]
   - name: --from-tasks
     format: "<id-or-pattern> [<id-or-pattern> ...]"
-    when: 여러 task 를 한 번에 반영한다. ID 앞부분, START..END 범위, glob, 여러 값을 쓸 수 있다.
+    when: 여러 task 를 한 번에 반영합니다. ID 앞부분, START..END 범위, glob, 여러 값을 쓸 수 있습니다.
     tools: [claude-code, codex]
   - name: --from-commit
     format: "<ref>"
-    when: commit 하나의 diff 를 기준으로 사양서를 고친다.
+    when: commit 하나의 diff 를 기준으로 사양서를 고칩니다.
     tools: [claude-code, codex]
   - name: --from-pr
     format: "<num>"
-    when: PR 하나의 diff 를 기준으로 사양서를 고친다.
+    when: PR 하나의 diff 를 기준으로 사양서를 고칩니다.
     tools: [claude-code, codex]
-    note: gh CLI 인증이 필요하다.
+    note: gh CLI 인증이 필요합니다.
   - name: --from-prs
     format: "<num> [<num> ...]"
-    when: 여러 PR 의 변경을 합쳐서 반영한다.
+    when: 여러 PR 의 변경을 합쳐서 반영합니다.
     tools: [claude-code, codex]
-    note: gh CLI 인증이 필요하다.
+    note: gh CLI 인증이 필요합니다.
   - name: --setup-hook
     format: flag
-    when: 사양서 갱신이 필요한 변경을 추적하는 git hook 을 설치한다.
+    when: 사양서 갱신이 필요한 변경을 추적하는 git hook 을 설치합니다.
     tools: [claude-code, codex]
   - name: --lang
     format: "ko|ja|en|zh|es"
     default: 문서 언어 설정값
-    when: 사양서를 쓸 언어를 이번만 바꿀 때 쓴다.
+    when: 사양서를 쓸 언어를 이번만 바꿀 때 씁니다.
     tools: [claude-code, codex]
 ---
 import { Tabs, TabItem } from '@astrojs/starlight/components';
@@ -60,7 +60,7 @@ import VerifiedStamp from '../../../components/VerifiedStamp.astro';
 
 ### 끝낸 task 범위를 사양서에 반영
 
-Phase 3 의 task 들을 병합한 뒤, 그 사이에 바뀐 동작을 사양서에 반영한다.
+Phase 3 의 task 들을 병합했습니다. 그 사이에 바뀐 동작을 사양서에 반영합니다.
 
 <Tabs syncKey="tool">
 <TabItem label="Claude Code">
@@ -75,7 +75,7 @@ $ywc-spec-writer --from-tasks 000003-010..000003-050
 </TabItem>
 </Tabs>
 
-**결과물**: 해당 task 들이 바꾼 부분만 `docs/specification/` 의 관련 섹션에 반영된다.
+**결과물**: 해당 task 들이 바꾼 부분만 반영됩니다. 대상은 `docs/specification/` 의 관련 섹션입니다.
 
 ### 병합한 PR 기준으로 갱신
 
@@ -92,7 +92,7 @@ $ywc-spec-writer --from-prs 12 15
 </TabItem>
 </Tabs>
 
-**결과물**: 두 PR 의 변경을 합쳐 `docs/specification/` 이 갱신된다.
+**결과물**: 두 PR 의 변경을 합쳐 `docs/specification/` 을 갱신합니다.
 
 ## Options
 
@@ -100,9 +100,9 @@ $ywc-spec-writer --from-prs 12 15
 
 ## 쓰지 말아야 할 때
 
-- 써 둔 spec 의 품질을 점검하고 싶다 → `ywc-spec-validate`
-- 완성된 spec 을 task 로 나누고 싶다 → `ywc-task-generator`
-- 사양서 없이 이번 변경의 계획만 필요하다 → `ywc-plan`
-- README 같은 일반 문서를 정리하고 싶다 → `ywc-project-docs`
+- 써 둔 spec 의 품질을 점검할 때 → `ywc-spec-validate`
+- 완성된 spec 을 task 로 나눌 때 → `ywc-task-generator`
+- 사양서 없이 이번 변경의 계획만 필요할 때 → `ywc-plan`
+- README 같은 일반 문서를 정리할 때 → `ywc-project-docs`
 
 <VerifiedStamp />

@@ -18,6 +18,8 @@ if (data.kind !== 'skill') {
 	throw new Error(`OptionTable: ${entry.id} is kind "${data.kind}", not a skill page`);
 }
 const options: SkillOption[] = data.options;
+// Long value lists such as `a|b|c|d` may only wrap after a `|`.
+const formatParts = (format: string) => format.split('|');
 ---
 
 <div class="option-table not-content">
@@ -44,7 +46,18 @@ const options: SkillOption[] = data.options;
 								<code>{option.name}</code>
 							</th>
 							<td data-label={COLUMNS.format}>
-								<code>{option.format}</code>
+								<code>
+									{formatParts(option.format).map((part, index) => (
+										<>
+											{index > 0 && (
+												<>
+													|<wbr />
+												</>
+											)}
+											{part}
+										</>
+									))}
+								</code>
 							</td>
 							<td data-label={COLUMNS.default}>{option.default ?? EMPTY}</td>
 							<td data-label={COLUMNS.when}>
@@ -147,8 +160,22 @@ const options: SkillOption[] = data.options;
 		color: var(--text-2);
 	}
 
-	/* Wide: a real table. */
+	/* Wide: a real table. Option names, formats and headers never break
+	 * inside a word; a table wider than the column scrolls on its own. */
 	@media (min-width: 50rem) {
+		.option-table {
+			overflow-x: auto;
+		}
+
+		.option-name code,
+		thead th {
+			white-space: nowrap;
+		}
+
+		td code {
+			overflow-wrap: normal;
+		}
+
 		table {
 			display: table;
 			font-size: var(--sl-text-sm);

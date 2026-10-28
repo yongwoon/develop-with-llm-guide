@@ -1,0 +1,92 @@
+---
+// Starlight's sidebar plus a desktop collapse toggle. The state lives on
+// <html data-sidebar="collapsed"> and in localStorage; the inline head script
+// in astro.config.mjs restores it before first paint. Narrow screens keep the
+// drawer, so the toggle and the collapsed rail apply from 50rem up.
+import Default from '@astrojs/starlight/components/Sidebar.astro';
+---
+
+<button type="button" class="sidebar-toggle" aria-controls="sidebar-body" aria-expanded="true" title="왼쪽 메뉴 접기">
+	<svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18">
+		<path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+	</svg>
+	<span class="sr-only" data-sidebar-label>왼쪽 메뉴 접기</span>
+</button>
+<div id="sidebar-body" class="sidebar-body">
+	<Default />
+</div>
+
+<script>
+	const STORAGE_KEY = 'dwlg:sidebar';
+	const root = document.documentElement;
+	const button = document.querySelector<HTMLButtonElement>('.sidebar-toggle');
+	const label = button?.querySelector('[data-sidebar-label]');
+
+	const isCollapsed = () => root.dataset.sidebar === 'collapsed';
+	const sync = () => {
+		const text = isCollapsed() ? '왼쪽 메뉴 펴기' : '왼쪽 메뉴 접기';
+		button?.setAttribute('aria-expanded', String(!isCollapsed()));
+		button?.setAttribute('title', text);
+		if (label) label.textContent = text;
+	};
+
+	button?.addEventListener('click', () => {
+		const collapse = !isCollapsed();
+		if (collapse) root.dataset.sidebar = 'collapsed';
+		else delete root.dataset.sidebar;
+		try {
+			localStorage.setItem(STORAGE_KEY, collapse ? 'collapsed' : 'expanded');
+		} catch {
+			// Storage can be blocked; the toggle still works for this page.
+		}
+		sync();
+	});
+	sync();
+</script>
+
+<style>
+	/* The wrapper must not change Starlight's flex gap between the nav list
+	 * and the mobile menu footer. */
+	.sidebar-body {
+		display: contents;
+	}
+
+	.sidebar-toggle {
+		display: none;
+	}
+
+	@media (min-width: 50rem) {
+		.sidebar-toggle {
+			display: grid;
+			place-items: center;
+			align-self: flex-end;
+			width: 2rem;
+			height: 2rem;
+			margin-bottom: -0.5rem;
+			padding: 0;
+			border: 1px solid var(--rule-color);
+			border-radius: var(--radius-sm);
+			background-color: var(--bg);
+			color: var(--muted);
+			cursor: pointer;
+		}
+
+		.sidebar-toggle:hover {
+			color: var(--accent);
+			border-color: var(--accent);
+		}
+
+		:global(:root[data-sidebar='collapsed']) .sidebar-toggle {
+			align-self: center;
+			margin-bottom: 0;
+		}
+
+		:global(:root[data-sidebar='collapsed']) .sidebar-toggle svg {
+			transform: scaleX(-1);
+		}
+
+		:global(:root[data-sidebar='collapsed']) .sidebar-body {
+			display: none;
+		}
+	}
+</style>

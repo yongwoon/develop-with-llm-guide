@@ -24,8 +24,10 @@ develop-with-llm-guide/
 │   ├── content.config.ts              # docsLoader + docsSchema. frontmatter 확장 (아래 "frontmatter 확장 필드")
 │   ├── components/
 │   │   ├── overrides/                 # Starlight 기본 component 교체 (astro.config 의 components 옵션에 등록)
+│   │   │   ├── PageSidebar.astro      # 기본 TOC 열 + 폭 조절 handle (drag·←/→, localStorage)
 │   │   │   ├── PageTitle.astro        # h1 + TitleBlock(표제란) 렌더링
-│   │   │   └── Search.astro           # 기본 Search + JS 비활성 시 Skill 색인 link, 로딩·실패 안내
+│   │   │   ├── Search.astro           # 기본 Search + JS 비활성 시 Skill 색인 link, 로딩·실패 안내
+│   │   │   └── Sidebar.astro          # 기본 Sidebar + 데스크톱 접기 button (localStorage)
 │   │   ├── Flow.astro                 # 흐름 컨테이너: 연결선
 │   │   ├── FlowStep.astro             # 단계: 번호 원 + 카드, optional → 점선, 단계 종류 step/loop/alt
 │   │   ├── SkillCard.astro            # skill 요약 카드 (분류 tag·도구·산출물·다음 skill, crop mark)

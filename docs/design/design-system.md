@@ -56,7 +56,11 @@
 ## Shape & spacing
 
 - radius 는 card 10px, 작은 요소 6px 이다.
-- 본문 최대 폭은 740px, sidebar 는 270px 이다. TOC 폭은 Starlight 가 sidebar 폭(`--sl-sidebar-width`)을 함께 쓰므로 270px 다.
+- sidebar 는 270px 이다. 본문 열은 sidebar 와 TOC 사이의 공간을 모두 쓴다. 문단·목록·인용은 읽기 폭 740px(`--prose-width`)로 제한하고, 표와 코드 블록은 본문 열 전체를 쓴다 (2026-10-28 owner 요청: option 표가 좁아 줄바꿈되는 문제).
+- 사용자가 조절하는 layout (2026-10-28 owner 요청). 설정은 localStorage 에 저장하고, 첫 렌더 전에 head 의 inline script 가 복원한다.
+  - TOC 폭: 기본 270px, 192–448px. 1152px 이상에서 TOC 왼쪽 경계를 drag 하거나, 경계에 focus 한 뒤 ←/→ 로 16px 씩 바꾼다. double-click 하면 기본값으로 돌아간다. Starlight 는 TOC 폭에 `--sl-sidebar-width` 를 쓰므로 TOC 열 안에서만 `--toc-width` 로 다시 정의한다.
+  - sidebar 접기: 800px 이상에서 sidebar 위쪽 button 으로 접고 편다. 접으면 56px 띠만 남는다. 800px 미만은 drawer 를 그대로 쓴다.
+- option 표 (800px 이상): option 이름·형식·머리글은 단어 중간에서 줄을 바꾸지 않는다. 값 목록(`a|b|c`)은 `|` 뒤에서만 줄을 바꾼다. 표가 본문 열보다 넓으면 표 안에서 가로 scroll 한다.
 - breakpoint 는 Starlight 기본값을 쓴다 (2026-10-28 owner 결정: drawer 전환은 Starlight 의 JS 가 800px 로 판정하므로 820px 로 맞추려면 override 가 필요하다).
   - 1152px(72rem) 이상: TOC 를 표시한다. 1152px 미만: TOC 를 숨긴다.
   - 800px(50rem) 미만: sidebar 를 drawer 로 바꾼다.
