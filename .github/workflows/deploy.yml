@@ -1,0 +1,53 @@
+# Build, run the public guard, then deploy to GitHub Pages (spec R-DEPLOY).
+# A guard failure leaves no artifact, so the previous deployment stays live.
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Only the deploy job gets Pages and OIDC tokens; build runs project code.
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        # Keep the token out of .git/config so later steps cannot reuse it.
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      # Lifecycle scripts stay disabled: dependencies never run code at install.
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      # The secret is exposed to this step only, never to install or build.
+      - run: npm run guard
+        env:
+          GUARD_SENSITIVE_WORDS: ${{ secrets.GUARD_SENSITIVE_WORDS }}
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    # The github-pages environment only allows main (repository setting).
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
