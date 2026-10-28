@@ -13,7 +13,8 @@ export default defineConfig({
 			plugins: [starlightLinksValidator()],
 			customCss: ['./src/styles/theme.css'],
 			// Pretendard ships as unicode-range subsets; the browser fetches only
-			// the subsets a page uses. Subset 91 holds Latin and common Hangul.
+			// the subsets a page uses. Subset 91 holds Latin and a few Hangul
+			// syllables, so the preload helps UI text; other Hangul loads on demand.
 			head: [
 				{
 					tag: 'link',

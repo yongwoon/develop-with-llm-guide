@@ -45,6 +45,7 @@
 | `--marker` | `#fff4a8` | `rgba(255,244,168,.28)` | 형광펜 강조, inline code |
 | `--shadow` | `#13294b` | `#000814` | 코드·tab 의 3px offset 그림자 |
 
+- 구현 보조 token `--rule-color`(구분선), `--radius`, `--radius-sm` 은 `src/styles/theme.css` 안에서만 쓰는 값이며 위 표의 공개 token 이 아니다.
 - **Contrast**
   - light `--accent` on `--bg` 는 4.6 으로 AA 를 통과한다.
   - 초안의 `#6b7f9e`(3.62)는 AA 미달이어서 `--muted` 를 `#56698a` 로 교체했다.

@@ -2,7 +2,8 @@
  * "도면 (Blueprint)" C+ theme (docs/design/design-system.md).
  * Design tokens first, then the --sl-* mapping Starlight reads, then the
  * restyling of Starlight's own elements. Unlayered rules win over Starlight's
- * cascade layers, so no !important is needed. Mobile-first: base rules are
+ * cascade layers, so !important is used only in the reduced-motion block,
+ * which must beat every inline transition. Mobile-first: base rules are
  * for narrow screens; Starlight's own breakpoints (50rem / 72rem) are kept.
  */
 
@@ -67,6 +68,7 @@
 	--sl-color-gray-1: var(--text);
 	--sl-color-gray-2: var(--text-2);
 	--sl-color-gray-3: var(--muted);
+	--sl-color-gray-4: var(--muted);
 	--sl-color-gray-5: var(--rule-color);
 	--sl-color-gray-6: var(--card-bg);
 	--sl-color-black: var(--bg);

@@ -34,7 +34,7 @@
   - [x] tab 에도 같은 그림자
 
 ## Acceptance Coverage
-Covers: F-THEME (light/dark, OS 기본, 수동 전환, copy 버튼), R-UX (대비, 반응형 375/820/1100, focus, reduced motion), F-NAV (TOC 1100px 이상)
+Covers: F-THEME (light/dark, OS 기본, 수동 전환, copy 버튼), R-UX (대비, 반응형 375/800/1152, focus, reduced motion), F-NAV (TOC 1152px 이상)
 
 <!-- Write portable commands: see references/execution-convention.md#task-verify-portability -->
 ## Task Verify
@@ -54,3 +54,4 @@ Covers: F-THEME (light/dark, OS 기본, 수동 전환, copy 버튼), R-UX (대�
 - TOC 폭: Starlight 는 오른쪽 sidebar 에도 `--sl-sidebar-width` 를 쓰므로 TOC 는 sidebar 와 같은 270px 이다 (design-system 에 반영).
 - sidebar 흐름 번호 mono: 번호는 flow page 의 `sidebar.label` 텍스트에 들어가므로 CSS 만으로는 번호만 고를 수 없다. flow page task 에서 label 형식을 정할 때 다룬다.
 - 확인 (preview + Chrome DevTools): dark 1280px, light 375px. 375px 가로 scroll 0, Pretendard 로드, h1 40 / h2 24 / h3 20px, §n counter, 점선 Aside, code block navy + copy 버튼 + 3px 그림자. 새로 생긴 색 조합의 대비: dark inline code 6.07, light accent 4.6, muted 4.94/5.46, code 글자 12.7/16.0, github-dark token 최저 4.72 (모두 AA 이상). 확인용 임시 내용은 홈에서 제거했다.
+- review 반영 후 추가 확인 (preview + Chrome DevTools, 홈에 임시 h2·code block 을 넣었다가 제거): OS dark 로 첫 방문 시 dark, ThemeSelect 로 light 전환 후 새로고침해도 light 유지. TOC 는 1151px 에서 숨김, 1152px 에서 표시. 799px 에서 메뉴 버튼 Enter 로 drawer 열림, Escape 로 닫히고 focus 가 메뉴 버튼으로 돌아오며 2px accent outline 표시. `prefers-reduced-motion: reduce` 에서 sidebar link transition 0s. copy 버튼은 `<button>`(tabIndex 0, "클립보드로 복사")로 keyboard focus 가능. DM Mono 로드 확인. build 결과 HTML 에 subset 91 preload 태그 존재.
