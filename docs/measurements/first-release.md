@@ -7,7 +7,7 @@
 
 ## 요약
 
-**판정: 첫 공개 gate 미충족 (대기 1건).** IME 조합 중 Enter 점검은 macOS Chrome 에서 통과했고, macOS Safari 와 iOS Safari 가 남아 있다. Lighthouse Performance 는 글꼴 개선 후 3 page 모두 90 이상(95–98)이다. 나머지 측정 항목은 모두 통과했다.
+**판정: 첫 공개 gate 충족 (2026-10-29).** IME 조합 중 Enter 점검은 3 환경 모두 통과했다 (owner). Lighthouse Performance 는 글꼴 개선 후 3 page 모두 90 이상(95–98)이다. 나머지 측정 항목도 모두 통과했다. owner 승인으로 `content/initial` 을 main 에 병합한다.
 
 | 조건 | 결과 |
 |---|---|
@@ -16,7 +16,7 @@
 | R-SEARCH 적중률 | 통과 (12/12, 보강 1건 후) |
 | R-SEARCH 색인 page 수 | 통과 (86) |
 | R-SEARCH 첫 검색 전송량 | 통과 (약 237 KB, 비압축) |
-| R-SEARCH IME 조합 중 Enter | macOS Chrome 통과, **Safari 2 환경 owner 수동 점검 — 대기** |
+| R-SEARCH IME 조합 중 Enter | 통과 (3 환경, owner) |
 | R-SEARCH 검색 상태 표시 | 통과 |
 | R-UX Lighthouse A11y·SEO | 통과 (3 page 모두 100) |
 | R-UX Lighthouse Performance | 통과 (95–98, 글꼴 개선 후) |
@@ -89,8 +89,8 @@ Pagefind JS API(`search()` 결과 순위)로 측정했다. 사이트 검색 UI �
 | 환경 | 결과 |
 |---|---|
 | macOS Chrome 최신 | 통과 (owner, 2026-10-29: "병렬" 이 그대로 남고 결과가 나옴) |
-| macOS Safari 최신 | owner 수동 점검 — 대기 |
-| iOS Safari | owner 수동 점검 — 대기 |
+| macOS Safari 최신 | 통과 (owner, 2026-10-29) |
+| iOS Safari | 통과 (owner, 2026-10-29) |
 
 - 자동화 도구의 합성 key 입력은 실제 IME 조합을 재현하지 못하므로 통과 근거로 쓰지 않았다.
 - 점검 방법: 검색창에 "병렬" 을 입력하되, "렬" 의 받침까지 친 직후(조합 중, 밑줄이 보이는 상태) Enter 를 누른다. 검색어가 "병렬" 그대로 남고 결과가 나오면 통과, "병" 만 남거나 글자가 사라지면 손실이다. "리뷰 대응" 으로 한 번 더 확인한다.
@@ -143,7 +143,7 @@ Pagefind JS API(`search()` 결과 순위)로 측정했다. 사이트 검색 UI �
 | 글꼴 CSS 를 공통 CSS 에 합침 | 87 | 81 | 78 | 변화 없음 |
 | 사이트 subset 1 file + dynamic subset fallback | 98 | 95 | 96 | 2–3 file, 153–168 KB |
 
-- 사이트 subset `pretendard-site.woff2` (약 134 KB) 는 원본과 build 결과에 쓰인 글자 655 개만 담는다 (`scripts/subset-font.mjs`). 굵기 축(variable)은 그대로다.
+- 사이트 subset (약 134 KB, 처음에는 `pretendard-site.woff2`, 이후 OFL Reserved Font Name 규정에 따라 DWLG Sans `dwlg-sans/dwlg-sans.woff2` 로 이름 변경) 은 원본과 build 결과에 쓰인 글자 655 개만 담는다 (`scripts/subset-font.mjs`). 굵기 축(variable)은 그대로다.
 - 재측정에서 dynamic subset 은 하나도 받지 않았다. 모든 글자가 사이트 subset 에 들어 있다는 뜻이다.
 - 개선 후 LCP 는 2.3–2.6 s, FCP 는 1.6–2.0 s, TBT·CLS 는 0 이다.
 - 화면 확인: 흐름 10 에서 제목 weight 800, 본문, mono 표기가 정상으로 표시된다.
@@ -168,7 +168,7 @@ Pagefind JS API(`search()` 결과 순위)로 측정했다. 사이트 검색 UI �
 
 ## 남은 일 (owner)
 
-1. IME 조합 중 Enter 점검: macOS Safari, iOS Safari (위 방법, macOS Chrome 은 통과). 손실이 있으면 기록하고 검색 UI override task 를 만든다
+1. ~~IME 조합 중 Enter 점검~~ 완료 (3 환경 통과)
 2. ~~Lighthouse Performance 개선~~ 완료 (95–98)
-3. 위 두 항목 통과 후 `content/initial` → main 병합 승인, deploy run 성공 확인
+3. `content/initial` → main 병합 승인 (owner, 2026-10-29), deploy run 성공 확인
 4. 배포 URL 에서 Lighthouse 1회 재측정 후 이 문서에 추가

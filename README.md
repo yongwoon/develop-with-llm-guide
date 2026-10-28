@@ -28,7 +28,7 @@ pnpm run preview    # build 결과 확인 (검색은 build 후에만 동작)
 |---|---|
 | `pnpm run guard` | 공개하면 안 되는 내용(로컬 경로, email 등)이 build 결과에 없는지 검사합니다. 배포 workflow 에서도 실행합니다 |
 | `pnpm run fresh-check` | skill·option·agent 표기가 원본과 일치하는지 확인합니다. 원본 저장소가 옆 directory 에 있어야 하므로 로컬 전용입니다 |
-| `pnpm run subset-font` | 사이트에서 쓰는 글자만 담은 Pretendard subset 을 다시 만듭니다. `pnpm run build` 뒤에 실행하고 다시 build 합니다 |
+| `pnpm run subset-font` | 사이트에서 쓰는 글자만 담은 Pretendard subset (글꼴 이름 DWLG Sans) 을 다시 만듭니다. `pnpm run build` 뒤에 실행하고 다시 build 합니다 |
 
 ## 배포
 
