@@ -12,9 +12,9 @@ It is **not** the ywc-agent-toolkit landing page (`ywc-agent-toolkit-lp`). The s
 
 ## Project Status
 
-Planning phase. No application code exists yet, so do not assume any file beyond what `ls`/`find` confirms. The project follows the "new project" flow: mission → tech research → design draft → scaffold → spec → spec-validate → tasks → confidence gate → implementation.
+Released (first public release 2026-10-29). The site is live and changes go from a feature branch to `main`. The project followed the "new project" flow: mission → tech research → design draft → scaffold → spec → spec-validate → tasks → confidence gate → implementation.
 
-- Done: mission, tech research, design, scaffold plan, spec (validated). The spec in `docs/specification/` is authoritative for content model, requirements, and decided Open Questions.
+- Done: mission, tech research, design, scaffold, spec (validated), implementation, first release (gate record in `docs/measurements/first-release.md`). The spec in `docs/specification/` is authoritative for content model, requirements, and decided Open Questions.
 - Structure: `docs/tech-stack.md` is the authoritative directory layout. Read it before creating files or directories.
 - Design: "도면 (Blueprint)" C+ (decided 2026-10-28). `docs/design/design-system.md` is the authoritative visual reference. Follow its tokens and component mapping; do not improvise styles.
 - Stack: Astro Starlight (decided 2026-10-28). See `docs/research/2026-10-28-static-site-framework.md` for the rationale and known risks, including Pagefind Korean search, which must be verified with real content.
