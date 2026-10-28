@@ -1,7 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
-import { docsLoader } from '@astrojs/starlight/loaders';
-import { docsSchema } from '@astrojs/starlight/schema';
+import { docsLoader, i18nLoader } from '@astrojs/starlight/loaders';
+import { docsSchema, i18nSchema } from '@astrojs/starlight/schema';
 
 // Frontmatter contract (spec 03-data). `kind` selects the required fields per
 // page type; Starlight's `extend` merges each union member with its defaults.
@@ -119,4 +119,6 @@ export type FlowFrontmatter = Extract<KindFrontmatter, { kind: 'flow' }>;
 
 export const collections = {
 	docs: defineCollection({ loader: docsLoader(), schema: docsSchema({ extend: kindSchema }) }),
+	// Korean strings for the Pagefind search UI (Starlight ships none for ko).
+	i18n: defineCollection({ loader: i18nLoader(), schema: i18nSchema() }),
 };
