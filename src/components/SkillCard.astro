@@ -1,0 +1,139 @@
+---
+// Summary card at the top of a skill page, read from the page's own
+// frontmatter. Also enforces title = file name; `next` names are checked by
+// SkillLink (spec 03-data cross-checks).
+import { CATEGORY_LABELS } from '../content.config';
+import SkillLink from './SkillLink.astro';
+
+const TOOL_LABELS = { 'claude-code': 'Claude Code', codex: 'Codex' } as const;
+
+const { entry } = Astro.locals.starlightRoute;
+const { data } = entry;
+if (data.kind !== 'skill') {
+	throw new Error(`SkillCard: ${entry.id} is kind "${data.kind}", not a skill page`);
+}
+const fileName = entry.id.split('/').pop();
+if (data.title !== fileName) {
+	throw new Error(`SkillCard: title "${data.title}" must equal the file name "${fileName}" (${entry.id})`);
+}
+---
+
+<section class="skill-card not-content" aria-label={`${data.title} 요약`}>
+	<p class="head">
+		<code class="name">{data.title}</code>
+		<span class="tag">{CATEGORY_LABELS[data.category]}</span>
+	</p>
+	<dl>
+		<dt>사용 가능 도구</dt>
+		<dd>{data.tools.map((tool) => TOOL_LABELS[tool]).join(' · ')}</dd>
+		{
+			data.outputs && data.outputs.length > 0 && (
+				<>
+					<dt>산출물</dt>
+					<dd>{data.outputs.map((output) => <code>{output}</code>)}</dd>
+				</>
+			)
+		}
+		{
+			data.next && data.next.length > 0 && (
+				<>
+					<dt>다음 skill</dt>
+					<dd>{data.next.map((name) => <SkillLink name={name} />)}</dd>
+				</>
+			)
+		}
+	</dl>
+</section>
+
+<style>
+	.skill-card {
+		position: relative;
+		margin-block: 1.5rem;
+		padding: 1rem 1.25rem;
+		border: var(--card-border);
+		border-radius: var(--radius);
+		background-color: var(--card-bg);
+	}
+
+	/* Blueprint crop marks on two corners. */
+	.skill-card::before,
+	.skill-card::after {
+		content: '';
+		position: absolute;
+		width: 14px;
+		height: 14px;
+		border: 2px solid var(--accent);
+	}
+
+	.skill-card::before {
+		top: -6px;
+		left: -6px;
+		border-right: 0;
+		border-bottom: 0;
+	}
+
+	.skill-card::after {
+		right: -6px;
+		bottom: -6px;
+		border-left: 0;
+		border-top: 0;
+	}
+
+	.head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem;
+		margin: 0 0 0.75rem;
+	}
+
+	.name {
+		font: 500 1.05rem var(--sl-font-mono);
+		color: var(--text);
+		overflow-wrap: anywhere;
+	}
+
+	.tag {
+		padding: 0.1rem 0.5rem;
+		border: 1px solid var(--accent);
+		border-radius: var(--radius-sm);
+		color: var(--accent);
+		font-size: var(--sl-text-xs);
+	}
+
+	dl {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 0.25rem;
+		margin: 0;
+	}
+
+	dt {
+		color: var(--muted);
+		font-size: var(--sl-text-xs);
+	}
+
+	dd {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem 0.75rem;
+		margin: 0 0 0.5rem;
+		color: var(--text);
+	}
+
+	dd code {
+		font-family: var(--sl-font-mono);
+		overflow-wrap: anywhere;
+	}
+
+	@media (min-width: 50rem) {
+		dl {
+			grid-template-columns: max-content minmax(0, 1fr);
+			column-gap: 1.25rem;
+		}
+
+		dd {
+			margin: 0;
+		}
+	}
+</style>

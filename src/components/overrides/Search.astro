@@ -1,0 +1,76 @@
+---
+// Wraps Starlight's Search (spec F-SEARCH). Without JS the search button stays
+// disabled, so a link to the Skill index takes its place. With JS, the dialog
+// shows a loading line and, if the Pagefind bundle cannot load, a fallback.
+import Default from '@astrojs/starlight/components/Search.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const indexHref = `${base}/skills/`;
+const bundleHref = `${base}/pagefind/pagefind.js`;
+---
+
+<Default {...Astro.props} />
+<noscript>
+	<a class="search-fallback" href={indexHref}>Skill 색인</a>
+	<style>
+		site-search {
+			display: none;
+		}
+	</style>
+</noscript>
+<template id="search-status-template">
+	<p class="search-status" role="status" aria-live="polite">
+		검색 index 를 불러오는 중입니다…
+	</p>
+</template>
+
+<script define:vars={{ indexHref, bundleHref }}>
+	// Pagefind UI only logs to the console when its bundle fails to load, so
+	// the first time the dialog opens we request the bundle ourselves and show
+	// loading, then hide the line or replace it with a fallback link.
+	const container = document.getElementById('starlight__search');
+	const dialog = container?.closest('dialog');
+	const template = document.getElementById('search-status-template');
+	if (container && dialog && template) {
+		const status = template.content.firstElementChild.cloneNode(true);
+		container.before(status);
+		const showFailure = () => {
+			status.textContent = '검색을 불러오지 못했습니다. ';
+			const link = document.createElement('a');
+			link.href = indexHref;
+			link.textContent = 'Skill 색인에서 찾아 주세요.';
+			status.append(link);
+		};
+		const check = async () => {
+			try {
+				const response = await fetch(bundleHref, { method: 'HEAD', cache: 'no-store' });
+				if (!response.ok) throw new Error(`HTTP ${response.status}`);
+				status.hidden = true;
+			} catch {
+				showFailure();
+			}
+		};
+		new MutationObserver((_, observer) => {
+			if (!dialog.open) return;
+			observer.disconnect();
+			check();
+		}).observe(dialog, { attributes: true, attributeFilter: ['open'] });
+	}
+</script>
+
+<style>
+	.search-fallback {
+		font-size: var(--sl-text-sm);
+		color: var(--accent);
+	}
+
+	:global(.search-status) {
+		margin: 0.75rem 1rem 0;
+		color: var(--muted);
+		font-size: var(--sl-text-sm);
+	}
+
+	:global(.search-status a) {
+		color: var(--accent);
+	}
+</style>

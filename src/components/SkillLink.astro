@@ -1,0 +1,29 @@
+---
+// A skill name in body text. Links to the skill page's option table and fails
+// the build when no such skill page exists (spec 04-interfaces, SC002/SC005).
+import { getCollection } from 'astro:content';
+
+interface Props {
+	name: string;
+}
+
+const { name } = Astro.props;
+const skills = await getCollection('docs', (entry) => entry.data.kind === 'skill');
+if (!skills.some((entry) => entry.id === `skills/${name}`)) {
+	throw new Error(`SkillLink: no skill page for "${name}" (expected src/content/docs/skills/${name}.mdx)`);
+}
+const href = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/skills/${name}/#options`;
+---
+
+<a class="skill-link" href={href}>{name}</a>
+
+<style>
+	.skill-link {
+		font-family: var(--sl-font-mono);
+		color: var(--accent);
+		text-decoration: underline;
+		text-decoration-color: var(--accent);
+		text-underline-offset: 0.2em;
+		overflow-wrap: anywhere;
+	}
+</style>

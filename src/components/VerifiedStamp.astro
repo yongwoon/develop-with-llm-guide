@@ -1,0 +1,34 @@
+---
+// Verification date and per-tool bundle version, placed at the end of a page's
+// MDX (spec F-FRESH). Index pages have neither and render nothing.
+const TOOL_LABELS = { 'claude-code': 'Claude Code', codex: 'Codex' } as const;
+
+const { data } = Astro.locals.starlightRoute.entry;
+const versions = Object.entries(data.sourceVersion ?? {}) as [keyof typeof TOOL_LABELS, string][];
+---
+
+{
+	data.verifiedAt && (
+		<p class="verified-stamp not-content">
+			<span>확인일 {data.verifiedAt}</span>
+			{versions.map(([tool, version]) => (
+				<span>
+					{TOOL_LABELS[tool]} {version}
+				</span>
+			))}
+		</p>
+	)
+}
+
+<style>
+	.verified-stamp {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem 1rem;
+		margin-top: 3rem;
+		padding-top: 0.75rem;
+		border-top: 1px solid var(--rule-color);
+		color: var(--muted);
+		font-size: var(--sl-text-xs);
+	}
+</style>
