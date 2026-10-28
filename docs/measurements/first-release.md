@@ -7,7 +7,7 @@
 
 ## 요약
 
-**판정: 첫 공개 gate 충족 (2026-10-29).** IME 조합 중 Enter 점검은 3 환경 모두 통과했다 (owner). Lighthouse Performance 는 글꼴 개선 후 3 page 모두 90 이상(95–98)이다. 나머지 측정 항목도 모두 통과했다. owner 승인으로 `content/initial` 을 main 에 병합한다.
+**판정: 첫 공개 gate 충족 (2026-10-29).** IME 조합 중 Enter 점검은 3 환경 모두 통과했다 (owner). Lighthouse Performance 는 글꼴 개선 후 3 page 모두 90 이상(95–98)이다. 나머지 측정 항목도 모두 통과했다. owner 승인으로 `content/initial` 을 main 에 병합해 첫 공개했다 (deploy run 성공). 배포 URL 재측정 결과는 맨 아래에 있다.
 
 | 조건 | 결과 |
 |---|---|
@@ -170,5 +170,22 @@ Pagefind JS API(`search()` 결과 순위)로 측정했다. 사이트 검색 UI �
 
 1. ~~IME 조합 중 Enter 점검~~ 완료 (3 환경 통과)
 2. ~~Lighthouse Performance 개선~~ 완료 (95–98)
-3. `content/initial` → main 병합 승인 (owner, 2026-10-29), deploy run 성공 확인
-4. 배포 URL 에서 Lighthouse 1회 재측정 후 이 문서에 추가
+3. ~~`content/initial` → main 병합~~ 완료 (owner 승인 2026-10-29, deploy run 성공)
+4. ~~배포 URL 에서 Lighthouse 재측정~~ 완료 (아래)
+
+## 배포 URL 재측정 (2026-10-29)
+
+- 대상: `https://yongwoon.github.io/develop-with-llm-guide/` (main 병합 후 deploy run 성공, 홈·흐름 10·`ywc-mission`·Skill 색인·검색 index·글꼴 모두 HTTP 200)
+- 도구: Lighthouse CLI 12.6.1, mobile, 기본 throttling
+
+| page | Performance | Accessibility | Best Practices | SEO | FCP | LCP | TBT | CLS |
+|---|---|---|---|---|---|---|---|---|
+| 홈 | 96 | 100 | 100 | 100 | 1.7 s | 2.5 s | 0 ms | 0 |
+| 흐름 10 | 98 | 100 | 100 | 100 | 1.6 s | 2.2 s | 0 ms | 0 |
+| `ywc-mission` | 98 | 100 | 100 | 100 | 1.4 s | 2.2 s | 0 ms | 0 |
+
+- 측정 machine 의 보안 software 가 HTTPS page 에 script (약 209 KB) 와 log 요청을 끼워 넣었다. 배포된 HTML 에는 그 script 가 없다. 처음 측정은 이 요청이 섞여 Performance 가 86 / 83 / 91 로 나왔다.
+- Performance 는 끼워 넣은 경로를 Lighthouse 에서 차단하고 다시 쟀다. 보안 software 의 HTTPS 검사 지연은 남아 있으므로 실제 사용 환경과 같거나 조금 나쁜 조건이다.
+- Accessibility·Best Practices·SEO 는 처음 측정 값이다 (끼워 넣은 요청과 무관하게 3 page 모두 100).
+- PageSpeed Insights API 는 익명 quota 초과로 쓰지 못했다.
+
