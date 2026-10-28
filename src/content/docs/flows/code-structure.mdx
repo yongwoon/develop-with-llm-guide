@@ -1,0 +1,112 @@
+---
+title: 코드 구조 개선
+description: 리팩터링 전에 영향 범위를 보고, module 을 합치고, 쓰지 않는 code 를 지운 뒤, module 경계 규칙으로 고정하는 코드 구조 개선 흐름입니다.
+kind: flow
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+titleBlock:
+  number: 22
+  steps: 4
+  required: 3
+  optional: 1
+  outputs: [영향 범위 보고, 재구성 commit, 삭제 commit, architecture-invariants.yaml]
+sidebar:
+  order: 22
+  label: 22 코드 구조 개선
+---
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+import Flow from '../../../components/Flow.astro';
+import FlowStep from '../../../components/FlowStep.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+동작은 그대로 두고 code 구조만 바꾸는 리팩터링은 영향 범위를 먼저 보고, 작은 단위로 바꾼 뒤, 바뀐 경계를 규칙으로 남깁니다.
+
+<Aside title="언제 쓰나">
+- module 이 잘게 흩어져 있거나 쓰지 않는 code 가 쌓였을 때
+- 리팩터링 결과가 다시 무너지지 않도록 경계 규칙을 두고 싶을 때
+</Aside>
+
+## 리팩터링 흐름
+
+<Flow>
+<FlowStep skill="ywc-blast-radius" tools={['codex']} desc="바꾸려는 곳의 영향 범위를 근거 순위로 확인합니다." optional />
+<FlowStep skill="ywc-improve-architecture" desc="얕은 module 들을 동작은 유지한 채 깊은 module 로 하나씩 합칩니다." />
+<FlowStep skill="ywc-refactor-clean" desc="쓰지 않는 code 와 의존성을 안전한 것부터 지웁니다." />
+<FlowStep skill="ywc-architecture-invariants" desc="바뀐 module 경계를 규칙으로 선언하고 지키는지 점검합니다." />
+</Flow>
+
+## 리팩터링 실행 예시
+
+### 1. ywc-blast-radius
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+Claude Code 에는 이 skill 이 없습니다. 바뀌는 symbol 의 호출처를 직접 찾거나 `/ywc-impl-review` 로 변경 전후를 리뷰합니다.
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-blast-radius --paths src/content.config.ts --scope "skill page frontmatter 에 미치는 영향"
+```
+</TabItem>
+</Tabs>
+
+### 2. ywc-improve-architecture
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-improve-architecture --scope src/components --dry-run
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-improve-architecture --scope src/components --dry-run
+```
+</TabItem>
+</Tabs>
+
+후보를 확인한 뒤 `--tier safe` 로 안전한 항목부터 적용합니다.
+
+### 3. ywc-refactor-clean
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-refactor-clean --scope src/ --tier safe
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-refactor-clean --scope src/ --tier safe
+```
+</TabItem>
+</Tabs>
+
+### 4. ywc-architecture-invariants
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-architecture-invariants --mode audit --git-range main..HEAD
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-architecture-invariants --mode audit --root . --changed-path src/components
+```
+</TabItem>
+</Tabs>
+
+## 건너뛸 수 있는 조건
+
+- **1단계 <SkillLink name="ywc-blast-radius" />** 는 Codex 전용입니다. Claude Code 에서는 위 대체 방법을 쓰거나 이 단계를 건너뜁니다. 영향 범위가 한두 file 로 분명할 때도 건너뜁니다.
+- 규칙 file 이 아직 없다면 4단계는 `--mode draft` 로 먼저 만듭니다.
+
+## 관련 흐름
+
+- [11 기존 repo 진입하기](/develop-with-llm-guide/flows/onboarding-existing-repo/)
+- [13 중·대형 기능](/develop-with-llm-guide/flows/large-feature/)
+- [18 테스트와 완료 검증](/develop-with-llm-guide/flows/testing-verification/)
+
+<VerifiedStamp />

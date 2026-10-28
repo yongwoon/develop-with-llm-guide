@@ -1,0 +1,63 @@
+---
+title: 인증 구현
+description: 로그인·OAuth 같은 인증 기능을 정책 결정부터 구현과 보안 검토까지 한 번에 진행하는 인증 구현 흐름입니다.
+kind: flow
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+titleBlock:
+  number: 21
+  steps: 1
+  required: 1
+  optional: 0
+  outputs: [인증 정책 요약, 인증 code, 보안 검토 결과]
+sidebar:
+  order: 21
+  label: 21 인증 구현
+---
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+import Flow from '../../../components/Flow.astro';
+import FlowStep from '../../../components/FlowStep.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+로그인, OAuth, session 같은 인증 기능은 skill 하나로 정책을 정하고 구현합니다.
+
+<Aside title="언제 쓰나">
+- email·password 로그인이나 OAuth 로그인을 새로 붙일 때
+- 인증 방식을 정하는 단계부터 도움을 받고 싶을 때
+</Aside>
+
+## 인증 구현 흐름
+
+<Flow>
+<FlowStep skill="ywc-auth-implement" desc="인증 정책을 정하고 그에 맞춰 인증 기능을 구현합니다." />
+</Flow>
+
+## 인증 구현 실행 예시
+
+### 1. ywc-auth-implement
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-auth-implement --lang ko
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-auth-implement email·password 로그인과 Google OAuth 를 추가한다
+```
+</TabItem>
+</Tabs>
+
+## 건너뛸 수 있는 조건
+
+- 이 흐름은 단계가 하나뿐이라 건너뛸 단계가 없습니다.
+- 이미 있는 인증 code 를 점검만 하려면 이 흐름 대신 <SkillLink name="ywc-security-audit" /> 을 씁니다.
+
+## 관련 흐름
+
+- [13 중·대형 기능](/develop-with-llm-guide/flows/large-feature/)
+- [18 테스트와 완료 검증](/develop-with-llm-guide/flows/testing-verification/)
+
+<VerifiedStamp />

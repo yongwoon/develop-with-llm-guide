@@ -1,0 +1,111 @@
+---
+title: 인프라·클라우드
+description: cloud 인프라를 설계 문서, Terraform module 작성, plan 리뷰, 운영 중 비용·신뢰성 개선 순서로 다루는 인프라 흐름입니다.
+kind: flow
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+titleBlock:
+  number: 20
+  steps: 4
+  required: 3
+  optional: 1
+  outputs: [docs/infrastructure/, Terraform module, 인프라 리뷰 보고]
+sidebar:
+  order: 20
+  label: 20 인프라·클라우드
+---
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+import Flow from '../../../components/Flow.astro';
+import FlowStep from '../../../components/FlowStep.astro';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+인프라는 설계 문서를 먼저 만들고, 그 문서를 Terraform 으로 옮긴 뒤 apply 전에 리뷰합니다. 운영에 들어간 뒤에는 개선 후보를 찾아 적용합니다.
+
+<Aside title="언제 쓰나">
+- 새 서비스의 cloud 인프라를 설계하고 IaC 로 만들 때
+- 운영 중인 인프라의 비용·drift·신뢰성을 개선하고 싶을 때
+</Aside>
+
+## 인프라 흐름
+
+<Flow>
+<FlowStep skill="ywc-infra-design" desc="요구사항을 받아 cloud 인프라 설계 문서 묶음을 만듭니다." />
+<FlowStep skill="ywc-iac-author" desc="설계 문서를 plan 으로 검증한 Terraform module 로 만듭니다." />
+<FlowStep skill="ywc-infra-review" desc="terraform plan 의 보안·비용·신뢰성 문제를 apply 전에 리뷰합니다." />
+<FlowStep skill="ywc-infra-optimize" desc="운영 중인 인프라의 비용·drift·신뢰성 개선 후보를 찾아 적용합니다." optional />
+</Flow>
+
+## 인프라 실행 예시
+
+### 1. ywc-infra-design
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-infra-design --provider gcp
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-infra-design GCP 에 작은 API 서비스와 PostgreSQL 을 둔다. region 은 asia-northeast1
+```
+</TabItem>
+</Tabs>
+
+### 2. ywc-iac-author
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-iac-author --module compute
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-iac-author docs/infrastructure 설계의 compute module 을 GCP staging 환경용으로 작성한다
+```
+</TabItem>
+</Tabs>
+
+### 3. ywc-infra-review
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-infra-review --plan-file terraform-plan.txt
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-infra-review terraform-plan.txt 의 plan 결과
+```
+</TabItem>
+</Tabs>
+
+### 4. ywc-infra-optimize
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-infra-optimize --usage-data cost-report.json
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-infra-optimize cost-report.json 기준으로 과하게 잡힌 자원의 크기 조정
+```
+</TabItem>
+</Tabs>
+
+## 건너뛸 수 있는 조건
+
+- **4단계 <SkillLink name="ywc-infra-optimize" />**: 아직 운영에 들어가지 않았거나 비용·사용량 data 가 없으면 건너뜁니다.
+- 이미 Terraform code 가 있다면 1–2단계 없이 3단계 리뷰부터 시작합니다.
+
+## 관련 흐름
+
+- [24 로컬 환경과 병렬 작업](/develop-with-llm-guide/flows/local-parallel/)
+- [17 디버깅과 장애 회고](/develop-with-llm-guide/flows/debug-postmortem/)
+
+<VerifiedStamp />
