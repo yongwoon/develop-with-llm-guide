@@ -1,0 +1,96 @@
+---
+title: ywc-spec-validate
+description: 작성한 spec(사양서)을 task 분해 전에 한 번 검토하는 skill. "사양 검토", "스펙 점검" 요청에 빠진 요구사항·모순·실현 가능성 문제를 보고한다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: plan
+tools: [claude-code, codex]
+summary: spec 을 task 분해 전에 한 번 검토해 문제와 판정을 낸다
+options:
+  - name: --spec
+    format: "<path>"
+    when: 검토할 spec 파일을 지정한다. 반드시 준다.
+    tools: [claude-code, codex]
+  - name: --mode
+    format: "standard|socratic"
+    default: standard
+    when: 지적 목록 대신 스스로 생각해 볼 질문을 받고 싶으면 socratic 을 고른다.
+    tools: [claude-code, codex]
+  - name: --focus
+    format: "requirements|architecture|testing|compliance"
+    when: 특정 관점을 깊게 보고 싶을 때 영역 하나를 고른다.
+    tools: [claude-code, codex]
+  - name: --format
+    format: "markdown|html"
+    default: markdown
+    when: 브라우저로 볼 단독 HTML 보고서가 필요할 때 html 을 고른다. --mode 와 함께 쓸 수 있다.
+    tools: [claude-code, codex]
+    note: HTML 보고서가 생기는 디렉터리는 도구마다 다르다 (Claude Code claudedocs/, Codex codexdocs/).
+  - name: --advisor-budget
+    format: "<n>"
+    default: "2"
+    when: 판단이 애매한 지적을 상위 model 에게 다시 묻는 횟수 상한을 바꾼다. 0 이면 다시 묻지 않는다.
+    tools: [claude-code, codex]
+  - name: --tasks
+    format: "<dir>"
+    when: task 를 이미 만들었다면 tasks 디렉터리를 주어 spec 과 task 가 어긋난 곳도 함께 본다.
+    tools: [claude-code, codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### task 를 만들기 전 spec 점검
+
+`docs/specification/` 을 다 쓴 뒤 task 로 나누기 전에 한 번 검토한다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-spec-validate --spec docs/specification/02-features.md
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-spec-validate --spec docs/specification/02-features.md
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 심각도별 지적 목록과 task 분해로 넘어가도 되는지에 대한 판정이 대화에 나온다. spec 파일은 고치지 않는다.
+
+### 만든 task 와 spec 의 어긋남 확인
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-spec-validate --spec docs/specification/02-features.md --tasks tasks/
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-spec-validate --spec docs/specification/02-features.md --tasks tasks/
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 위 보고서에 더해, task 가 맡지 않은 요구사항과 spec 에 근거가 없는 task 가 함께 보고된다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 지적이 나올 것을 알고 통과할 때까지 자동으로 고치고 싶다 → `ywc-spec-ready`
+- 구현된 code 를 검토하고 싶다 → `ywc-impl-review`
+- 제품·사업 관점의 검토가 필요하다 → `ywc-product-review`
+- 아직 spec 이 없다 → `ywc-plan` 이나 `ywc-spec-writer` 로 먼저 쓴다
+
+<VerifiedStamp />

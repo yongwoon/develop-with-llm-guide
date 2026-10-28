@@ -1,0 +1,75 @@
+---
+title: ywc-adr
+description: 이미 내린 architecture 결정을 ADR(Architecture Decision Record)로 기록하는 skill. "결정 기록", "ADR 작성" 요청에 새 ADR 작성·기존 ADR 대체·폐기·목록 보기를 한다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0 }
+category: plan
+tools: [claude-code]
+summary: 이미 내린 architecture 결정을 ADR 로 기록·대체·폐기한다
+outputs: [docs/architecture/adr/]
+argsNote: 폐기할 ADR 은 --mode deprecate 뒤에 ADR-NNNN 또는 NNNN 으로 적는다.
+options:
+  - name: --mode
+    format: "new|list|deprecate"
+    default: 요청 문장에서 판단, 모호하면 new
+    when: 기록(new)·목록(list)·폐기(deprecate) 중 무엇을 할지 분명히 정하고 싶을 때 쓴다.
+    tools: [claude-code]
+  - name: --supersedes
+    format: ADR-NNNN
+    when: 새 ADR 이 기존 ADR 을 대체할 때 대체되는 번호를 준다.
+    tools: [claude-code]
+    note: new 에서만 쓴다. list·deprecate 와 함께 주면 아무것도 쓰지 않는다.
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### 정한 framework 를 결정으로 남기기
+
+조사 끝에 Astro Starlight 를 쓰기로 정했고, 그 이유를 나중에 다시 찾아볼 수 있게 남긴다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-adr 정적 사이트 framework 로 Astro Starlight 를 채택한다. 한국어 검색과 MDX component 가 이유다
+```
+</TabItem>
+<TabItem label="Codex">
+Codex 에는 이 skill 이 없다. 결정 내용을 `docs/architecture/adr/` 에 직접 쓰거나, 기각한 접근이라면 `$ywc-mission` 으로 기록한다.
+</TabItem>
+</Tabs>
+
+**결과물**: `docs/architecture/adr/` 에 번호가 붙은 ADR 파일이 새로 생긴다.
+
+### 이전 결정을 대체하기
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-adr --supersedes ADR-0001 검색을 Pagefind 에서 외부 검색 service 로 바꾼다
+```
+</TabItem>
+<TabItem label="Codex">
+Codex 에는 이 skill 이 없다.
+</TabItem>
+</Tabs>
+
+**결과물**: 새 ADR 이 생기고, `ADR-0001` 은 대체되었다고 표시된다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 아직 결정을 내리지 못했다 → 먼저 `ywc-tech-research` 로 비교한다
+- 구현 계획이나 spec 을 쓰고 싶다 → `ywc-plan`
+- project 의 목적이나 기각한 접근을 기록하고 싶다 → `ywc-mission`
+
+<VerifiedStamp />

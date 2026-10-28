@@ -1,0 +1,84 @@
+---
+title: ywc-mission
+description: project 의 존재 이유·성공 기준·non-goal·제약·기각한 접근을 docs/mission.md 에 남기는 skill. "미션 기록", "성공 기준 기록" 요청에 쓰고, 세션 시작 때 읽어 방향을 맞춘다.
+kind: skill
+verifiedAt: "2026-10-28"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+category: plan
+tools: [claude-code, codex]
+summary: project 의 목적·성공 기준·기각한 접근을 mission 문서로 관리한다
+outputs: [docs/mission.md]
+options:
+  - name: --mode
+    format: "read|update|curate"
+    default: 요청에 맞춰 자동
+    when: 읽기(read)·추가(update)·오래된 항목 정리(curate) 중 하나로 고정하고 싶을 때 쓴다.
+    tools: [claude-code, codex]
+  - name: --output
+    format: "<path>"
+    default: docs/mission.md
+    when: mission 문서를 다른 경로에 둘 때 쓴다.
+    tools: [claude-code, codex]
+  - name: --dry-run
+    format: flag
+    when: 문서에 쓰기 전에 무엇이 바뀌는지 먼저 보고 싶을 때 쓴다.
+    tools: [claude-code, codex]
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import SkillCard from '../../../components/SkillCard.astro';
+import OptionTable from '../../../components/OptionTable.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+<SkillCard />
+
+## 사용 case
+
+### 기각한 접근을 기록
+
+private 저장소에서 content 를 가져오는 sync script 는 쓰지 않기로 했다. 다음 세션에서 같은 제안이 나오지 않게 이유와 함께 남긴다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-mission private 저장소 content sync script 는 기각. 유출 경로가 되기 때문
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-mission private 저장소 content sync script 는 기각. 유출 경로가 되기 때문
+```
+</TabItem>
+</Tabs>
+
+**결과물**: `docs/mission.md` 의 기각한 접근 표에 ID 가 붙은 항목이 추가되고 변경 이력이 남는다.
+
+### 오래된 항목 정리
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-mission --mode curate --dry-run
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-mission --mode curate --dry-run
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 정리 대상과 바뀔 내용만 대화에 보여 준다. `--dry-run` 을 빼고 다시 실행하면 문서에 반영된다.
+
+## Options
+
+<OptionTable />
+
+## 쓰지 말아야 할 때
+
+- 무엇을 만들지 아직 정하는 중이다 → `ywc-brainstorm`
+- 기능 사양서를 쓰고 싶다 → `ywc-spec-writer`
+- architecture 결정 하나를 기록하고 싶다 → `ywc-adr`
+- code 리뷰 선호를 쌓고 싶다 → `ywc-review-learnings`
+- 도메인 용어를 정리하고 싶다 → `ywc-ubiquitous-language`
+
+<VerifiedStamp />
