@@ -1,0 +1,117 @@
+---
+title: 헷갈리기 쉬운 skill
+description: 비슷해 보이는 ywc skill 을 묶어 비교합니다. 언제 쓰는지, 무엇이 남는지, 대신 쓸 skill 을 표로 보고 바로 고릅니다.
+kind: guide
+verifiedAt: "2026-10-29"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+sidebar:
+  order: 2
+  label: 헷갈리기 쉬운 skill
+---
+import { Aside } from '@astrojs/starlight/components';
+import SkillLink from '../../../components/SkillLink.astro';
+import VerifiedStamp from '../../../components/VerifiedStamp.astro';
+
+이름이나 역할이 비슷해 고르기 어려운 skill 을 묶음별로 비교합니다. 각 묶음에는 비교 표와 한 줄 기준이 있습니다. 표의 "대신 쓸 것" 은 그 skill 이 맞지 않을 때 옮겨 갈 skill 입니다.
+
+<Aside type="tip" title="전체 순서가 필요하면">
+skill 을 어떤 순서로 이어 쓰는지는 [상황별 흐름](/develop-with-llm-guide/flows/new-project/) 에 정리해 두었습니다. 이 page 는 그중 한 단계에서 어느 skill 을 고를지만 다룹니다.
+</Aside>
+
+표시가 없는 skill 은 Claude Code 와 Codex 에서 모두 쓸 수 있습니다. 한쪽 도구에만 있는 skill 은 "(Claude Code 전용)" 처럼 적었습니다.
+
+## 아이디어·계획
+
+| skill | 이럴 때 | 결과물 | 대신 쓸 것 |
+|---|---|---|---|
+| <SkillLink name="ywc-brainstorm" /> | 무엇을 만들지 아직 흐릴 때 | 질문으로 좁힌 설계 합의. 필요할 때만 `docs/ywc-plans/_brainstorm-<slug>.md` | 요청이 이미 분명하면 <SkillLink name="ywc-plan" /> |
+| <SkillLink name="ywc-plan" /> | 만들 것은 정했고 이번 변경의 계획이 필요할 때 | 규모에 따라 실행 계획이나 spec. `docs/ywc-plans/` | project 전체 사양서는 <SkillLink name="ywc-spec-writer" /> |
+| <SkillLink name="ywc-spec-writer" /> | project 사양서를 새로 쓰거나 갱신할 때 | `docs/specification/` | 이번 변경 계획만이면 <SkillLink name="ywc-plan" /> |
+| <SkillLink name="ywc-spec-ready" /> | 초안 spec 에 지적이 남아 있고, 통과할 때까지 자동으로 다듬고 싶을 때 | 다듬어진 spec 과 진행 log | 한 번 검토만 받으려면 <SkillLink name="ywc-spec-validate" /> |
+| <SkillLink name="ywc-wayfinder" /> | 여러 session 에 걸친 큰 작업이라 경로부터 불확실할 때 | 결정 ticket 지도. `docs/ywc-plans/<slug>-wayfinder.md` | 경로가 정해졌으면 <SkillLink name="ywc-plan" /> |
+
+**고르는 기준**: 의도가 흐리면 brainstorm, 이번 변경이면 plan, project 전체 사양이면 spec-writer, 초안을 통과시키려면 spec-ready, 몇 session 이 걸릴지 모르면 wayfinder 입니다.
+
+관련 흐름: [중·대형 기능](/develop-with-llm-guide/flows/large-feature/), [장기·불확실한 initiative](/develop-with-llm-guide/flows/uncertain-initiative/)
+
+## commit·PR·병합
+
+| skill | 이럴 때 | 결과물 | 대신 쓸 것 |
+|---|---|---|---|
+| <SkillLink name="ywc-commit" /> | 바뀐 file 을 커밋(과 push)만 할 때 | commit | PR 까지면 <SkillLink name="ywc-create-pr" /> |
+| <SkillLink name="ywc-create-pr" /> | 작업을 push 하고 PR 을 열 때 | GitHub pull request | 병합까지면 <SkillLink name="ywc-finish-branch" /> |
+| <SkillLink name="ywc-finish-branch" /> | 끝난 branch 를 base branch 에 병합하고 task 완료 처리까지 할 때 | 병합 commit, `tasks/completed/<task>/` | PR 만 열려면 <SkillLink name="ywc-create-pr" /> |
+| <SkillLink name="ywc-handle-pr-reviews" /> | 열린 PR 의 리뷰 코멘트, CI 실패, base branch 충돌을 정리할 때 | 수정 commit, 리뷰 thread 답변 | PR 없이 받은 지적이면 <SkillLink name="ywc-receive-review" /> |
+| <SkillLink name="ywc-resolve-conflict" /> (Claude Code 전용) | 진행 중인 local merge·rebase 의 충돌을 풀 때 | 충돌이 해결된 file | 열린 PR 과 base 의 충돌이면 <SkillLink name="ywc-handle-pr-reviews" /> |
+
+**고르는 기준**: 어디까지 갈지로 고릅니다. 커밋까지는 commit, PR 열기까지는 create-pr, 병합까지는 finish-branch 입니다. 이미 열린 PR 을 손볼 때는 handle-pr-reviews 입니다.
+
+관련 흐름: [PR review 대응과 merge](/develop-with-llm-guide/flows/pr-review-merge/)
+
+## task 실행
+
+| skill | 이럴 때 | 결과물 | 대신 쓸 것 |
+|---|---|---|---|
+| <SkillLink name="ywc-sequential-executor" /> | `tasks/` 의 task 를 순서대로 병합까지 진행할 때 | task 별 commit·병합, `tasks/completed/<task>/` | 독립 task 가 많으면 <SkillLink name="ywc-parallel-executor" /> |
+| <SkillLink name="ywc-parallel-executor" /> | 서로 독립인 task 를 git worktree 로 동시에 돌릴 때. 의존 그래프가 있어야 합니다 | task 별 commit·병합, `tasks/completed/<task>/` | 차례로 이어지는 task 면 <SkillLink name="ywc-sequential-executor" /> |
+| <SkillLink name="ywc-task-executor" /> | 순차·병렬을 직접 정하지 않고 맡길 때 | 고른 방식과 해당 executor 의 결과 | 방식을 정했으면 위 두 skill 을 직접 |
+| <SkillLink name="ywc-agentic" /> | 목표 문장 하나로 계획부터 구현·평가까지 맡길 때 | 계획, `tasks/`, `tasks/agentic-log.md` | 단계마다 확인하려면 <SkillLink name="ywc-plan" /> 부터 하나씩 |
+| <SkillLink name="ywc-code-gen" /> | task 디렉터리 없이 spec 에서 바로 여러 층의 code 를 만들 때 | backend·frontend·test code | task 로 나눠 두었으면 executor |
+| <SkillLink name="ywc-team-assemble" /> | task 그래프 없이 역할별 agent 팀에 나눠 맡기고 싶다고 분명히 요청할 때 | 역할별 결과를 모은 보고 | `tasks/` 가 있으면 <SkillLink name="ywc-parallel-executor" /> |
+
+**고르는 기준**: `tasks/` 가 있으면 executor 셋 중 하나(모르겠으면 task-executor), spec 만 있으면 code-gen, 목표 문장뿐이면 agentic 입니다. team-assemble 은 팀 구성을 직접 원할 때만 씁니다.
+
+관련 흐름: [목표 하나로 자율 실행](/develop-with-llm-guide/flows/autonomous-goal/), [로컬 환경과 병렬 작업](/develop-with-llm-guide/flows/local-parallel/)
+
+## 리뷰·검증
+
+| skill | 이럴 때 | 결과물 | 대신 쓸 것 |
+|---|---|---|---|
+| <SkillLink name="ywc-spec-validate" /> | 쓴 spec 을 task 분해 전에 한 번 검토할 때 | 심각도별 지적과 판정 (대화). spec 은 고치지 않음 | 통과까지 자동으로 고치려면 <SkillLink name="ywc-spec-ready" /> |
+| <SkillLink name="ywc-confidence-gate" /> | 큰 구현이나 되돌리기 비싼 설계에 착수하기 직전 | PROCEED·REVIEW·STOP 판정과 근거 (대화). file 없음 | 무엇을 만들지 흐리면 <SkillLink name="ywc-brainstorm" /> |
+| <SkillLink name="ywc-impl-review" /> | 구현을 마치고 PR 전에 spec 대조와 품질을 볼 때 | 심각도별 지적과 spec 대응표 | 보안만 보려면 <SkillLink name="ywc-security-audit" /> |
+| <SkillLink name="ywc-security-audit" /> | 인증·외부 입력·민감 data 를 다루는 code 를 점검할 때 | 심각도별 보안 점검 보고 | 일반 리뷰는 <SkillLink name="ywc-impl-review" />, 인프라는 <SkillLink name="ywc-infra-review" /> |
+| <SkillLink name="ywc-verify-done" /> | "다 됐다" 고 말하기 전, commit·PR 직전 | 다시 실행한 명령과 출력, 종료 코드 | spec 대조가 필요하면 <SkillLink name="ywc-impl-review" /> |
+| <SkillLink name="ywc-receive-review" /> | 받은 리뷰 지적이 맞는지 먼저 확인할 때 | 지적별 판정과 대응안. 맞는 지적만 수정 | 열린 PR 정리까지면 <SkillLink name="ywc-handle-pr-reviews" /> |
+
+**고르는 기준**: 시점으로 고릅니다. spec 을 쓴 뒤는 spec-validate, 착수 직전은 confidence-gate, 구현 뒤는 impl-review(보안이 걸리면 security-audit 도), 완료 선언 직전은 verify-done, 리뷰를 받은 뒤는 receive-review 입니다.
+
+관련 흐름: [테스트와 완료 검증](/develop-with-llm-guide/flows/testing-verification/)
+
+## 테스트
+
+| skill | 이럴 때 | 결과물 | 대신 쓸 것 |
+|---|---|---|---|
+| <SkillLink name="ywc-tdd-ritual" /> | test 를 먼저 쓰고 실패를 본 뒤 구현할 때 | test 와 구현 code | 원인 모르는 bug 면 먼저 <SkillLink name="ywc-debug-rootcause" /> |
+| <SkillLink name="ywc-gen-testcase" /> | 개발자·QA 가 손으로 확인할 테스트시트가 필요할 때 | `docs/test-case/` | 자동 E2E 면 <SkillLink name="ywc-e2e-test-strategy" /> |
+| <SkillLink name="ywc-e2e-test-strategy" /> | Playwright 로 핵심 흐름의 자동 E2E test 를 갖출 때 | `playwright.config.ts`, `e2e/`, CI workflow | 수동 확인이면 <SkillLink name="ywc-gen-testcase" /> |
+| <SkillLink name="ywc-verification-map" /> | 주 사용자 화면을 어떻게 확인할지 project 에 계약으로 남길 때 | project 안의 검증 계약 file | 지금 작업의 완료 확인은 <SkillLink name="ywc-verify-done" /> |
+
+**고르는 기준**: 자동 unit·integration test 는 tdd-ritual, 자동 E2E 는 e2e-test-strategy, 사람이 볼 체크리스트는 gen-testcase, 확인 방법 자체를 남길 때는 verification-map 입니다.
+
+## 디버깅·회고
+
+| skill | 이럴 때 | 결과물 | 대신 쓸 것 |
+|---|---|---|---|
+| <SkillLink name="ywc-debug-rootcause" /> | 지금 bug 나 실패가 있고 원인을 찾아 고칠 때 | 원인 분석과 수정 | 끝난 장애의 보고서면 <SkillLink name="ywc-incident-postmortem" /> |
+| <SkillLink name="ywc-incident-postmortem" /> | 장애가 끝난 뒤 timeline·원인·재발 방지를 정리할 때 | `docs/postmortems/<yyyymmdd>-<slug>.md` (고객용 판도 있음) | 진행 중이면 <SkillLink name="ywc-debug-rootcause" /> |
+| <SkillLink name="ywc-retro" /> | coding session 을 돌아보고 작업 환경을 개선할 때 | 순위가 붙은 개선안 | 운영 장애 회고면 <SkillLink name="ywc-incident-postmortem" /> |
+| <SkillLink name="ywc-handoff" /> | 지금 대화를 새 session 에 넘길 때 | 인수인계 문서 file | 개선점을 찾으려면 <SkillLink name="ywc-retro" /> |
+
+**고르는 기준**: 운영 장애라면 진행 중엔 debug-rootcause, 끝났으면 incident-postmortem 입니다. 대상이 장애가 아니라 내 작업 session 이면 개선은 retro, 이어받기는 handoff 입니다.
+
+관련 흐름: [디버깅과 장애 회고](/develop-with-llm-guide/flows/debug-postmortem/), [세션 운영과 skill 관리](/develop-with-llm-guide/flows/session-skill-management/)
+
+## 오래 남기는 기록 문서
+
+| skill | 이럴 때 | 결과물 | 대신 쓸 것 |
+|---|---|---|---|
+| <SkillLink name="ywc-mission" /> | project 의 목적·성공 기준·기각한 접근을 남길 때 | `docs/mission.md` | 아직 정하는 중이면 <SkillLink name="ywc-brainstorm" /> |
+| <SkillLink name="ywc-adr" /> (Claude Code 전용) | 이미 내린 architecture 결정 하나를 기록·대체·폐기할 때 | `docs/architecture/adr/` | 결정 전이면 <SkillLink name="ywc-tech-research" /> |
+| <SkillLink name="ywc-ubiquitous-language" /> | 도메인 용어를 정리할 때 | `docs/ubiquitous-language.md` | 일반 문서는 <SkillLink name="ywc-project-docs" /> |
+| <SkillLink name="ywc-review-learnings" /> | PR 하나에서 나온 리뷰 선호를 저장소 규칙으로 쌓을 때 | `docs/review-learnings.md` | 과거 PR 을 한꺼번에 보려면 <SkillLink name="ywc-mine-review-history" /> |
+| <SkillLink name="ywc-mine-review-history" /> | 병합된 여러 PR 의 bot 코멘트에서 반복 결함을 찾을 때 | `docs/review-learnings.md` 에 넣을 후보 | PR 하나면 <SkillLink name="ywc-review-learnings" /> |
+
+**고르는 기준**: 왜 만드는지는 mission, 무엇을 결정했는지는 adr, 말을 어떻게 쓰는지는 ubiquitous-language, 리뷰에서 무엇을 지킬지는 review-learnings(과거 PR 일괄 분석은 mine-review-history)입니다.
+
+<VerifiedStamp />

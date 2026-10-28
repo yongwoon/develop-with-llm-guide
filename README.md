@@ -1,4 +1,4 @@
-# develop-with-llm guide
+# ywc skills
 
 `develop-with-llm` 의 ywc skill 과 agent 사용법을 정리한 한국어 guidebook 사이트입니다.
 
@@ -10,6 +10,7 @@
 - **Skill reference 63개**: skill 마다 언제 쓰는지, 호출 예시, Claude Code 와 Codex 의 option 표를 둡니다. Skill 색인에서 이름과 분류로 찾을 수 있습니다.
 - **Agents**: skill 이 일을 맡기는 agent 의 도구별 구성과, 어떤 skill 이 어떤 agent 를 쓰는지 정리합니다.
 - **시작하기**: 설치 방법과 두 도구의 차이를 설명합니다.
+- **사용 안내**: 자주 쓰는 명령, 헷갈리기 쉬운 skill 비교, 말로 부르기, 공통 option, 설정, 산출물 지도, 문제 해결, 이 사이트를 만든 실제 case 를 다룹니다.
 
 사이트 안 검색(Pagefind)으로 skill 이름이나 한국어 키워드로 찾을 수 있습니다.
 
