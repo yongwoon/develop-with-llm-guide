@@ -73,7 +73,7 @@ options:
   - name: --review-execution
     format: "auto|inline|parallel"
     default: parallel
-    when: 리뷰를 어떻게 진행할지 고릅니다. auto 는 위험이 낮고 작은 변경(file 3개·변경 150줄 이하)이면 지금 대화 안에서 리뷰하고, 그 밖에는 parallel 로 진행합니다. 리뷰 관점은 어느 값이든 같습니다.
+    when: 리뷰를 어떻게 진행할지 고릅니다. auto 는 리뷰 방식을 자동으로 고릅니다. 리뷰 관점은 어느 값이든 같습니다.
     tools: [codex]
     note: inline 을 직접 주었는데 조건을 넘으면 리뷰하지 않고 필요한 정보를 되묻습니다.
 ---
