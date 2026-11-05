@@ -2,8 +2,8 @@
 title: ywc-confidence-gate
 description: 큰 구현이나 되돌리기 비싼 설계에 착수하기 직전에 준비 상태를 점검합니다. "구현 시작해도 돼?", "준비 됐어?" 질문에 진행·재검토·중단 중 하나로 판정합니다.
 kind: skill
-verifiedAt: "2026-10-28"
-sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+verifiedAt: "2026-11-05"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.20 }
 category: plan
 tools: [claude-code, codex]
 summary: 구현 착수 직전에 준비 상태를 PROCEED·REVIEW·STOP 으로 판정합니다.
@@ -14,6 +14,11 @@ options:
     format: 자유 문장
     default: 지금 대화의 작업
     when: 판정 대상을 따로 적을 때 씁니다. 착수하려는 작업을 문장으로 줍니다.
+    tools: [codex]
+  - name: --assessment
+    format: "scored|evidence"
+    default: scored
+    when: 판정 결과의 형태를 고릅니다. scored 는 점수와 판정을 함께 내고, evidence 는 점수 없이 관점별 근거와 판정만 냅니다. 점수가 의미 없고 근거만 확인하고 싶을 때 evidence 를 씁니다.
     tools: [codex]
 ---
 import { Tabs, TabItem } from '@astrojs/starlight/components';

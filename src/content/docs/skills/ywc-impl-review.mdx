@@ -2,8 +2,8 @@
 title: ywc-impl-review
 description: 구현을 마치고 PR 을 만들기 전에 code 를 리뷰합니다. "구현 검증", "코드 리뷰", "PR 전 검증" 요청에 spec 과 맞는지, 설계·보안·test 에 문제가 없는지 보고합니다.
 kind: skill
-verifiedAt: "2026-10-28"
-sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+verifiedAt: "2026-11-05"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.20 }
 category: review
 tools: [claude-code, codex]
 summary: 구현한 code 가 spec 과 맞는지와 품질 문제를 PR 전에 리뷰합니다.
@@ -70,6 +70,12 @@ options:
     when: 브라우저로 볼 단독 HTML 보고서가 필요하면 html 을 고릅니다.
     tools: [claude-code, codex]
     note: HTML 보고서가 생기는 디렉터리는 도구마다 다릅니다. Claude Code 는 claudedocs/, Codex 는 codexdocs/ 입니다.
+  - name: --review-execution
+    format: "auto|inline|parallel"
+    default: parallel
+    when: 리뷰를 어떻게 진행할지 고릅니다. auto 는 위험이 낮고 작은 변경(file 3개·변경 150줄 이하)이면 지금 대화 안에서 리뷰하고, 그 밖에는 parallel 로 진행합니다. 리뷰 관점은 어느 값이든 같습니다.
+    tools: [codex]
+    note: inline 을 직접 주었는데 조건을 넘으면 리뷰하지 않고 필요한 정보를 되묻습니다.
 ---
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';

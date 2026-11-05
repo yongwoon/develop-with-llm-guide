@@ -2,8 +2,8 @@
 title: ywc-tdd-ritual
 description: 새 기능, bug 수정, 동작 변경을 test 를 먼저 쓰는 방식으로 진행합니다. "TDD", "테스트 먼저" 요청에 실패하는 test 를 먼저 확인하고, 통과시킨 뒤 정리합니다.
 kind: skill
-verifiedAt: "2026-10-28"
-sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+verifiedAt: "2026-11-05"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.20 }
 category: test
 tools: [claude-code, codex]
 summary: test 를 먼저 쓰고 실패를 확인한 뒤 구현하는 방식으로 진행합니다.
@@ -54,6 +54,7 @@ $ywc-tdd-ritual Skill 색인에서 분류를 바꾸면 skill 개수 표시가 �
 - 원인을 아직 모르는 bug 일 때 → 먼저 <SkillLink name="ywc-debug-rootcause" />
 - spec 에서 여러 층의 code 를 한 번에 만들 때 → <SkillLink name="ywc-code-gen" />
 - 버릴 시험용 code 일 때 → skill 없이 직접 작성
+- TDD 를 원하지 않고 회귀 test 만 보강할 때 → <SkillLink name="ywc-code-gen" />. Codex 에서는 TDD 를 직접 요청했을 때만 이 skill 을 씁니다.
 
 ## 관련 흐름
 

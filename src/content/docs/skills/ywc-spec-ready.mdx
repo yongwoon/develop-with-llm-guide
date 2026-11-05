@@ -2,8 +2,8 @@
 title: ywc-spec-ready
 description: 목표 문장이나 초안 spec 을 검토 통과 상태까지 자동으로 다듬습니다. "spec 수렴", "사양 준비" 요청에 계획 수정과 재검토를 반복해 task 생성 직전 상태로 만듭니다.
 kind: skill
-verifiedAt: "2026-10-28"
-sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+verifiedAt: "2026-11-05"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.20 }
 category: plan
 tools: [claude-code, codex]
 summary: 초안 spec 을 검토 통과 상태까지 자동으로 다듬습니다.
@@ -82,6 +82,11 @@ options:
     when: --non-interactive 에서 남은 개선 제안의 처리 방식을 정합니다. apply 는 한 번 더 반영하고, defer 는 미룹니다.
     tools: [codex]
     note: --non-interactive 와 함께 씁니다. 개선 제안이 남았을 때만 필요합니다.
+  - name: --review-execution
+    format: "auto|inline|parallel"
+    default: parallel
+    when: 매 반복의 검토 진행 방식을 고릅니다. ywc-spec-validate 에 그대로 넘깁니다.
+    tools: [codex]
 ---
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
