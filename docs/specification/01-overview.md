@@ -15,7 +15,7 @@ develop-with-llm-guide 는 private 저장소 `develop-with-llm` 이 배포하는
   |---|---|---|
   | skill 수 | 62개 | 59개 |
   | 한쪽에만 있는 skill | `ywc-adr`, `ywc-issue-triage`, `ywc-manual-wizard`, `ywc-resolve-conflict` | `ywc-blast-radius` |
-  | agent 수 | 14개 | 11개 |
+  | agent 수 | 13개 | 11개 |
   | 호출 표기 | `/ywc-…` | `$ywc-…` |
 
   같은 skill 이라도 도구별로 인자가 다를 수 있다. 예를 들어 Codex 의 `ywc-task-executor --delivery` 가 그렇다. 따라서 도구별 차이를 페이지에 명시해야 한다.
@@ -27,7 +27,7 @@ develop-with-llm-guide 는 private 저장소 `develop-with-llm` 이 배포하는
 - 상황별 흐름 페이지 16개 (02-features F-FLOW)
 - skill reference 63개: Claude Code 와 Codex 의 합집합이며, skill 1개당 1 page 로 둔다 (SC001). 각 page 에는 사용 case 와 전체 option 표를 싣는다 (SC005)
 - Skill 색인 1 page: 전체 skill 목록이며, 항목을 누르면 해당 skill 의 option 표로 바로 이동한다 (SC005)
-- agent reference: 17개 agent 를 3 page 로 묶어 다룬다
+- agent reference: 16개 agent 를 3 page 로 묶어 다룬다
 - 시작하기: 설치, `ywc-setup`, 두 도구의 차이
 - 사이트 내 한국어 전문 검색, light/dark theme, 모바일 대응
 - main 브랜치 push 시 GitHub Pages 자동 배포와 공개 가드 검사

@@ -125,13 +125,13 @@
   - 개요: 도구별 agent 구성 차이, model 고정 정책 같은 설치 차이
   - 작업 agent: write-enabled
   - 자문·리뷰 agent: read-only
-- 17개 agent 를 모두 표로 싣는다. 각 행에는 사용 가능 도구, 역할, 주로 dispatch 하는 skill 을 적는다.
+- 16개 agent 를 모두 표로 싣는다. 각 행에는 사용 가능 도구, 역할, 주로 dispatch 하는 skill 을 적는다.
 - **CN004 경계**: "어느 skill 이 어느 agent 를 쓰는가"라는 관계는 쓴다. dispatch 방식, 순서, 조건은 쓰지 않는다 (OQ-12 결정).
 
 | 구분 | agent (`ywc-` 생략) |
 |---|---|
 | 두 도구 공통 (8) | architect, go-reviewer, performance-engineer, python-reviewer, refactor-cleaner, root-cause-analyst, security-engineer, typescript-reviewer |
-| Claude Code 전용 (6) | backend-coder, frontend-coder, doc-writer, qa-engineer, infra-engineer, infra-reviewer |
+| Claude Code 전용 (5) | backend-coder, frontend-coder, qa-engineer, infra-engineer, infra-reviewer |
 | Codex 전용 (3) | cloud-engineer, complexity-cleaner, test-hardener |
 
 ## F-START: 시작하기

@@ -2,8 +2,8 @@
 title: ywc-spec-validate
 description: 작성한 spec(사양서)을 task 분해 전에 한 번 검토합니다. "사양 검토", "스펙 점검" 요청에 빠진 요구사항, 모순, 실현 가능성 문제를 보고합니다.
 kind: skill
-verifiedAt: "2026-10-28"
-sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.4 }
+verifiedAt: "2026-11-05"
+sourceVersion: { claude-code: 1.0.0, codex: 0.16.164-candidate.20 }
 category: plan
 tools: [claude-code, codex]
 summary: spec 을 task 분해 전에 한 번 검토해 문제와 판정을 냅니다.
@@ -37,6 +37,11 @@ options:
     format: "<dir>"
     when: task 를 이미 만들었다면 tasks 디렉터리를 줍니다. spec 과 task 가 어긋난 곳도 함께 봅니다.
     tools: [claude-code, codex]
+  - name: --review-execution
+    format: "auto|inline|parallel"
+    default: parallel
+    when: 검토를 어떻게 진행할지 고릅니다. auto 는 검토 방식을 자동으로 고릅니다. 검토 관점은 어느 값이든 같습니다.
+    tools: [codex]
 ---
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import SkillCard from '../../../components/SkillCard.astro';
