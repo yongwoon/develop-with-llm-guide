@@ -15,7 +15,7 @@ develop-with-llm-guide 는 private 저장소 `develop-with-llm` 이 배포하는
   |---|---|---|
   | skill 수 | 62개 | 59개 |
   | 한쪽에만 있는 skill | `ywc-adr`, `ywc-issue-triage`, `ywc-manual-wizard`, `ywc-resolve-conflict` | `ywc-blast-radius` |
-  | agent 수 | 14개 | 11개 |
+  | agent 수 | 13개 | 11개 |
   | 호출 표기 | `/ywc-…` | `$ywc-…` |
 
   같은 skill 이라도 도구별로 인자가 다를 수 있다. 예를 들어 Codex 의 `ywc-task-executor --delivery` 가 그렇다. 따라서 도구별 차이를 페이지에 명시해야 한다.
