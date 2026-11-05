@@ -5,7 +5,7 @@
 | develop-with-llm | owner 의 private 저장소. ywc skill 과 agent 의 원본이 있다. 이 사이트 내용의 source of truth 다 (CN003) |
 | ywc-agent-toolkit-lp | 공개 배포판 ywc-agent-toolkit 의 landing page 와 guidebook. 이 사이트와 별개다 |
 | Skill | `/ywc-…` (Claude Code) 또는 `$ywc-…` (Codex) 로 호출하는 작업 절차 묶음. 이 사이트에서는 두 도구의 합집합 63개를 다룬다 |
-| Agent | skill 이 내부에서 dispatch 하는 전문 subagent. Claude Code 14개, Codex 11개, 합집합 17개 |
+| Agent | skill 이 내부에서 dispatch 하는 전문 subagent. Claude Code 13개, Codex 11개, 합집합 16개 |
 | Flow (상황별 흐름) | 특정 상황에서 쓰는 skill 들을 실행 순서로 엮은 페이지. 번호 10–25 |
 | 필수 단계 / 선택 단계 | 흐름에서 항상 실행하는 단계와 조건에 따라 건너뛰는 단계. 선택 단계는 점선으로 표시한다 |
 | 표제란 (Title block) | 흐름 페이지 제목 아래의 4칸 요약: 번호, 단계 수, 필수/선택, 산출물 |
