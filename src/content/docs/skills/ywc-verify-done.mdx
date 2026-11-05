@@ -13,7 +13,7 @@ options:
   - name: --verification-policy
     format: "fresh|reuse-local"
     default: fresh
-    when: 확인 명령을 다시 돌릴지 고릅니다. reuse-local 은 같은 대화에서 이미 성공한 local 확인 결과가 같은 주장을 그대로 뒷받침할 때만 다시 쓰고, 아니면 새로 돌립니다. fresh 는 항상 새로 돌립니다.
+    when: 확인 명령을 다시 돌릴지 고릅니다. reuse-local 은 같은 대화의 이전 local 확인 결과를 다시 씁니다. fresh 는 항상 새로 돌립니다.
     tools: [codex]
 ---
 import { Tabs, TabItem } from '@astrojs/starlight/components';
