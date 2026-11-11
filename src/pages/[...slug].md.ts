@@ -2,11 +2,10 @@
 // replaced by `.md` (`/skills/ywc-plan/` -> `/skills/ywc-plan.md`, a directory
 // index -> `/skills/index.md`). Listed in /llms.txt.
 import type { APIRoute, GetStaticPaths } from 'astro';
-import { getCollection } from 'astro:content';
-import { mdSlug, toMarkdown } from '../lib/llm-markdown';
+import { listPublishedDocs, mdSlug, toMarkdown } from '../lib/llm-markdown';
 
 export const getStaticPaths = (async () => {
-	const docs = await getCollection('docs');
+	const docs = await listPublishedDocs();
 	return docs.flatMap((entry) => {
 		const slug = mdSlug(entry);
 		return slug ? [{ params: { slug }, props: { markdown: toMarkdown(entry, docs) } }] : [];

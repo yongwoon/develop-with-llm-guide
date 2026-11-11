@@ -1,8 +1,8 @@
 // /llms.txt: index of the Markdown version of every page, in sidebar order,
 // with a reading order for an LLM that follows the guide step by step.
 import type { APIRoute } from 'astro';
-import { getCollection, type CollectionEntry } from 'astro:content';
-import { mdPath, mdSlug } from '../lib/llm-markdown';
+import type { CollectionEntry } from 'astro:content';
+import { listPublishedDocs, mdPath, mdSlug } from '../lib/llm-markdown';
 
 type Page = { slug: string; entry: CollectionEntry<'docs'> };
 
@@ -24,7 +24,7 @@ function rank({ slug, entry }: Page): number {
 }
 
 export const GET: APIRoute = async ({ site }) => {
-	const docs = await getCollection('docs');
+	const docs = await listPublishedDocs();
 	const pages = docs.flatMap((entry) => {
 		const slug = mdSlug(entry);
 		return slug ? [{ slug, entry }] : [];

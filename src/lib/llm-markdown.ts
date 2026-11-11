@@ -4,7 +4,7 @@
 // here to the Markdown it stands for. A page that still contains one of its
 // imported components afterwards fails the build, which is how a newly added
 // component gets noticed.
-import type { CollectionEntry } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import { CATEGORY_LABELS, TOOLS, type SkillFrontmatter } from '../content.config';
 
 type Doc = CollectionEntry<'docs'>;
@@ -17,6 +17,12 @@ const UNSUPPORTED = '미지원';
 const EMPTY = '—';
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
 const FENCE = /(^```[\s\S]*?^```[^\n]*$)/m;
+
+/**
+ * Pages that get a Markdown version. Starlight builds no HTML route for a
+ * draft in production, so a draft must not be published here either.
+ */
+export const listPublishedDocs = () => getCollection('docs', ({ data }) => !data.draft);
 
 /** Path under the site base without extension, e.g. `skills/index`, `skills/ywc-plan`. */
 export function mdSlug(entry: Doc): string | undefined {
@@ -158,7 +164,9 @@ export function toMarkdown(entry: Doc, docs: Doc[]): string {
 	const skills = listSkills(docs);
 	const slugs = new Set(docs.flatMap((doc) => mdSlug(doc) ?? []));
 	const source = entry.body ?? '';
-	const imports = source.match(/^(?:import .*\n)+/)?.[0] ?? '';
+	// The leading import block, including blank lines between imports and
+	// imports that span several lines.
+	const imports = source.match(/^(?:\s*import\s[^;]*?from\s+['"][^'"]+['"];?[ \t]*\n)+/)?.[0] ?? '';
 	const imported = [...imports.matchAll(/import\s+\{?([^}'"]+?)\}?\s+from/g)].flatMap(([, names]) =>
 		names.split(',').map((name) => name.trim()),
 	);
