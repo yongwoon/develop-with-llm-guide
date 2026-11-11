@@ -1,0 +1,13 @@
+---
+// Starlight's head, plus a pointer to the page's Markdown version so a bot
+// that was given the HTML URL can find it. Starlight's built-in 404 entry is
+// not in the docs collection, so it has no Markdown version and gets no link.
+import Default from '@astrojs/starlight/components/Head.astro';
+import { mdPath, mdSlug } from '../../lib/llm-markdown';
+
+const { entry } = Astro.locals.starlightRoute;
+const slug = entry.id === '404' ? undefined : mdSlug(entry);
+---
+
+<Default />
+{slug && <link rel="alternate" type="text/markdown" href={mdPath(slug)} />}

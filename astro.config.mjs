@@ -13,6 +13,7 @@ export default defineConfig({
 			plugins: [starlightLinksValidator()],
 			customCss: ['./src/styles/pretendard.css', './src/styles/theme.css'],
 			components: {
+				Head: './src/components/overrides/Head.astro',
 				Search: './src/components/overrides/Search.astro',
 				PageTitle: './src/components/overrides/PageTitle.astro',
 				Sidebar: './src/components/overrides/Sidebar.astro',
