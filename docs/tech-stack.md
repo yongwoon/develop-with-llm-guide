@@ -25,6 +25,7 @@ develop-with-llm-guide/
 │   ├── content.config.ts              # docsLoader + docsSchema. frontmatter 확장 (아래 "frontmatter 확장 필드")
 │   ├── components/
 │   │   ├── overrides/                 # Starlight 기본 component 교체 (astro.config 의 components 옵션에 등록)
+│   │   │   ├── Head.astro             # 기본 head + page 의 Markdown 판을 가리키는 <link rel="alternate" type="text/markdown">
 │   │   │   ├── PageSidebar.astro      # 기본 TOC 열 + 폭 조절 handle (drag·←/→, localStorage)
 │   │   │   ├── PageTitle.astro        # h1 + TitleBlock(표제란) 렌더링
 │   │   │   ├── Search.astro           # 기본 Search + JS 비활성 시 Skill 색인 link, 로딩·실패 안내
@@ -39,6 +40,11 @@ develop-with-llm-guide/
 │   │   ├── OutputsMap.astro           # 전 skill frontmatter outputs 의 file 경로 → 만드는 skill 표 (산출물 지도)
 │   │   ├── VerifiedStamp.astro        # page 하단 확인일·bundle version 표시
 │   │   └── TitleBlock.astro           # 표제란 4칸 (PageTitle 에서 사용)
+│   ├── lib/
+│   │   └── llm-markdown.ts            # docs page 1개 → 순수 Markdown 변환 (component 를 frontmatter 기반 Markdown 으로 치환)
+│   ├── pages/                         # LLM·bot 용 정적 endpoint (Starlight route 와 별개)
+│   │   ├── [...slug].md.ts            # 모든 docs page 의 Markdown 판 (/skills/ywc-plan/ → /skills/ywc-plan.md)
+│   │   └── llms.txt.ts                # /llms.txt: Markdown 판 색인 + 읽는 순서
 │   ├── styles/
 │   │   ├── theme.css                  # design token (light/dark) → --sl-* 매핑 + 모눈 배경, sidebar, TOC, § counter, @font-face
 │   │   └── pretendard.css             # DWLG Sans (Pretendard 사이트 subset) + Pretendard dynamic subset fallback @font-face
@@ -113,6 +119,19 @@ develop-with-llm-guide/
 - **역할**: MDX 본문에서 import 해 쓰는 정적 `.astro` component 를 둔다. `Flow`, `FlowStep`, `SkillCard`, `SkillLink`, `OptionTable`, `SkillIndex`, `VerifiedStamp`, `TitleBlock` 이 해당한다.
 - **이 구조인 이유**: client JS 가 필요 없으므로 React/Vue island 를 두지 않는다. Tab 은 Starlight 내장 `Tabs syncKey="tool"` 을 쓴다.
 
+### `src/lib/` · `src/pages/` (LLM·bot 용 Markdown)
+
+- **역할**: 사람용 HTML 과 같은 내용을 LLM 이 적은 token 으로 읽도록 Markdown 으로 한 번 더 내보낸다.
+  - `/<page>.md`: 각 docs page 의 Markdown 판. HTML URL 끝의 `/` 를 `.md` 로 바꾼 주소이고, directory 색인은 `index.md` 다.
+  - `/llms.txt`: Markdown 판 전체의 색인. sidebar 와 같은 group·순서로 나열하고, 맨 위에 읽는 순서를 둔다.
+  - HTML page 의 `<head>` 는 `Head.astro` override 가 넣는 `<link rel="alternate" type="text/markdown">` 로 자기 Markdown 판을 가리킨다.
+- **이 구조인 이유**
+  - 본문이 MDX 이고 option 표·요약 카드는 frontmatter 에서 component 가 그리므로, 원본 `.mdx` 를 그대로 내보내면 표가 빠진다. `llm-markdown.ts` 가 component 마다 같은 내용을 Markdown 으로 다시 쓴다.
+  - 변환 뒤에도 page 가 import 한 component tag 가 남아 있으면 build 가 실패한다. 새 component 를 추가하면 `llm-markdown.ts` 에 치환 규칙을 함께 추가한다.
+  - `llms.txt.ts` 의 group 목록은 `astro.config.mjs` 의 sidebar 와 맞춘다. 어느 group 에도 속하지 않는 page 가 생기면 build 가 실패한다.
+  - 정적 endpoint 이므로 CN002(정적 호스팅)를 지키고, 추가 의존성이 없다. 내용은 이미 공개된 본문과 같아 공개 범위가 늘지 않으며, `dist/` 에 생기는 `.md` 와 `llms.txt` 도 공개 가드가 검사한다.
+- **의존 방향**: `pages`·`overrides` → `lib` → `content.config`. `lib` 는 component 를 import 하지 않는다.
+
 ### `src/styles/theme.css`
 
 - **역할**: `docs/design/design-system.md` 의 token 을 Starlight 의 `--sl-*` 변수에 매핑하고, 모눈 배경 등 전역 스타일을 정의한다. light 와 dark 둘 다 포함한다.
@@ -154,4 +173,4 @@ develop-with-llm-guide/
 - **Node 고정**: `.nvmrc` 와 `package.json` 의 engines 로 고정한다 (spec R-DEPLOY).
 - **Mobile-first**: 375px 기준으로 작성하고, 800px(sidebar 고정)·1152px(TOC 표시)에서 확장한다. 둘 다 Starlight 기본 breakpoint 다.
 - **Spec 반영**: 배포 workflow (R-DEPLOY), 한국어 검색 실측 (R-SEARCH), 공개 가드 (R-GUARD), 최신성 점검 (R-FRESH) 는 `docs/specification/06-requirements.md` 가 기준이다.
-- **Architecture invariants**: layer 간 금지 의존이 `overrides → components` 단방향 하나뿐이다. manifest 를 따로 두지 않는다.
+- **Architecture invariants**: layer 간 금지 의존은 `overrides → components` 와 `pages`·`overrides` → `lib` 의 단방향뿐이다. manifest 를 따로 두지 않는다.
