@@ -2,8 +2,8 @@
 title: ywc-task-executor
 description: 순차·병렬을 정하지 않고 tasks/ 의 task 실행을 맡깁니다. "task 실행", "남은 task 실행" 요청에 의존 관계를 보고 ywc-sequential-executor 나 ywc-parallel-executor 로 넘깁니다.
 kind: skill
-verifiedAt: "2026-11-08"
-sourceVersion: { claude-code: 1.0.1, codex: 0.16.164-candidate.23 }
+verifiedAt: "2026-11-16"
+sourceVersion: { claude-code: 1.0.1, codex: 0.16.164-candidate.53 }
 category: implement
 tools: [claude-code, codex]
 summary: task 의존 관계를 보고 순차 또는 병렬 실행을 골라 맡깁니다.
@@ -35,6 +35,7 @@ options:
     default: per-task-pr
     when: 결과를 전달하는 방식을 고릅니다.
     tools: [codex]
+    note: aggregate-pr 는 PR 하나로 모아 병합까지 합니다. per-task-draft 와 pr-only 는 순차, aggregate-draft 는 병렬에서만 쓸 수 있습니다.
   - name: --local-merge
     format: flag
     when: PR 없이 base branch 에 직접 병합합니다.
@@ -52,6 +53,11 @@ options:
     format: flag
     when: 결과를 PR 하나로 모아 전달합니다.
     tools: [claude-code]
+  - name: --merge
+    format: flag
+    when: --aggregate-pr 로 만든 PR 을 병합까지 합니다. 없으면 draft PR 로 남겨 두고 끝납니다.
+    tools: [claude-code]
+    note: --aggregate-pr 와 함께만 씁니다.
   - name: --skip-ci-wait
     format: flag
     when: PR 을 만들고 CI 를 기다리지 않습니다.
@@ -170,6 +176,63 @@ $ywc-task-executor 000004-010..000004-030 --dry-run
 </Tabs>
 
 **결과물**: 순차와 병렬 중 무엇을 고를지, 대상 task 와 전달 방식이 무엇인지만 보여 줍니다.
+
+### PR 하나로 모아 검토받기 (--aggregate-pr)
+
+순차든 병렬이든 결과는 PR 하나로 받고 싶을 때입니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-task-executor 000004-010..000004-030 --aggregate-pr --group-name docs --final-review
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-task-executor 000004-010..000004-030 --delivery aggregate-pr --group-name docs --final-review
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 순차가 선택되면 `work/docs`, 병렬이 선택되면 `aggregate/docs` branch 에 결과가 모이고, PR 을 만들기 전에 전체 리뷰를 한 번 합니다. Claude Code 는 PR 을 draft 로 남겨 두므로 확인한 뒤 직접 병합합니다. Codex 의 `--delivery aggregate-pr` 는 병합까지 진행합니다.
+
+### 병합까지 한 번에 (--merge)
+
+Claude Code 에서 PR 하나로 모은 결과를 병합까지 맡길 때입니다. Codex 는 `--delivery aggregate-pr` 가 원래 병합까지 합니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-task-executor 000004-010..000004-030 --aggregate-pr --merge --review
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-task-executor 000004-010..000004-030 --delivery aggregate-pr --review
+```
+</TabItem>
+</Tabs>
+
+**결과물**: task 마다 리뷰한 결과를 PR 하나로 모으고, CI 와 자동 리뷰를 통과하면 병합합니다.
+
+### worktree 에서 실행하기 (--worktree)
+
+`--worktree` 는 순차 실행에만 있습니다. Claude Code 는 순차가 선택되면 그대로 넘기고, 병렬이 선택되면 실행 전에 멈춥니다. Codex 의 이 skill 은 `--worktree` 를 받지 않으므로 순차 실행기를 직접 부릅니다.
+
+<Tabs syncKey="tool">
+<TabItem label="Claude Code">
+```text
+/ywc-task-executor 000003-010..000003-050 --worktree --local-merge --review
+```
+</TabItem>
+<TabItem label="Codex">
+```text
+$ywc-sequential-executor 000003-010..000003-050 --worktree --local-merge --review
+```
+</TabItem>
+</Tabs>
+
+**결과물**: 별도 worktree 에서 task 가 차례로 실행되므로 원래 checkout 은 그대로입니다. 병렬로 돌려야 할 범위라면 `--worktree` 를 빼고 실행합니다. 병렬 실행은 task 마다 worktree 를 따로 씁니다.
 
 ## Options
 

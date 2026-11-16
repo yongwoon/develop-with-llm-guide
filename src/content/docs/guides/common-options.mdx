@@ -140,7 +140,8 @@ task 실행기(<SkillLink name="ywc-task-executor" />, <SkillLink name="ywc-sequ
 | option | 의미 |
 |---|---|
 | `--local-merge` | PR 없이 base branch 에 직접 병합합니다. 혼자 쓰는 저장소에 맞습니다. |
-| `--aggregate-pr` | 결과를 branch 하나에 모아 PR 하나로 전달합니다. |
+| `--aggregate-pr` | 결과를 branch 하나에 모아 PR 하나로 전달합니다. Claude Code 는 PR 을 draft 로 남기고, Codex 는 병합까지 합니다. |
+| `--merge` | Claude Code 에서 `--aggregate-pr` 의 PR 을 병합까지 합니다. |
 | `--group-name` | `--aggregate-pr` 로 만들 branch 의 이름을 정합니다. |
 | `--draft` | draft PR 만 만들고 병합은 직접 합니다. |
 | `--worktree` | 별도 git worktree 에서 실행해 원래 checkout 을 비워 둡니다. |
@@ -153,7 +154,7 @@ task 실행기(<SkillLink name="ywc-task-executor" />, <SkillLink name="ywc-sequ
 
 - 전달 방식(`--local-merge`, `--aggregate-pr`, `--draft` 등)은 하나만 고르며 함께 쓸 수 없습니다. <SkillLink name="ywc-parallel-executor" /> 는 하나도 주지 않으면 실행 전에 물어봅니다.
 - Codex 의 <SkillLink name="ywc-task-executor" /> 는 이 flag 대신 `--delivery <방식>` 으로 고릅니다. 예를 들어 `--local-merge` 는 `--delivery local-merge` 입니다.
-- `--group-name` 은 `--aggregate-pr` 와 함께만 씁니다.
+- `--group-name` 과 `--merge` 는 `--aggregate-pr` 와 함께만 씁니다.
 - <SkillLink name="ywc-incident-postmortem" /> 의 `--draft` 는 전달 방식과 관계없습니다. 질문에 답하며 보고서를 쓰는 기본 동작을 뜻합니다.
 - <SkillLink name="ywc-handle-pr-reviews" /> 의 `--worktree` 는 PR branch 를 별도 worktree 에서 다룹니다. fork 에서 온 PR 은 지원하지 않습니다.
 - <SkillLink name="ywc-code-gen" /> 의 `--review` 는 생성이 끝난 뒤 구현 리뷰를 한 번 이어서 실행합니다.
@@ -163,6 +164,8 @@ task 실행기(<SkillLink name="ywc-task-executor" />, <SkillLink name="ywc-sequ
 <OptionUsers name="--aggregate-pr" />
 
 <OptionUsers name="--group-name" />
+
+<OptionUsers name="--merge" />
 
 <OptionUsers name="--draft" />
 

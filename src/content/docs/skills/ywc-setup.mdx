@@ -36,6 +36,7 @@ options:
     format: "[a-z0-9]{2,4}"
     when: 여러 사람이 task 를 만들 때 번호가 겹치지 않게 붙일 이니셜을 정합니다.
     tools: [claude-code, codex]
+    note: 사람마다 다른 값이라 --scope 와 관계없이 항상 사용자 단위에 저장합니다. Codex 에서는 --scope project 와 함께 주면 거부합니다.
   - name: --granularity
     format: "human|llm"
     when: ywc-task-generator 의 기본 task 크기를 정합니다.
