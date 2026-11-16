@@ -2,8 +2,8 @@
 title: 설정
 description: ywc skill 이 매번 묻는 언어, task 크기, base branch 같은 기본값을 어디에 어떻게 저장하는지 정리합니다. 적용 우선순위와 외부 URL 정책, Codex 의 차이도 다룹니다.
 kind: guide
-verifiedAt: "2026-11-08"
-sourceVersion: { claude-code: 1.0.1, codex: 0.16.164-candidate.23 }
+verifiedAt: "2026-11-16"
+sourceVersion: { claude-code: 1.0.1, codex: 0.16.164-candidate.53 }
 sidebar:
   order: 5
   label: 설정
@@ -33,7 +33,7 @@ git 저장소 밖에서 project 범위로 저장하면 현재 디렉터리에 fi
 | `lang.doc` | 같은 코드 | `--lang-doc` | 문서를 만드는 skill: <SkillLink name="ywc-spec-writer" />, <SkillLink name="ywc-project-docs" />, <SkillLink name="ywc-spec-ready" />, <SkillLink name="ywc-auth-implement" />, <SkillLink name="ywc-incident-postmortem" />, <SkillLink name="ywc-gen-testcase" /> |
 | `lang.task` | 같은 코드 | `--lang-task` | <SkillLink name="ywc-task-generator" /> 의 task 문서 |
 | `lang.pr` | 같은 코드 | `--lang-pr` | <SkillLink name="ywc-create-pr" /> 의 PR 제목과 설명 |
-| `initials` | 소문자·숫자 2~4자 | `--initials` | <SkillLink name="ywc-task-generator" /> 가 task 번호에 붙이는 이니셜 |
+| `initials` | 소문자·숫자 2~4자 | `--initials` | <SkillLink name="ywc-task-generator" /> 가 task 번호에 붙이는 이니셜. Codex 에서는 사용자 설정 file 의 값만 읽고, 저장소 설정 file 의 값은 쓰지 않습니다. |
 | `granularity` | `human`, `llm` | `--granularity` | <SkillLink name="ywc-task-generator" /> 의 기본 task 크기 (`--mode` 의 기본값) |
 | `baseBranch` | branch 이름 | `--base-branch` | PR 과 병합의 대상 branch. <SkillLink name="ywc-create-pr" />, <SkillLink name="ywc-finish-branch" />, <SkillLink name="ywc-agentic" />, Codex 의 executor 가 씁니다. Claude Code 의 executor 는 이 값을 쓰지 않고, `--base-branch` 가 없으면 각 skill page 의 기본값(예: develop → main → master 순, 또는 현재 branch)을 따릅니다 |
 
